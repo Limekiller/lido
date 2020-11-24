@@ -1,0 +1,22 @@
+.menu {
+    .menuOptionContainer {
+        .menuOption {
+            &.active {
+                overflow: auto;
+
+                &.downloadMedia {
+                    opacity: 1;
+                    padding:20px;
+                    box-sizing: border-box;
+                    left: 0;
+                    top: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    position: fixed;
+                    z-index: 99;
+                    background: #353535;
+                }
+            }
+        }
+    }
+}

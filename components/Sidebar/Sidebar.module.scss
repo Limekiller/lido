@@ -1,0 +1,19 @@
+.sidebar {
+    width: 105px;
+    padding:10px 10px 10px 20px;
+    background: #2d2d2d;
+    height: 100vh;
+    box-sizing: border-box;
+    position: fixed;
+    top:0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    svg {
+        color:#bdbaba;
+        width: 60px !important;
+        font-size: 60px;
+    }
+}

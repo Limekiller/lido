@@ -1,0 +1,23 @@
+.downloadContainer {
+    margin-top: 50px;
+
+    .download {
+        background: #464646;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+
+        .endActions {
+            display: flex;
+            align-items: center;
+
+            svg {
+                width: 25px;
+                height: 100%;
+                margin-left: 20px;
+            }
+        }
+        
+    }
+}

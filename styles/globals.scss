@@ -1,0 +1,58 @@
+@import './folderView.scss';
+@import './downloads.scss';
+
+html,
+body {
+  background-color: #515153;
+  padding: 0;
+  margin: 0;
+  font-family: halyard-display, sans-serif; 
+  font-size: 18px;
+}
+
+h1, h2, h3 {
+  font-family: halyard-text, sans-serif;
+}
+h1 {
+  color: white;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+input {
+  padding: 10px;
+  box-sizing: border-box;
+  font-family: halyard-text, sans-serif;
+}
+button {
+  background: linear-gradient(orange, gold);
+  border: none;
+  padding: 10px 20px 10px 20px;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0px 0px 10px #0000004d;
+}
+
+.pageContainer {
+  padding: 50px 50px 50px 155px; 
+}
+.body {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+.pageTitle {
+  color: white;
+  font-size: 90px;
+  margin: 0;
+  margin-top: -40px;
+}
+
+.video-js {
+  width: 100%;
+  height: 100%;
+}
+
+@import url("https://use.typekit.net/nne8qgd.css");
