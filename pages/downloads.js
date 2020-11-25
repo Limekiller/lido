@@ -20,7 +20,8 @@ export default class downloads extends Component {
         })
     }
 
-    cancelDownload = (gid, path, name) => {
+    cancelDownload = (gid, path, name, e) => {
+        e.target.parentElement.parentElement.classList.add('inactive')
         fetch('/api/downloadActions?gid=' + gid + '&path=' + path + '&name=' + name, {
             method: 'DELETE',
         })
@@ -77,9 +78,10 @@ export default class downloads extends Component {
                                     <span className='percentage'>{percentage + '%'}</span>
                                     <FontAwesomeIcon 
                                         icon={faTimesCircle} 
-                                        onClick={(e) => this.cancelDownload(e.target.parentElement.parentElement.dataset.gid,
-                                                                            e.target.parentElement.parentElement.dataset.path,
-                                                                            e.target.parentElement.parentElement.dataset.name
+                                        onClick={(e) => this.cancelDownload(file.gid,
+                                                                            file.path,
+                                                                            file.name,
+                                                                            e
                                                                             )}
                                     />
                                 </div>

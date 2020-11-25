@@ -1,0 +1,26 @@
+@import '/styles/variables.scss';
+
+.breadcrumbs {
+    background: #272728;
+    height: 50px;
+    left: 105px;
+    padding: 10px 10px 10px 30px;
+    box-sizing: border-box;
+    color: $fg-color-light;
+    position: fixed;
+    top: 0;
+    width: 100%;
+
+    .breadcrumb {
+        margin-right: 15px;
+
+        &:after {
+            content: '>';
+            padding-left: 15px;
+        }
+        &:hover {
+            color: white;
+            cursor: pointer;
+        }
+    }
+}

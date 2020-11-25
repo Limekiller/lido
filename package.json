@@ -20,6 +20,7 @@
     "next": "10.0.2",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-draggable": "^4.4.3",
     "sass": "^1.29.0",
     "video.js": "^7.10.2"
   }

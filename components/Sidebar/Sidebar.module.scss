@@ -1,7 +1,9 @@
+@import '/styles/variables.scss';
+
 .sidebar {
     width: 105px;
     padding:10px 10px 10px 20px;
-    background: #2d2d2d;
+    background: $menu-color;
     height: 100vh;
     box-sizing: border-box;
     position: fixed;
@@ -12,8 +14,13 @@
     justify-content: space-between;
 
     svg {
-        color:#bdbaba;
+        color: $fg-color-light;
         width: 60px !important;
         font-size: 60px;
+
+        &:hover {
+            color: white;
+            cursor: pointer;
+        }
     }
 }

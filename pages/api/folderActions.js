@@ -22,6 +22,20 @@ export default (req, res) => {
     res.statusCode = 200;
     res.end();
 
+  } else if (req.method == 'PUT') {
+
+    fs.renameSync(
+      path.join(
+        process.cwd(), '/media/' + req.body.currPath + '/' + req.body.fileName
+      ),
+      path.join(
+        process.cwd(), '/media/' + req.body.currPath + '/' + req.body.destPath + '/' + req.body.fileName
+      )
+    )
+
+    res.statusCode = 200
+    res.end()
+
   } else {
     res.statusCode = 403
     res.end()

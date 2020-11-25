@@ -17,7 +17,8 @@ export default class DownloadMedia extends Component {
         })
     }
 
-    queueDownload = (magnet) => {
+    queueDownload = (magnet, e) => {
+        e.target.classList.add('inactive')
         fetch('/api/downloadActions', {
             method: 'POST',
             headers: {
@@ -28,8 +29,10 @@ export default class DownloadMedia extends Component {
                 dir: window.location.pathname
             })
         })
-        .then(response => response.json())
-        .then(data => { console.log(data) })
+        .then(response => response.text())
+        .then(data => {
+            document.querySelector('#addButton').click()
+        })
     }
 
     render() {
@@ -38,7 +41,7 @@ export default class DownloadMedia extends Component {
                 ${styles.downloadMedia}
                 body
             `}>
-                <h1><label for='search'>Search</label></h1>
+                <h1><label htmlFor='search'>Search</label></h1>
                 <input type='text' name='search' id='search' className={styles.search} />
                 <button 
                     className={styles.confirmSearch}
@@ -50,7 +53,7 @@ export default class DownloadMedia extends Component {
                     {this.state.results.map((result, index) => (
                         <div 
                             className={styles.result}
-                            onClick={() => this.queueDownload(result.link)}
+                            onClick={(e) => this.queueDownload(result.link, e)}
                         >
                             {result.name}
                         </div>

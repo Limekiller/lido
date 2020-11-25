@@ -1,3 +1,5 @@
+@import '/styles/variables.scss';
+
 .downloadMedia {
     z-index: 99;
 
@@ -19,8 +21,20 @@
 
         .result {
             padding: 20px;
-            background: #464646;
+            background: $fg-color-dark;
             margin-bottom: 20px;
+            transition: box-shadow 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
+
+            &:hover {
+                box-shadow: 0px 0px 5px orange;
+                transform: scale(1.01);
+                cursor: pointer;
+            }
+
+            &.inactive {
+                opacity: 0.5;
+                pointer-events: none;
+            }
         }
     }
 }

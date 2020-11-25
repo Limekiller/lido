@@ -18,6 +18,13 @@ let saveJSON = (id, path) => {
   fs.writeFileSync( mediaPath + 'temp/downloads.json', JSON.stringify(JSONData))
 }
 
+let removeJSON = (id) => {
+  const data = fs.readFileSync(mediaPath + 'temp/downloads.json', 'utf8')
+  let JSONData = JSON.parse(data)
+  delete JSONData[id]
+  fs.writeFileSync( mediaPath + 'temp/downloads.json', JSON.stringify(JSONData))
+}
+
 export default async (req, res) => {
 
   if (req.method == 'POST') {
@@ -41,7 +48,7 @@ export default async (req, res) => {
       .catch(err => console.log("error", err));
 
     res.statusCode = 200;
-    res.end(JSON.stringify([guid]));
+    res.end();
 
   } else if (req.method == 'GET') {
 
@@ -64,9 +71,9 @@ export default async (req, res) => {
       .catch(err => console.log("error", err));
 
     await aria2.call('remove', req.query.gid)
-    fs.removeSync(req.query.path + '/' + req.query.name)
-    fs.removeSync(req.query.path + '/' + req.query.name + '.aria2')
+    fs.removeSync(req.query.path)
     const status = await aria2.call("tellActive")
+    removeJSON(req.query.path.split('/').slice(-1))
 
     await aria2
       .close()
@@ -74,8 +81,5 @@ export default async (req, res) => {
 
     res.statusCode = 200;
     res.end(JSON.stringify(status))
-
   }
-    
-
 }

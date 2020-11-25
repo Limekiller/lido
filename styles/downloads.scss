@@ -2,11 +2,18 @@
     margin-top: 50px;
 
     .download {
-        background: #464646;
+        background: $fg-color-dark;
         color: white;
         display: flex;
         justify-content: space-between;
         padding: 20px;
+        margin-bottom: 20px;
+        transition: opacity 0.4s ease;
+
+        &.inactive {
+            opacity: 0.5;
+            pointer-events: none;
+        }
 
         .endActions {
             display: flex;
@@ -16,6 +23,10 @@
                 width: 25px;
                 height: 100%;
                 margin-left: 20px;
+
+                &:hover {
+                    cursor: pointer;
+                }
             }
         }
         
