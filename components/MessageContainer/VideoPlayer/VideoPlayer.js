@@ -11,7 +11,8 @@ class VideoPlayer extends Component {
         this.state = ({
             data: {},
             title: this.getTitle()[0],
-            strippedTitle: this.getTitle()[1]
+            strippedTitle: this.getTitle()[1],
+            showOverlay: true
         })
     }
 
@@ -20,6 +21,9 @@ class VideoPlayer extends Component {
         // instantiate Video.js
         this.getMovieData()
         this.player = videojs(this.videoNode, this.props);
+        let pauseHandler = this.player.on('pause', () => {
+            this.showOverlay()
+        })
     }
 
     // destroy player on unmount
@@ -40,6 +44,28 @@ class VideoPlayer extends Component {
         this.setState({ data: await data.json() })
     }
 
+    deleteFile = (path) => {
+        fetch('/api/fileActions', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                path: path
+            })
+        })
+        .then(response => response.text())
+        .then(data => this.props.closeMessage())
+    }
+
+    showOverlay = () => {
+        this.setState({ showOverlay: true })
+    }
+    hideOverlay = () => {
+        this.setState({ showOverlay: false })
+        this.player.play()
+    }
+
     render() {
 
         return (
@@ -50,15 +76,25 @@ class VideoPlayer extends Component {
                     onClick={() => this.props.closeMessage()}
                 />
 
-                <div className={styles.overlay}>
+                <div 
+                    className={`
+                        ${styles.overlay}
+                        ${!this.state.showOverlay ? styles.hidden : ''}
+                    `}>
                     <div className={styles.overlayBg} />
                     <h1>{this.state.strippedTitle}</h1>
                     <h3>{this.state.data.Year}</h3>
                     <p>{this.state.data.Plot}</p>
 
                     <div className={styles.videoOptions}>
-                        <img src='/images/icons/playButton.svg' />
-                        <FontAwesomeIcon icon={faTrash} />
+                        <img 
+                            src='/images/icons/playButton.svg' 
+                            onClick={() => this.hideOverlay()}
+                        />
+                        <FontAwesomeIcon 
+                            icon={faTrash}
+                            onClick={() => this.deleteFile(this.props.path)}
+                        />
                     </div>
 
                     <style jsx>{`

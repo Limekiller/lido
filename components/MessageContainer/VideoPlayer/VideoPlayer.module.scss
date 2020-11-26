@@ -32,6 +32,10 @@
         box-sizing: border-box;
         color: white;
 
+        &.hidden {
+            display: none;
+        }
+
         .overlayBg {
             position: absolute;
             width: 100%;
@@ -44,7 +48,7 @@
             background-size: cover;
             background-position: center;
             filter: blur(7px);
-            mask-image: linear-gradient(to right, white, rgba(0,0,0,0));
+            mask-image: linear-gradient(to right, white 50%, rgba(0,0,0,0));
         }
 
         .videoOptions {
