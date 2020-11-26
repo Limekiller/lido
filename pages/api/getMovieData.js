@@ -1,7 +1,9 @@
 
 export default async (req, res) => {
 
-    let data = await fetch('https://www.omdbapi.com/?apikey=' + process.env.OMDB_API_KEY + '&t=' + req.query.title)
+    const strippedTitle = req.query.title.split('.').slice(0, -1).join('.')
+    console.log(req.query)
+    let data = await fetch('https://www.omdbapi.com/?apikey=' + process.env.OMDB_API_KEY + '&t=' + strippedTitle)
 
     res.setHeader('Content-Type', 'application/json')
     res.statusCode = 200

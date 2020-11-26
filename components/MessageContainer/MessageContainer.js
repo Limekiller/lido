@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { Component, cloneElement } from 'react'
 import styles from './MessageContainer.module.scss'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -20,7 +20,7 @@ export default class MessageContainer extends Component {
                         onClick={() => this.props.closeMessage()}
                     />
                 </div>
-                {this.props.content}
+                {this.props.content ? cloneElement(this.props.content,{ closeMessage: this.props.closeMessage }) : ''}
             </div>
         )
     }

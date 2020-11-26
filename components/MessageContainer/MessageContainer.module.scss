@@ -7,6 +7,7 @@
     background: $overlay-color; 
     top: 0;
     display: none;
+    z-index: 9;
 
     &.visible {
         display: block;

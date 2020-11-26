@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 
-export default (req, res) => {
+export default async (req, res) => {
   if (req.method == 'POST') {
 
     // Get folders in dir
@@ -13,13 +13,18 @@ export default (req, res) => {
 
     // Get files in dir
     const dirents = fs.readdirSync(mediaDirectory, { withFileTypes: true });
-    const files = dirents
+    let files = dirents
         .filter(dirent => dirent.isFile())
-        .map(dirent => dirent.name);
+
+    // Get movie data for files
+    files = await Promise.all(files.map(async file => {
+      let data = await fetch(req.headers.origin + '/api/getMovieData?title=' + file.name)
+      return { name: file.name, data: await data.json()}
+    }))
 
     const data = {
         folders: folders,
-        files: files
+        files: await files
     }
 
     res.statusCode = 200;

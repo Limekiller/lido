@@ -69,9 +69,6 @@ export default class downloads extends Component {
                             <div 
                                 className='download' 
                                 key={index} 
-                                data-gid={file.gid}
-                                data-name={file.name}
-                                data-path={file.path}
                             >
                                 <span className='name'>{file.name}</span>
                                 <div className='endActions'>

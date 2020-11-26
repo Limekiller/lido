@@ -23,7 +23,6 @@ class FolderView extends Component {
 
     componentDidUpdate() {
         this.fetchContents();
-        this.getMovieData();
     }
     componentDidMount() {
         this.fetchContents();
@@ -66,23 +65,6 @@ class FolderView extends Component {
         })
     }
 
-    getMovieData() {
-        document.querySelectorAll('.file').forEach(elem => {
-            const title = elem.innerText.split('.').slice(0, -1).join('.')
-            fetch('/api/getMovieData?title=' + title)
-            .then(response => response.json())
-            .then(data => {
-                if (data.Poster != "N/A") {
-                    elem.style.backgroundImage = 'url("' + data.Poster + '")'
-                    elem.querySelector('span').classList.add('posterLoaded')
-                } else {
-                    elem.querySelector('span').classList.remove('posterLoaded')
-                    elem.style.backgroundImage = ''
-                }
-            })
-        })
-    }
-
     checkDropZone = (e) => {
         if (e.target.classList.contains('folder')) {
             const fileName = document.querySelector('.react-draggable-dragging').innerText
@@ -119,8 +101,6 @@ class FolderView extends Component {
     generateHTML(data) {
         return (
             <>
-                <Breadcrumbs />
-                <h1 className='pageTitle'>{this.props.router.asPath.split('/').slice(-1)}</h1>
                 <div className='folders'>
                     {data.folders.map((folder, index) => {
                         return (
@@ -141,7 +121,8 @@ class FolderView extends Component {
                 </div>
 
                 <div className='files'>
-                    {data.files.map((file, index) => {
+                    {Object.keys(data.files).map((_key, index) => {
+                        const hasPoster = data.files[_key].data.Poster == "N/A" ? false : true
                         return (
                             <Draggable
                                 position={{x: 0, y: 0}}
@@ -151,9 +132,13 @@ class FolderView extends Component {
                             >
                                 <div 
                                     className='file'
-                                    onClick={() => this.props.createMessage(<VideoPlayer path={window.location.pathname + '/' + file}/>)}
+                                    onClick={() => this.props.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
+                                    style={{
+                                        backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
+                                        color: hasPoster ? 'rgba(0,0,0,0)' : 'white'
+                                    }}
                                 >
-                                    <span>{decodeURIComponent(file)}</span>
+                                    <span>{decodeURIComponent(data.files[_key].name)}</span>
                                 </div>
                             </Draggable>
                         )
@@ -167,6 +152,8 @@ class FolderView extends Component {
     render() {
         return (
             <>
+                <Breadcrumbs />
+                <h1 className='pageTitle'>{this.props.router.asPath.split('/').slice(-1)}</h1>
                 {this.generateHTML(this.state.contents)}
                 <Add 
                     fetchContents={this.fetchContents.bind(this)}

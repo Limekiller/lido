@@ -10,18 +10,18 @@ class MyApp extends App {
   createMessage = (content) => {
     this.setState({
       messageContainer: {
+        ...this.state.messageContainer,
         content: content,
         visible: true,
-        closeMessage: this.state.messageContainer.closeMessage
       }
     })
   }
   closeMessage = () => {
     this.setState({
       messageContainer: {
+        ...this.state.messageContainer,
         content: '',
         visible: false,
-        closeMessage: this.state.messageContainer.closeMessage
       }
     })
   }
@@ -44,6 +44,7 @@ class MyApp extends App {
       <>
         <Head>
           <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+          <script src="https://kit.fontawesome.com/cae1618de2.js" crossorigin="anonymous"></script>
         </Head>
 
         <div className='pageContainer'>
