@@ -34,6 +34,7 @@ class Add extends Component {
                     menuOpen={this.state.menuOpen}
                     functions={this.childFunctions}
                     activeOption={this.state.activeOption}
+                    globalFunctions={this.props.globalFunctions}
                 />
                 <div className={styles.add} id='addButton' onClick={() => this.toggleVisibility()}>
                     <FontAwesomeIcon 

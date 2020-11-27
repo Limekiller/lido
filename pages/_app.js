@@ -4,6 +4,7 @@ import Head from 'next/head'
 import App, { Container } from 'next/app'
 import Sidebar from '@/components/Sidebar/Sidebar.js'
 import MessageContainer from '@/components/MessageContainer/MessageContainer.js'
+import ToastContainer from '@/components/ToastContainer/ToastContainer.js'
 
 class MyApp extends App {
 
@@ -26,14 +27,42 @@ class MyApp extends App {
     })
   }
 
+  createToast = (text) => {
+    this.setState({
+      toastContainer: {
+        ...this.state.toastContainer,
+        toasts: [
+          ...this.state.toastContainer.toasts,
+          { text: text }
+        ]
+      }
+    })
+    setTimeout(() => {
+      this.popToast()
+    }, 5000 )
+  }
+  popToast = () => {
+    this.setState({
+      toastContainer: {
+        ...this.state.toastContainer,
+        toasts: this.state.toastContainer.toasts.slice(0, -1)
+      }
+    })
+  }
+  
   state = {
     messageContainer: {
       content: null,
       visible: false,
       closeMessage: this.closeMessage
     },
+    toastContainer: {
+      toasts: [],
+      popToast: this.popToast
+    },
     globalFunctions: {
-      createMessage: this.createMessage
+      createMessage: this.createMessage,
+      createToast: this.createToast
     }
   }
 
@@ -48,11 +77,12 @@ class MyApp extends App {
         </Head>
 
         <div className='pageContainer'>
-          <Component {...pageProps} {...this.state.globalFunctions} />
+          <Component {...pageProps} globalFunctions={this.state.globalFunctions} />
         </div>
 
         <Sidebar />
         <MessageContainer {...this.state.messageContainer} />
+        <ToastContainer {...this.state.toastContainer} />
       </>
     )
   }

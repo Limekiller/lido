@@ -77,7 +77,7 @@ export class Menu extends Component {
                         </div>
 
                         <div className={styles.activeOptions}>
-                            <DownloadMedia />
+                            <DownloadMedia globalFunctions={this.props.globalFunctions} />
                         </div>
 
                     </div>

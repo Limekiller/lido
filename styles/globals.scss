@@ -55,5 +55,20 @@ button {
   width: 100%;
   height: 100%;
 }
+.video-js .vjs-control-bar {
+  width: 80%;
+  bottom: 50px;
+  margin: 0 auto;
+  height: 50px;
+  padding-top: 10px;
+  border-radius: 20px;
+  background: $fg-color-dark;
+}
+.video-js .vjs-control-bar .vjs-progress-holder {
+  margin-top: -10px;
+}
+.video-js .vjs-control {
+  box-shadow: none;
+}
 
 @import url("https://use.typekit.net/nne8qgd.css");

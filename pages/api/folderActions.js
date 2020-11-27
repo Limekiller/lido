@@ -29,7 +29,7 @@ export default (req, res) => {
         process.cwd(), '/media/' + req.body.currPath + '/' + req.body.fileName
       ),
       path.join(
-        process.cwd(), '/media/' + req.body.currPath + '/' + req.body.destPath + '/' + req.body.fileName
+        process.cwd(), '/media/' + req.body.destPath + '/' + req.body.fileName
       )
     )
 

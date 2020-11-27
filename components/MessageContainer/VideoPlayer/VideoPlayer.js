@@ -1,7 +1,7 @@
 import styles from './VideoPlayer.module.scss'
 import videojs from 'video.js'
 import { Component } from 'react'
-import { faTrash, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faTimesCircle, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 class VideoPlayer extends Component {
@@ -42,6 +42,10 @@ class VideoPlayer extends Component {
     getMovieData = async () => {
         let data = await fetch('/api/getMovieData?title=' + this.state.title)
         this.setState({ data: await data.json() })
+    }
+
+    downloadMovie = () => {
+        window.location.href = '/api/getVideo?download=true&path=' + this.props.path
     }
 
     deleteFile = (path) => {
@@ -85,6 +89,10 @@ class VideoPlayer extends Component {
                     <h1>{this.state.strippedTitle}</h1>
                     <h3>{this.state.data.Year}</h3>
                     <p>{this.state.data.Plot}</p>
+                    <p className={styles.note}>
+                        Film information is retrieved based on the filename.<br />
+                        If this information is not correct, try renaming the file.
+                    </p>
 
                     <div className={styles.videoOptions}>
                         <img 
@@ -94,6 +102,10 @@ class VideoPlayer extends Component {
                         <FontAwesomeIcon 
                             icon={faTrash}
                             onClick={() => this.deleteFile(this.props.path)}
+                        />
+                        <FontAwesomeIcon 
+                            icon={faDownload}
+                            onClick={() => this.downloadMovie()}
                         />
                     </div>
 

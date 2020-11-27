@@ -68,13 +68,17 @@ class FolderView extends Component {
     checkDropZone = (e) => {
         if (e.target.classList.contains('folder')) {
             const fileName = document.querySelector('.react-draggable-dragging').innerText
-            const pathName = e.target.innerText
+            const pathName = decodeURIComponent(window.location.pathname) + '/' + e.target.innerText
+            this.moveFile(fileName, pathName)
+        } else if (e.target.classList.contains('breadcrumb')) {
+            const fileName = document.querySelector('.react-draggable-dragging').innerText
+            const pathName = this.getBreadcrumbPath(e.target.id)
             this.moveFile(fileName, pathName)
         }
     }
     dragOperations = (e) => {
         document.querySelector('.react-draggable-dragging').classList.add('dragging')
-        if (e.target.classList.contains('folder')) {
+        if (e.target.classList.contains('folder') || e.target.classList.contains('breadcrumb')) {
             document.querySelector('.react-draggable-dragging').classList.add('droppable')
         } else {
             document.querySelector('.react-draggable-dragging').classList.remove('droppable')
@@ -97,6 +101,15 @@ class FolderView extends Component {
             this.fetchContents()
         })
     }
+    getBreadcrumbPath = (id) => {
+        const index = id.slice(-1)
+        let destPath = ''
+        const breadcrumbs = document.querySelector('#breadcrumbs')
+        for (let i=0; i<=index; i++) {
+            destPath += breadcrumbs.querySelector('#crumb'+i).innerText + '/'
+        }
+        return destPath
+    }
 
     generateHTML(data) {
         return (
@@ -104,25 +117,35 @@ class FolderView extends Component {
                 <div className='folders'>
                     {data.folders.map((folder, index) => {
                         return (
-                            <div key={index} className='folderContainer'>
-                                <FontAwesomeIcon 
-                                    className='trash'
-                                    icon={faTrashAlt}
-                                    onClick={() => this.deleteFolder(folder)} 
-                                />
-                                <Link href={window.location.pathname + '/' + folder}>
-                                    <div className='folder'>
-                                        <span>{folder}</span>
-                                    </div>
-                                </Link>
-                            </div>
+                            <Draggable
+                                position={{x: 0, y: 0}}
+                                onDrag={(e) => this.dragOperations(e)}
+                                onStop={(e) => this.checkDropZone(e)}
+                                key={index} 
+                            >
+                                <div key={index} className='folderContainer'>
+                                    <FontAwesomeIcon 
+                                        className='trash'
+                                        icon={faTrashAlt}
+                                        onClick={() => this.deleteFolder(folder)} 
+                                    />
+                                    <Link href={window.location.pathname + '/' + folder}>
+                                        <div className='folder'>
+                                            <span>{folder}</span>
+                                        </div>
+                                    </Link>
+                                </div>
+                            </Draggable>
                         )
                     })}
                 </div>
 
                 <div className='files'>
                     {Object.keys(data.files).map((_key, index) => {
-                        const hasPoster = data.files[_key].data.Poster == "N/A" ? false : true
+                        let hasPoster = false
+                        if (data.files[_key].data.Poster && data.files[_key].data.Poster != "N/A") {
+                            hasPoster = true
+                        }
                         return (
                             <Draggable
                                 position={{x: 0, y: 0}}
@@ -132,7 +155,7 @@ class FolderView extends Component {
                             >
                                 <div 
                                     className='file'
-                                    onClick={() => this.props.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
+                                    onClick={() => this.props.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
                                     style={{
                                         backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
                                         color: hasPoster ? 'rgba(0,0,0,0)' : 'white'
@@ -157,6 +180,7 @@ class FolderView extends Component {
                 {this.generateHTML(this.state.contents)}
                 <Add 
                     fetchContents={this.fetchContents.bind(this)}
+                    globalFunctions={this.props.globalFunctions}
                 />
             </>
         )

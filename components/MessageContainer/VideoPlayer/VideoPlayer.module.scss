@@ -14,6 +14,7 @@
         top: 20px;
         color: white;
         width: 50px;
+        font-size: 50px;
         z-index: 10;
         transition: transform 0.4s ease;
 
@@ -34,6 +35,10 @@
 
         &.hidden {
             display: none;
+        }
+
+        .note {
+            font-size: 15px;
         }
 
         .overlayBg {
@@ -67,6 +72,7 @@
 
             svg {
                 width: 25px;
+                font-size: 25px;
             }
 
         }

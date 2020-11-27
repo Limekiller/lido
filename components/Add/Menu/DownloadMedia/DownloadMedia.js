@@ -32,6 +32,7 @@ export default class DownloadMedia extends Component {
         .then(response => response.text())
         .then(data => {
             document.querySelector('#addButton').click()
+            this.props.globalFunctions.createToast('Your download will start soon!')
         })
     }
 

@@ -15,12 +15,16 @@ const Breadcrumbs = () => {
     const pathArray = router.asPath.split('/').slice(1)
 
     return (
-        <div className={styles.breadcrumbs}>
+        <div id='breadcrumbs' className={styles.breadcrumbs}>
             {pathArray.map((path, index) => {
                 return (
                     <Link href={buildLink(index, pathArray)} key={index}>
                         <span
-                            className={styles.breadcrumb}
+                            className={`
+                                ${styles.breadcrumb}
+                                breadcrumb
+                            `}
+                            id={'crumb' + index}
                             key={index}
                         >
                             {path}
