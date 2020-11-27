@@ -25,30 +25,41 @@
         width: 200px;
         height: 200px;
         margin-right: 20px;
+        position: relative;
+
+        &.inactive {
+            opacity: 0;
+            pointer-events: none;
+        }
 
         .menuOption {
             height: 100%;
             background: $bg-color;
             color: white;
             text-align: center;
+            transition: box-shadow 0.4s ease, transform 0.4s ease;
+
+            &:not(.active):hover {
+                cursor: pointer;
+                box-shadow: 0px 0px 10px orange;
+                transform: scale(1.025);
+            }
     
             svg {
                 font-size: 100px;
                 display: block;
                 width: 100px;
-                margin: 0 auto;
+                position: absolute;
+                right: 20px;
             }
 
             .activeOptions {
                 display: none;
             }
 
-            &.inactive {
-                opacity: 0;
-            }
-
             &.active {
                 position: fixed;
+                pointer-events: all;
 
                 .optionLabel {
                     display: none;
@@ -58,5 +69,16 @@
                 }
             }
         }
+
+        span {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            text-align: left;
+            font-size: 25px;
+            line-height: 30px;
+            font-weight: 600;
+        }
+
     }
 }

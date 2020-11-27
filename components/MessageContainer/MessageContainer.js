@@ -20,7 +20,7 @@ export default class MessageContainer extends Component {
                         onClick={() => this.props.closeMessage()}
                     />
                 </div>
-                {this.props.content ? cloneElement(this.props.content,{ closeMessage: this.props.closeMessage }) : ''}
+                {this.props.content ? cloneElement(this.props.content, { closeMessage: this.props.closeMessage, globalFunctions: this.props.globalFunctions }) : ''}
             </div>
         )
     }

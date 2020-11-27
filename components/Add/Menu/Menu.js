@@ -35,19 +35,21 @@ export class Menu extends Component {
                 ${this.props.menuOpen ? styles.active : ''}
             `}>
 
-                <div className={styles.menuOptionContainer}>
-                    <div 
+                <div className={`
+                    ${styles.menuOptionContainer}
+                    ${this.props.activeOption && this.props.activeOption != 'createFolder' ? styles.inactive : ''}
+                `}>                    
+                <div 
                         className={`
                             ${styles.createFolder}
                             ${styles.menuOption}
                             ${this.props.activeOption == 'createFolder' ? styles.active : ''}
-                            ${this.props.activeOption ? styles.inactive : ''}
                         `}
                         onClick={() => this.props.functions.setActiveOption('createFolder')}
                     >
                         <div className={styles.optionLabel}>
                             <FontAwesomeIcon icon={faFolderPlus} />
-                            <span>Create folder</span>
+                            <span>Create<br />folder</span>
                         </div>
 
                         <div className={styles.activeOptions}>
@@ -61,19 +63,21 @@ export class Menu extends Component {
                     </div>
                 </div>
 
-                <div className={styles.menuOptionContainer}>
+                <div className={`
+                    ${styles.menuOptionContainer}
+                    ${this.props.activeOption && this.props.activeOption != 'downloadMedia' ? styles.inactive : ''}
+                `}>
                     <div 
                         className={`
                             ${styles.downloadMedia}
                             ${styles.menuOption}
                             ${this.props.activeOption == 'downloadMedia' ? styles.active : ''}
-                            ${this.props.activeOption ? styles.inactive : ''}
                         `}
                         onClick={() => this.props.functions.setActiveOption('downloadMedia')}
                     >
                         <div className={styles.optionLabel}>
                             <FontAwesomeIcon icon={faFilm} />
-                            <span>Download Media</span>
+                            <span>Download<br />Media</span>
                         </div>
 
                         <div className={styles.activeOptions}>

@@ -62,6 +62,7 @@ class FolderView extends Component {
         .then(response => response.text())
         .then(data => {
             this.fetchContents();
+            this.props.globalFunctions.createToast('Folder deleted!')
         })
     }
 

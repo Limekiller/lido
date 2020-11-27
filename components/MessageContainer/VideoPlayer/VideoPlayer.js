@@ -59,7 +59,10 @@ class VideoPlayer extends Component {
             })
         })
         .then(response => response.text())
-        .then(data => this.props.closeMessage())
+        .then(data => {
+            this.props.closeMessage()
+            this.props.globalFunctions.createToast('File deleted!')
+        })
     }
 
     showOverlay = () => {

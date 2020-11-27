@@ -1,6 +1,6 @@
 import styles from './Sidebar.module.scss'
 import Link from 'next/link'
-import { faFilm, faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faFilm, faDownload, faTv } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 function Sidebar() {
@@ -9,6 +9,9 @@ function Sidebar() {
             <div className={styles.topOptions}>
                 <Link href='/Movies'>
                     <a><FontAwesomeIcon icon={faFilm} /></a>
+                </Link>
+                <Link href='/TV'>
+                    <a><FontAwesomeIcon icon={faTv} /></a>
                 </Link>
             </div>
             <div className={styles.bottomOptions}>

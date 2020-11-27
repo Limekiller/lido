@@ -81,7 +81,7 @@ class MyApp extends App {
         </div>
 
         <Sidebar />
-        <MessageContainer {...this.state.messageContainer} />
+        <MessageContainer {...this.state.messageContainer} globalFunctions={this.state.globalFunctions} />
         <ToastContainer {...this.state.toastContainer} />
       </>
     )
