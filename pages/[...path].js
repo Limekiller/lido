@@ -71,14 +71,16 @@ class FolderView extends Component {
     }
 
     checkDropZone = (e) => {
-        if (e.target.classList.contains('folder')) {
-            const fileName = document.querySelector('.react-draggable-dragging').innerText
-            const pathName = decodeURIComponent(window.location.pathname) + '/' + e.target.innerText
-            this.moveFile(fileName, pathName)
-        } else if (e.target.classList.contains('breadcrumb')) {
-            const fileName = document.querySelector('.react-draggable-dragging').innerText
-            const pathName = this.getBreadcrumbPath(e.target.id)
-            this.moveFile(fileName, pathName)
+        if (document.querySelector('.dragging')) {
+            if (e.target.classList.contains('folder')) {
+                const fileName = document.querySelector('.react-draggable-dragging').innerText
+                const pathName = decodeURIComponent(window.location.pathname) + '/' + e.target.innerText
+                this.moveFile(fileName, pathName)
+            } else if (e.target.classList.contains('breadcrumb')) {
+                const fileName = document.querySelector('.react-draggable-dragging').innerText
+                const pathName = this.getBreadcrumbPath(e.target.id)
+                this.moveFile(fileName, pathName)
+            }
         }
     }
     dragOperations = (e) => {

@@ -47,17 +47,21 @@
         color: white;
         margin-right: 20px;
         padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px #00000063;
     }
 }
 
 .folderContainer, .file {
-    transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease, padding 0.4s ease, margin 0.4s ease;
     word-wrap: anywhere;
 
     &:hover {
         cursor: pointer;
         transform: scale(1.01);
         box-shadow: 0px 0px 5px orange;
+        padding: 25px;
+        margin: -5px 15px -5px -5px;
     }
 
     &.dragging {
