@@ -1,5 +1,5 @@
 #!/bin/bash
-echo $1
-echo $2
-echo $3
-/usr/bin/node completeDownload.js $1 $2 $3
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+cd $DIR
+npm run completeDownload $1 $2 $3
