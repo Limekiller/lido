@@ -9,7 +9,7 @@ You'll also need Aria2 running in the background, so install that as well. Then
 - `cd /path/to/install`
 - `npm install`
 - `npm run build`
-- `npm run start`
+- `sudo npm run start`
 - `aria2c --enable-rpc --rpc-listen-all=true --rpc-allow-origin-all --seed-time=0 --on-bt-download-complete=/PATH/TO/INSTALL/DIRECTORY/media/temp/onDownloadComplete.sh`
 
 <span style="color:red">You need to edit the above command to point to your own install!</span>
