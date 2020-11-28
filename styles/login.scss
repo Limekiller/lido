@@ -1,0 +1,21 @@
+.loginContainer {
+    overflow: hidden;
+    width: 100vw;
+    position: absolute;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.loginForm {
+    position: absolute;
+    color: white;
+    width: max-content;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+
+    input {
+        margin-right: 20px;
+    }
+}

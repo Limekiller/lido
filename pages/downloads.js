@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { getSession } from 'next-auth/client'
 
 export default class downloads extends Component {
     
@@ -88,5 +89,20 @@ export default class downloads extends Component {
                 </div>
             </>
         )
+    }
+}
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context)
+
+    if (typeof window === "undefined" && context.res.writeHead) {
+        if (!session) {
+            context.res.writeHead(302, { Location: "/api/auth/signin" });
+            context.res.end();
+        }
+    }
+
+    return {
+        props: { session }
     }
 }

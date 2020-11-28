@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs.js'
 import { withRouter } from 'next/router'
 import Draggable from 'react-draggable';
+import { getSession } from 'next-auth/client'
 
 class FolderView extends Component {
 
@@ -25,6 +26,9 @@ class FolderView extends Component {
         this.fetchContents();
     }
     componentDidMount() {
+        if (!this.props.session) {
+            window.location.href = '/login'
+        }
         this.fetchContents();
     }
 
@@ -174,6 +178,7 @@ class FolderView extends Component {
     }
 
     render() {
+
         return (
             <>
                 <Breadcrumbs />
@@ -185,6 +190,21 @@ class FolderView extends Component {
                 />
             </>
         )
+    }
+}
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context)
+
+    if (typeof window === "undefined" && context.res.writeHead) {
+        if (!session) {
+            context.res.writeHead(302, { Location: "/login" });
+            context.res.end();
+        }
+    }
+
+    return {
+        props: { session }
     }
 }
 

@@ -1,10 +1,10 @@
 import '../styles/globals.scss'
-import { useEffect, useContext, createContext } from 'react'
 import Head from 'next/head'
-import App, { Container } from 'next/app'
+import App from 'next/app'
 import Sidebar from '@/components/Sidebar/Sidebar.js'
 import MessageContainer from '@/components/MessageContainer/MessageContainer.js'
 import ToastContainer from '@/components/ToastContainer/ToastContainer.js'
+import { Provider } from 'next-auth/client'
 
 class MyApp extends App {
 
@@ -76,11 +76,14 @@ class MyApp extends App {
           <script src="https://kit.fontawesome.com/cae1618de2.js" crossorigin="anonymous"></script>
         </Head>
 
-        <div className='pageContainer'>
-          <Component {...pageProps} globalFunctions={this.state.globalFunctions} />
-        </div>
+        <Provider session={pageProps.session}>
+          <div className='pageContainer'>
+              <Component {...pageProps} globalFunctions={this.state.globalFunctions} />
+          </div>
+          <Sidebar />
+        </Provider>
 
-        <Sidebar />
+
         <MessageContainer {...this.state.messageContainer} globalFunctions={this.state.globalFunctions} />
         <ToastContainer {...this.state.toastContainer} />
       </>

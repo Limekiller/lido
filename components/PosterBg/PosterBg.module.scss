@@ -1,0 +1,32 @@
+.loginBg {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow: hidden;
+    filter: brightness(0.25);
+
+    .posterTrack {
+        position: relative;
+        width: 200px;
+        margin-right: 30px;
+
+        .poster {
+            width: 210px;
+            height: 310px;
+            background: white;
+            margin-bottom: 30px;
+            position: absolute;
+            top: 100%;
+            background-size: cover;
+            border-radius: 5px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.548);
+        }
+    }
+}
+
+@keyframes posterUp {
+    from {transform: translateY(0%)}
+    to {transform: translateY(-130vh)}
+}
