@@ -19,14 +19,23 @@ const getAllFiles = function(dirPath, arrayOfFiles) {
   return arrayOfFiles
 }
 
+const constructFilename = () => {
+  let fileName = ''
+  for (let i=4; i<process.argv.length; i++) {
+    fileName += process.argv[i] + ' '
+  }
+  return fileName
+}
+
 // Get media path and JSON from file location
+const fileName = constructFilename()
 const mediaPath = process.argv[1].split('/').slice(0, -2).join('/')
 const JSONString = fs.readFileSync(mediaPath + '/temp/downloads.json', 'utf8')
 let JSONObject = JSON.parse(JSONString)
 
 // Get temp folder and download ID from arg 4, passed by aria2
 // Then get the final location by referencing the ID in the JSON
-const downloadPath = process.argv[4].split('/').slice(0, -2).join('/')
+const downloadPath = fileName.split('/').slice(0, -2).join('/')
 const downloadID = downloadPath.split('/').pop();
 const finalPath = JSONObject[downloadID];
 
