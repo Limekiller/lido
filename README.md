@@ -12,7 +12,7 @@ Then, add a "TV" and "Movies" directory to the /media subfolder. Then
 - `cd /path/to/install`
 - `npm install`
 - `npm run build`
-- `sudo npm run start`
+- `npm run start`
 - `aria2c --enable-rpc --rpc-listen-all=true --rpc-allow-origin-all --seed-time=0 --on-bt-download-complete=/PATH/TO/INSTALL/DIRECTORY/media/temp/onDownloadComplete.sh`
 
 <span style="color:red">You need to edit the above command to point to your own install!</span>
