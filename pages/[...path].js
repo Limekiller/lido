@@ -128,27 +128,31 @@ class FolderView extends Component {
             <>
                 <div className='folders'>
                     {data.folders.map((folder, index) => {
-                        return (
-                            <Draggable
-                                position={{x: 0, y: 0}}
-                                onDrag={(e) => this.dragOperations(e)}
-                                onStop={(e) => this.checkDropZone(e)}
-                                key={index} 
-                            >
-                                <div key={index} className='folderContainer'>
-                                    <FontAwesomeIcon 
-                                        className='trash'
-                                        icon={faTrashAlt}
-                                        onClick={() => this.deleteFolder(folder)} 
-                                    />
-                                    <Link href={window.location.pathname + '/' + folder}>
-                                        <div className='folder'>
-                                            <span>{folder}</span>
+                        const innerHTML = <div key={index} className='folderContainer'>
+                                            <FontAwesomeIcon 
+                                                className='trash'
+                                                icon={faTrashAlt}
+                                                onClick={() => this.deleteFolder(folder)} 
+                                            />
+                                            <Link href={window.location.pathname + '/' + folder}>
+                                                <div className='folder'>
+                                                    <span>{folder}</span>
+                                                </div>
+                                            </Link>
                                         </div>
-                                    </Link>
-                                </div>
-                            </Draggable>
-                        )
+                        if (window.innerWidth > 1000) {
+                            return (
+                                <Draggable
+                                    position={{x: 0, y: 0}}
+                                    onDrag={(e) => this.dragOperations(e)}
+                                    onStop={(e) => this.checkDropZone(e)}
+                                    key={index} 
+                                >
+                                    {innerHTML}
+                                </Draggable>
+                            )
+                        }
+                        return innerHTML
                     })}
                 </div>
 
@@ -158,25 +162,29 @@ class FolderView extends Component {
                         if (data.files[_key].data.Poster && data.files[_key].data.Poster != "N/A") {
                             hasPoster = true
                         }
-                        return (
-                            <Draggable
-                                position={{x: 0, y: 0}}
-                                onDrag={(e) => this.dragOperations(e)}
-                                onStop={(e) => this.checkDropZone(e)}
-                                key={index} 
-                            >
-                                <div 
-                                    className='file'
-                                    onClick={() => this.props.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
-                                    style={{
-                                        backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
-                                        color: hasPoster ? 'rgba(0,0,0,0)' : 'white'
-                                    }}
+                        const innerHTML = <div 
+                                            className='file'
+                                            onClick={() => this.props.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
+                                            style={{
+                                                backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
+                                                color: hasPoster ? 'rgba(0,0,0,0)' : 'white'
+                                            }}
+                                        >
+                                            <span>{decodeURIComponent(data.files[_key].name)}</span>
+                                        </div>
+                        if (window.innerWidth > 1000) {
+                            return (
+                                <Draggable
+                                    position={{x: 0, y: 0}}
+                                    onDrag={(e) => this.dragOperations(e)}
+                                    onStop={(e) => this.checkDropZone(e)}
+                                    key={index} 
                                 >
-                                    <span>{decodeURIComponent(data.files[_key].name)}</span>
-                                </div>
-                            </Draggable>
-                        )
+                                    {innerHTML}   
+                                </Draggable>
+                            )
+                        }
+                        return innerHTML
                     })}
                 </div>
 

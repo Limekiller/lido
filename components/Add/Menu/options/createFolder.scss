@@ -24,7 +24,17 @@
                             background: #575757;
                             color: white;
                             border: none;
+
+                            @media (max-width: 1000px) {
+                                width: 65%;
+                            }
                         }
+                    }
+
+                    @media (max-width: 1000px) {
+                        left: 5%;
+                        width: 90%;
+                        margin: 0 auto;
                     }
                 }
             }

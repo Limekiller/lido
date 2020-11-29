@@ -51,11 +51,15 @@
             top: -5%;
             z-index: -1;
             background-color: $menu-color;
-            background-blend-mode: multiply;
+            background-blend-mode: overlay;
             background-size: cover;
             background-position: center;
             filter: blur(7px);
             mask-image: linear-gradient(to right, white 50%, rgba(0,0,0,0));
+        
+            @media (max-width: 1000px) {
+                mask-image: unset;
+            }
         }
 
         .videoOptions {
@@ -86,10 +90,21 @@
             text-transform: capitalize;
             line-height: 90px;
             word-break: break-all;
+
+            @media (max-width: 1000px) {
+                font-size: 60px;
+                line-height: 60px;
+            }
         }
 
         p {
             max-width: 600px;
+        }
+
+
+        @media (max-width: 1000px) {
+            width: 100vw;
+            padding: 20px;
         }
     }
 }

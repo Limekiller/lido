@@ -8,12 +8,20 @@
         height: 50px;
         width: 88%;
         display: inline-block;
+
+        @media (max-width: 1000px) {
+            width: 75%
+        }
     }
     .confirmSearch {
         width: 10%;
         height: 50px;
         display: inline-block;
         margin-left: 2%;
+
+        @media (max-width: 1000px) {
+            width: unset;
+        }
     }
 
     .results {
@@ -24,6 +32,7 @@
             background: $fg-color-dark;
             margin-bottom: 20px;
             transition: box-shadow 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
+            word-break: break-all;
 
             &:hover {
                 box-shadow: 0px 0px 5px orange;

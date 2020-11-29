@@ -29,6 +29,11 @@
                 }
             }
         }
+
+        .name {
+            word-break: break-all;
+            max-width: 50%;
+        }
         
     }
 }

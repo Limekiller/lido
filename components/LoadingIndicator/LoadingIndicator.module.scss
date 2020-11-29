@@ -20,6 +20,10 @@
         animation: spin 3s linear infinite;
     }
 
+    @media (max-width: 1000px) {
+        left: 0px;
+    }
+
 }
 
 @keyframes spin {

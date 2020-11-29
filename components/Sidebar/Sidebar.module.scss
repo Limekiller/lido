@@ -34,4 +34,35 @@
             cursor: pointer;
         }
     }
+
+    @media (max-width: 1000px) {
+        height: 80px;
+        width: 100vw;
+        flex-direction: row;
+        bottom: 0px;
+        top: unset;
+
+        div {
+            display: flex;
+            align-items: center;
+        }
+
+        .topOptions {
+            svg {
+                margin-bottom: 0px;
+                margin-right: 20px;
+            }
+        }
+        .bottomOptions {
+            svg {
+                margin-top: 0px;
+                margin-left: 20px;
+            }
+        }
+
+        svg {
+            width: 40px;
+            font-size: 40px;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 .folders {
     display: flex;
+    flex-wrap: wrap;
 
     .folderContainer {
         background: linear-gradient($fg-color-light, $fg-color-dark);
@@ -22,6 +23,7 @@
                 left: 0;
                 pointer-events: none;
             }
+
         }
 
         .trash {
@@ -33,12 +35,18 @@
                 width: 20px;
             }
         }
+
+        @media (max-width: 1000px) {
+            width: 30vw;
+            height: 30vw;
+        }
     }
 }
 
 .files {
     display: flex;
     margin-top: 25px;
+    flex-wrap: wrap;
 
     .file {
         width: 225px;
@@ -49,6 +57,12 @@
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0px 0px 10px #00000063;
+        margin-bottom: 20px;
+
+        @media (max-width: 1000px) {
+            width: 30vw;
+            height: 49vw;
+        }
     }
 }
 

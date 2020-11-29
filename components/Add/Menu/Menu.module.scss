@@ -15,6 +15,7 @@
     justify-content: center;
     align-items: center;
     z-index: 2;
+    flex-wrap: wrap;
     
     &.active {
         opacity: 1;
@@ -51,6 +52,11 @@
                 width: 100px;
                 position: absolute;
                 right: 20px;
+
+                @media (max-width: 1000px) {
+                    font-size: 50px;
+                    right: -15px;
+                }
             }
 
             .activeOptions {
@@ -78,7 +84,23 @@
             font-size: 25px;
             line-height: 30px;
             font-weight: 600;
+
+            @media (max-width: 1000px) {
+                left: 10px;
+                bottom: 10px;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            width: 150px;
+            height: 150px;
+            margin-right: 0px;
         }
 
     }
+
+    @media (max-width: 1000px) {
+        justify-content: space-around;
+    }
+
 }
