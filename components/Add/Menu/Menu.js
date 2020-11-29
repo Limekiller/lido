@@ -53,7 +53,11 @@ export class Menu extends Component {
                         </div>
 
                         <div className={styles.activeOptions}>
-                            <input id='folderName' type='text' />
+                            <input 
+                                id='folderName' 
+                                type='text' 
+                                onKeyDown={(e) => {if (e.keyCode == 13) {this.createFolder(document.querySelector('#folderName').value)}}}
+                            />
                             <button 
                                 onClick={() => this.createFolder(document.querySelector('#folderName').value)}>
                                 Submit

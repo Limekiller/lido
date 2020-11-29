@@ -5,8 +5,33 @@ import Sidebar from '@/components/Sidebar/Sidebar.js'
 import MessageContainer from '@/components/MessageContainer/MessageContainer.js'
 import ToastContainer from '@/components/ToastContainer/ToastContainer.js'
 import { Provider } from 'next-auth/client'
+import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator.js'
+import Router from "next/router";
 
 class MyApp extends App {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      loadingVisible: false,
+      messageContainer: {
+        content: null,
+        visible: false,
+        closeMessage: this.closeMessage
+      },
+      toastContainer: {
+        toasts: [],
+        popToast: this.popToast
+      },
+      globalFunctions: {
+        createMessage: this.createMessage,
+        createToast: this.createToast
+      }
+    }
+
+    Router.events.on("routeChangeComplete", () => {this.setState({ loadingVisible: false })} );
+    Router.events.on("routeChangeStart", () => {this.setState({ loadingVisible: true })} );
+  }
 
   createMessage = (content) => {
     this.setState({
@@ -49,26 +74,11 @@ class MyApp extends App {
       }
     })
   }
-  
-  state = {
-    messageContainer: {
-      content: null,
-      visible: false,
-      closeMessage: this.closeMessage
-    },
-    toastContainer: {
-      toasts: [],
-      popToast: this.popToast
-    },
-    globalFunctions: {
-      createMessage: this.createMessage,
-      createToast: this.createToast
-    }
-  }
 
+  
   render() {
     const { Component, pageProps } = this.props
-
+    
     return (
       <>
         <Head>
@@ -78,11 +88,11 @@ class MyApp extends App {
 
         <Provider session={pageProps.session}>
           <div className='pageContainer'>
+              <LoadingIndicator visible={this.state.loadingVisible} />
               <Component {...pageProps} globalFunctions={this.state.globalFunctions} />
           </div>
           <Sidebar />
         </Provider>
-
 
         <MessageContainer {...this.state.messageContainer} globalFunctions={this.state.globalFunctions} />
         <ToastContainer {...this.state.toastContainer} />

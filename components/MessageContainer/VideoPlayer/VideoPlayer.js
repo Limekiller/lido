@@ -24,6 +24,9 @@ class VideoPlayer extends Component {
         let pauseHandler = this.player.on('pause', () => {
             this.showOverlay()
         })
+        let playHandler = this.player.on('play', () => {
+            this.hideOverlay()
+        })
     }
 
     // destroy player on unmount
@@ -89,7 +92,7 @@ class VideoPlayer extends Component {
                         ${!this.state.showOverlay ? styles.hidden : ''}
                     `}>
                     <div className={styles.overlayBg} />
-                    <h1>{this.state.strippedTitle}</h1>
+                    <h1>{this.state.data.Title ? this.state.data.Title : this.state.strippedTitle}</h1>
                     <h3>{this.state.data.Year}</h3>
                     <p>{this.state.data.Plot}</p>
                     <p className={styles.note}>
