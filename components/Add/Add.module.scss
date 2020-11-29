@@ -5,12 +5,11 @@
     background: linear-gradient(orange, gold);
     width: 75px;
     height: 75px;
-    font-size: 40px;
     text-align: center;
     color: white;
-    line-height: 75px;
     z-index: 3;
     transition: transform 0.4s ease;
+    line-height: 90px;
 
     &:hover {
         cursor: pointer;
@@ -18,7 +17,8 @@
     }
 
     svg {
-        width: 40px;
+        width: 40px !important;
+        font-size: 40px;
         transition: transform 0.4s cubic-bezier(0.83, 0, 0.17, 1);
 
         &.active {

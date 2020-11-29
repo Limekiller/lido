@@ -60,10 +60,13 @@
         margin-bottom: 20px;
 
         @media (max-width: 1000px) {
-            width: 30vw;
-            height: 49vw;
+            width: 28vw;
+            height: 46vw;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
     }
+
 }
 
 .folderContainer, .file {
