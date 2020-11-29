@@ -2,6 +2,7 @@ import { Component, cloneElement } from 'react'
 import styles from './MessageContainer.module.scss'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Router from 'next/router'
 
 export default class MessageContainer extends Component {
     constructor(props) {

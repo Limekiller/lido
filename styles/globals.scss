@@ -58,6 +58,8 @@ button {
   background: linear-gradient(orange, gold);
   animation: loading 1s linear infinite;
   margin: 0 auto;
+  top: calc(50% - 50px);
+  position: relative;
 
   &:after {
     content: '';

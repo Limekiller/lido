@@ -35,8 +35,8 @@ let JSONObject = JSON.parse(JSONString)
 
 // Get temp folder and download ID from arg 4, passed by aria2
 // Then get the final location by referencing the ID in the JSON
-const downloadPath = fileName.split('/').slice(0, -2).join('/')
-const downloadID = downloadPath.split('/').pop();
+const downloadID = fileName.split('/media/temp')[1].split('/')[1]
+const downloadPath = fileName.split('/media/temp')[0] + '/media/temp/' + downloadID
 const finalPath = JSONObject[downloadID];
 
 // Search through temp folder for video files

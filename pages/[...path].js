@@ -9,6 +9,9 @@ import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs.js'
 import { withRouter } from 'next/router'
 import Draggable from 'react-draggable';
 import { getSession } from 'next-auth/client'
+import Router from "next/router";
+
+
 
 class FolderView extends Component {
 
@@ -20,16 +23,18 @@ class FolderView extends Component {
                 files: []
             } 
         };
+        this.fetchContents = this.fetchContents.bind(this);
     }
 
-    componentDidUpdate() {
-        this.fetchContents();
-    }
     componentDidMount() {
         if (!this.props.session) {
             window.location.href = '/login'
         }
         this.fetchContents();
+        Router.events.on("routeChangeComplete", this.fetchContents);
+    }
+    componentWillUnmount() {
+        Router.events.off("routeChangeComplete", this.fetchContents);
     }
 
     fetchContents() {

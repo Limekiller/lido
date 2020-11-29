@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const LoadingIndicator = (props) => {
     return (
         <div className={styles.loadingIndicator}>
-            <FontAwesomeIcon icon={faFilm} className={styles.loading} />
+            <div className='loading' />
         
             <style jsx>{`
                 .${styles.loadingIndicator} {

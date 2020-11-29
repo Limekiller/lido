@@ -3,6 +3,7 @@ import videojs from 'video.js'
 import { Component } from 'react'
 import { faTrash, faTimesCircle, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Router from 'next/router'
 
 class VideoPlayer extends Component {
 
@@ -24,15 +25,18 @@ class VideoPlayer extends Component {
         let pauseHandler = this.player.on('pause', () => {
             this.showOverlay()
         })
-        let playHandler = this.player.on('play', () => {
-            this.hideOverlay()
-        })
+        Router.push('/video')
+
+        // let playHandler = this.player.on('play', () => {
+        //     this.hideOverlay()
+        // })
     }
 
     // destroy player on unmount
     componentWillUnmount() {
         if (this.player) {
             this.player.dispose()
+            Router.back()
         }
     }
 
@@ -86,42 +90,42 @@ class VideoPlayer extends Component {
                     onClick={() => this.props.closeMessage()}
                 />
 
-                <div 
-                    className={`
-                        ${styles.overlay}
-                        ${!this.state.showOverlay ? styles.hidden : ''}
-                    `}>
-                    <div className={styles.overlayBg} />
-                    <h1>{this.state.data.Title ? this.state.data.Title : this.state.strippedTitle}</h1>
-                    <h3>{this.state.data.Year}</h3>
-                    <p>{this.state.data.Plot}</p>
-                    <p className={styles.note}>
-                        Film information is retrieved based on the filename.<br />
-                        If this information is not correct, try renaming the file.
-                    </p>
-
-                    <div className={styles.videoOptions}>
-                        <img 
-                            src='/images/icons/playButton.svg' 
-                            onClick={() => this.hideOverlay()}
-                        />
-                        <FontAwesomeIcon 
-                            icon={faTrash}
-                            onClick={() => this.deleteFile(this.props.path)}
-                        />
-                        <FontAwesomeIcon 
-                            icon={faDownload}
-                            onClick={() => this.downloadMovie()}
-                        />
-                    </div>
-
-                    <style jsx>{`
-                        .${styles.overlayBg} {
-                            background: ${this.state.data.Poster != 'N/A' ? 'url("' + this.state.data.Poster + '")' : 'linear-gradient(to right, $fg-color-dark, rgba(0,0,0,0))'};
-                        }
-                    `}</style>
-                </div>
                 <div data-vjs-player>
+                    <div 
+                        className={`
+                            ${styles.overlay}
+                            ${!this.state.showOverlay ? styles.hidden : ''}
+                        `}>
+                        <div className={styles.overlayBg} />
+                        <h1>{this.state.data.Title ? this.state.data.Title : this.state.strippedTitle}</h1>
+                        <h3>{this.state.data.Year}</h3>
+                        <p>{this.state.data.Plot}</p>
+                        <p className={styles.note}>
+                            Film information is retrieved based on the filename.<br />
+                            If this information is not correct, try renaming the file.
+                        </p>
+
+                        <div className={styles.videoOptions}>
+                            <img 
+                                src='/images/icons/playButton.svg' 
+                                onClick={() => this.hideOverlay()}
+                            />
+                            <FontAwesomeIcon 
+                                icon={faTrash}
+                                onClick={() => this.deleteFile(this.props.path)}
+                            />
+                            <FontAwesomeIcon 
+                                icon={faDownload}
+                                onClick={() => this.downloadMovie()}
+                            />
+                        </div>
+
+                        <style jsx>{`
+                            .${styles.overlayBg} {
+                                background: ${this.state.data.Poster != 'N/A' ? 'url("' + this.state.data.Poster + '")' : 'linear-gradient(to right, $fg-color-dark, rgba(0,0,0,0))'};
+                            }
+                        `}</style>
+                    </div>
                     <video 
                         className='video-js'
                         //preload="auto"
