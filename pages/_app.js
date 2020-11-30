@@ -52,13 +52,16 @@ class MyApp extends App {
     })
   }
 
-  createToast = (text) => {
+  createToast = (type, text) => {
     this.setState({
       toastContainer: {
         ...this.state.toastContainer,
         toasts: [
           ...this.state.toastContainer.toasts,
-          { text: text }
+          { 
+            type: type,
+            text: text 
+          }
         ]
       }
     })
@@ -70,7 +73,7 @@ class MyApp extends App {
     this.setState({
       toastContainer: {
         ...this.state.toastContainer,
-        toasts: this.state.toastContainer.toasts.slice(0, -1)
+        toasts: this.state.toastContainer.toasts.slice(1)
       }
     })
   }

@@ -7,6 +7,13 @@ export default async (req, res) => {
     // Get folders in dir
     let filePath = 'media/' + req.body.path
     const mediaDirectory = path.join(process.cwd(), filePath)
+
+
+    if (!fs.existsSync(mediaDirectory)) {
+        res.statusCode = 404
+        res.end()
+    }
+
     const folders = fs.readdirSync(mediaDirectory).filter((file) => {
         return fs.statSync(mediaDirectory+'/'+file).isDirectory();
     });

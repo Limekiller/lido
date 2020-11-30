@@ -27,7 +27,7 @@ const Breadcrumbs = () => {
                             id={'crumb' + index}
                             key={index}
                         >
-                            {path}
+                            {decodeURIComponent(path)}
                         </span>
                     </Link>
                 )

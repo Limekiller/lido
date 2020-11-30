@@ -44,9 +44,10 @@ class FolderView extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                path: decodeURIComponent(window.location.pathname),
+                path: window.location.pathname,
             })
         })
+
         .then(response => response.json())
         .then(data => {
             if (JSON.stringify(this.state.contents) != JSON.stringify(data)) {
@@ -54,6 +55,10 @@ class FolderView extends Component {
                     contents: data
                 });
             }
+        })
+        .catch(error => {
+            this.props.globalFunctions.createToast('alert', 'Location does not exist!')
+            Router.push('/')
         })
     }
 
@@ -64,25 +69,25 @@ class FolderView extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                path: decodeURIComponent(window.location.pathname),
+                path: window.location.pathname,
                 name: folderName
             })
         })
         .then(response => response.text())
         .then(data => {
             this.fetchContents();
-            this.props.globalFunctions.createToast('Folder deleted!')
+            this.props.globalFunctions.createToast('notify', 'Folder deleted!')
         })
     }
 
     checkDropZone = (e) => {
         if (document.querySelector('.dragging')) {
             if (e.target.classList.contains('folder')) {
-                const fileName = document.querySelector('.react-draggable-dragging').innerText
-                const pathName = decodeURIComponent(window.location.pathname) + '/' + e.target.innerText
+                const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').innerText)
+                const pathName = window.location.pathname + '/' + encodeURIComponent(e.target.innerText)
                 this.moveFile(fileName, pathName)
             } else if (e.target.classList.contains('breadcrumb')) {
-                const fileName = document.querySelector('.react-draggable-dragging').innerText
+                const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').innerText)
                 const pathName = this.getBreadcrumbPath(e.target.id)
                 this.moveFile(fileName, pathName)
             }
@@ -103,7 +108,7 @@ class FolderView extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                currPath: decodeURIComponent(window.location.pathname),
+                currPath: window.location.pathname,
                 destPath: destPath,
                 fileName: fileName
             })
@@ -118,7 +123,7 @@ class FolderView extends Component {
         let destPath = ''
         const breadcrumbs = document.querySelector('#breadcrumbs')
         for (let i=0; i<=index; i++) {
-            destPath += breadcrumbs.querySelector('#crumb'+i).innerText + '/'
+            destPath += encodeURIComponent(breadcrumbs.querySelector('#crumb'+i).innerText) + '/'
         }
         return destPath
     }
@@ -136,7 +141,7 @@ class FolderView extends Component {
                                             />
                                             <Link href={window.location.pathname + '/' + folder}>
                                                 <div className='folder'>
-                                                    <span>{folder}</span>
+                                                    <span>{decodeURIComponent(folder)}</span>
                                                 </div>
                                             </Link>
                                         </div>
@@ -197,7 +202,7 @@ class FolderView extends Component {
         return (
             <>
                 <Breadcrumbs />
-                <h1 className='pageTitle'>{this.props.router.asPath.split('/').slice(-1)}</h1>
+                <h1 className='pageTitle'>{decodeURIComponent(this.props.router.asPath.split('/').slice(-1))}</h1>
                 {this.generateHTML(this.state.contents)}
                 <Add 
                     fetchContents={this.fetchContents.bind(this)}

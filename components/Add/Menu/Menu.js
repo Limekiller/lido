@@ -17,7 +17,7 @@ export class Menu extends Component {
             },
             body: JSON.stringify({
                 path: window.location.pathname,
-                name: folderName
+                name: encodeURIComponent(folderName)
             })
         })
         .then(response => response.text())

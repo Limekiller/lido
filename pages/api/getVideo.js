@@ -4,8 +4,8 @@ import path from 'path'
 export default (req, res) => {
 
     if (req.query.download == 'true') {
-        const fileName = decodeURIComponent(req.query.path).split('/').slice(-1).join()
-        const filePath = path.join(process.cwd(), '/media/' + decodeURIComponent(req.query.path))
+        const fileName = req.query.path.split('/').slice(-1).join()
+        const filePath = path.join(process.cwd(), '/media/' + req.query.path)
         const stat = fs.statSync(filePath);
 
         const headers = {
@@ -31,7 +31,7 @@ export default (req, res) => {
             range = req.query.range;
         }
 
-        let filePath = path.join(process.cwd(), '/media/' + decodeURIComponent(req.query.path));
+        let filePath = path.join(process.cwd(), '/media/' + req.query.path);
         const videoSize = fs.statSync(filePath).size;
 
         // Parse Range

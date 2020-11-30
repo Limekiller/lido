@@ -13,7 +13,6 @@ export default (req, res) => {
     res.end();
 
   } else if (req.method == 'DELETE') {
-
     fs.removeSync(
       path.join(
         process.cwd(), '/media/' + req.body.path + '/' + req.body.name

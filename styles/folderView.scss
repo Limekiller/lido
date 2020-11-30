@@ -84,6 +84,7 @@
     &.dragging {
         transition: opacity 0.4s ease;
         pointer-events: none;
+        z-index: 9;
     }
     &.droppable {
         opacity: 0.5;

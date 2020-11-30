@@ -10,6 +10,9 @@
     z-index: 3;
     transition: transform 0.4s ease;
     line-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
         cursor: pointer;

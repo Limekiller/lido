@@ -16,7 +16,6 @@ export default class downloads extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             this.parseDownloads(data);
         })
     }
@@ -28,8 +27,8 @@ export default class downloads extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             this.parseDownloads(data);
+            this.props.globalFunctions.createToast('notify', 'Download canceled!')
         })
     }
 

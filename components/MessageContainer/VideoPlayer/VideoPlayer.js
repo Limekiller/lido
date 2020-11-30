@@ -23,13 +23,12 @@ class VideoPlayer extends Component {
         this.getMovieData()
         this.player = videojs(this.videoNode, this.props);
         let pauseHandler = this.player.on('pause', () => {
-            this.showOverlay()
+            if (!this.player.seeking()) {
+                this.showOverlay()
+            }
         })
-        Router.push('/video')
 
-        // let playHandler = this.player.on('play', () => {
-        //     this.hideOverlay()
-        // })
+        Router.push('/?video=true')
     }
 
     // destroy player on unmount
@@ -52,7 +51,7 @@ class VideoPlayer extends Component {
     }
 
     downloadMovie = () => {
-        window.location.href = '/api/getVideo?download=true&path=' + this.props.path
+        window.location.href = '/api/getVideo?download=true&path=' + encodeURIComponent(this.props.path)
     }
 
     deleteFile = (path) => {
@@ -68,7 +67,7 @@ class VideoPlayer extends Component {
         .then(response => response.text())
         .then(data => {
             this.props.closeMessage()
-            this.props.globalFunctions.createToast('File deleted!')
+            this.props.globalFunctions.createToast('notify', 'File deleted!')
         })
     }
 
@@ -133,7 +132,7 @@ class VideoPlayer extends Component {
                         autoPlay='autoplay'
                         ref={ node => this.videoNode = node }
                     >
-                        <source src={'/api/getVideo?range=0&path=/' + encodeURIComponent(this.props.path)} type="video/mp4" />
+                        <source src={'/api/getVideo?range=0&path=' + encodeURIComponent(this.props.path)} type="video/mp4" />
                     </video>
                 </div>
 
