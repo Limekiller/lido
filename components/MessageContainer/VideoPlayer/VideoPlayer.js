@@ -28,14 +28,14 @@ class VideoPlayer extends Component {
             }
         })
 
-        Router.push('/?video=true')
+        // Router.push('/?video=true')
     }
 
     // destroy player on unmount
     componentWillUnmount() {
         if (this.player) {
             this.player.dispose()
-            Router.back()
+            // Router.back()
         }
     }
 
