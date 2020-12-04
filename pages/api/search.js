@@ -36,7 +36,7 @@ export default async (req, res) => {
     });
 
     const files = await Promise.all(sortedResults.map(async file => {
-        let data = await fetch('http://localhost:3000/api/getMovieData?title=' + file.path)
+        let data = await fetch(req.headers.origin + '/api/getMovieData?title=' + file.path)
         return { 
             name: file.path.split('/media').slice(-1).join(), 
             data: await data.json()
