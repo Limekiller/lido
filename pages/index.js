@@ -1,5 +1,6 @@
 import { getSession } from 'next-auth/client'
 import { useEffect } from 'react'
+import Search from '@/components/Search/Search.js'
 
 export default function Home(props) {
 
@@ -11,6 +12,7 @@ export default function Home(props) {
 
   return (
     <>
+      <Search _style='fancy' />
     </>
   )
 }

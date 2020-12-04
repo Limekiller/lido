@@ -1,6 +1,6 @@
 import styles from './Sidebar.module.scss'
 import Link from 'next/link'
-import { faFilm, faDownload, faTv, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faFilm, faDownload, faTv, faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { signOut } from 'next-auth/client'
 import { useSession } from 'next-auth/client'
@@ -20,6 +20,9 @@ function Sidebar() {
                         </Link>
                     </div>
                     <div className={styles.bottomOptions}>
+                        <Link href='/'>
+                            <a><FontAwesomeIcon icon={faHome} /></a>
+                        </Link>
                         <Link href='/downloads'>
                             <a><FontAwesomeIcon icon={faDownload} /></a>
                         </Link>

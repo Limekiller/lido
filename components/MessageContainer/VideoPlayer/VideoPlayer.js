@@ -4,8 +4,11 @@ import { Component } from 'react'
 import { faTrash, faTimesCircle, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Router from 'next/router'
+import AppContext from '@/components/AppContext.js'
 
 class VideoPlayer extends Component {
+
+    static contextType = AppContext
 
     constructor(props) {
         super(props);
@@ -66,8 +69,8 @@ class VideoPlayer extends Component {
         })
         .then(response => response.text())
         .then(data => {
-            this.props.closeMessage()
-            this.props.globalFunctions.createToast('notify', 'File deleted!')
+            this.context.globalFunctions.closeMessage()
+            this.context.globalFunctions.createToast('notify', 'File deleted!')
         })
     }
 
@@ -86,7 +89,7 @@ class VideoPlayer extends Component {
                 <FontAwesomeIcon 
                     icon={faTimesCircle} 
                     className={styles.close}
-                    onClick={() => this.props.closeMessage()}
+                    onClick={() => this.context.globalFunctions.closeMessage()}
                 />
 
                 <div data-vjs-player>

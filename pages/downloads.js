@@ -2,9 +2,12 @@ import { Component } from 'react'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getSession } from 'next-auth/client'
+import AppContext from '@/components/AppContext.js'
 
 export default class downloads extends Component {
     
+    static contextType = AppContext
+
     constructor(props) {
         super(props);
         this.state = { downloads: [] }
@@ -28,7 +31,7 @@ export default class downloads extends Component {
         .then(response => response.json())
         .then(data => {
             this.parseDownloads(data);
-            this.props.globalFunctions.createToast('notify', 'Download canceled!')
+            this.context.globalFunctions.createToast('notify', 'Download canceled!')
         })
     }
 

@@ -1,0 +1,78 @@
+@import '/styles/variables.scss';
+
+.search {
+    height: 50px;
+    background: $menu-color;
+    position: fixed;
+    top: 0;
+    left: 105px;
+    width: calc(100vw - 105px);
+    padding: 5px 5px 5px 25px;
+    display: flex;
+    align-items: center;
+
+    .searchBar {
+
+        input {
+            padding: 10px 10px 10px 40px;
+            box-sizing: border-box;
+            font-family: halyard-text, sans-serif;
+            border-radius: 20px;
+            border: none;
+            height: 35px;
+            background: $fg-color-dark;
+            color: white;
+        }
+    
+        .searchIcon {
+            position: absolute;
+            left: 40px;
+            color: $fg-color-light;
+            font-size: 18px;
+            width: 18px;
+            top: 20px;
+        }
+
+        &:hover, &:focus {
+            .searchIcon {
+                color: white;
+            }
+        }
+
+    }
+
+    &.fancy {
+        position: relative;
+        width: 800px;
+        margin-left: 5vw;
+        background: none;
+        height: 75px;
+        font-size: 30px;
+
+        .searchBar {
+            height: 100%;
+            width: 100%;
+
+            .searchIcon {
+                font-size: 45px;
+                width: 45px;
+                top: 75px;
+            }
+
+            input {
+                height: 100%;
+                width: 100%;
+                font-size: 30px;
+                padding: 10px 10px 10px 90px;
+            }
+
+            &:before {
+                content: 'Search downloaded files';
+                margin-bottom: 15px;
+                display: block;
+                color: $fg-color-light;
+            }
+        }
+    }
+    
+}

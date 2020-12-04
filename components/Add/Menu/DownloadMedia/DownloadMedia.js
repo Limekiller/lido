@@ -1,7 +1,11 @@
 import { Component } from 'react'
 import styles from './DownloadMedia.module.scss'
+import AppContext from '@/components/AppContext.js'
 
 export default class DownloadMedia extends Component {
+    
+    static contextType = AppContext
+
     constructor(props) {
         super(props);
         this.state = { 
@@ -36,7 +40,7 @@ export default class DownloadMedia extends Component {
         .then(response => response.text())
         .then(data => {
             document.querySelector('#addButton').click()
-            this.props.globalFunctions.createToast('notify', 'Your download will start soon!')
+            this.context.globalFunctions.createToast('notify', 'Your download will start soon!')
         })
     }
 
@@ -49,14 +53,23 @@ export default class DownloadMedia extends Component {
             // the first result will catch the end of the loading animation
             resultsHTML = <>
                             <div />
-                            {this.state.results.map((result, index) => (
-                                <div 
-                                    className={styles.result}
-                                    onClick={(e) => this.queueDownload(result.link, e)}
-                                >
-                                    {result.name}
-                                </div>
-                            ))}
+                            {this.state.results.map((result, index) => {
+                                if (result.seeders > result.leechers) {
+                                    return (
+                                        <div 
+                                            key={index}
+                                            className={styles.result}
+                                            onClick={(e) => this.queueDownload(result.link, e)}
+                                        >
+                                            <div>{result.name}</div>
+                                            <div className={styles.dlInfo}>
+                                                <div className={styles.seeders}>{result.seeders}</div>
+                                                <div className={styles.leechers}>{result.leechers}</div>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            })}
                         </>
         }
 

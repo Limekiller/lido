@@ -7,6 +7,8 @@ import ToastContainer from '@/components/ToastContainer/ToastContainer.js'
 import { Provider } from 'next-auth/client'
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator.js'
 import Router from "next/router";
+import AppContext from '@/components/AppContext.js'
+import { createRef } from 'react'
 
 class MyApp extends App {
 
@@ -14,20 +16,17 @@ class MyApp extends App {
     super(props);
     this.state = {
       loadingVisible: false,
+
       messageContainer: {
         content: null,
         visible: false,
-        closeMessage: this.closeMessage
       },
-      toastContainer: {
-        toasts: [],
-        popToast: this.popToast
-      },
-      globalFunctions: {
-        createMessage: this.createMessage,
-        createToast: this.createToast
-      }
+
+      toasts: [],
     }
+
+    this.toastRef = createRef(this.state.toasts)
+    this.toastRef.current = this.state.toasts
 
     Router.events.on("routeChangeComplete", () => {this.setState({ loadingVisible: false })} );
     Router.events.on("routeChangeStart", () => {this.setState({ loadingVisible: true })} );
@@ -36,7 +35,6 @@ class MyApp extends App {
   createMessage = (content) => {
     this.setState({
       messageContainer: {
-        ...this.state.messageContainer,
         content: content,
         visible: true,
       }
@@ -45,7 +43,6 @@ class MyApp extends App {
   closeMessage = () => {
     this.setState({
       messageContainer: {
-        ...this.state.messageContainer,
         content: '',
         visible: false,
       }
@@ -53,32 +50,26 @@ class MyApp extends App {
   }
 
   createToast = (type, text) => {
+    let tempToasts = this.state.toasts
+    tempToasts.push({ text: text, type: type })
     this.setState({
-      toastContainer: {
-        ...this.state.toastContainer,
-        toasts: [
-          ...this.state.toastContainer.toasts,
-          { 
-            type: type,
-            text: text 
-          }
-        ]
-      }
+      toasts: tempToasts
     })
     setTimeout(() => {
-      this.popToast()
+      let tempToasts = this.toastRef.current
+      tempToasts.shift()
+      this.setState({
+        toasts: tempToasts
+      })
     }, 5000 )
   }
-  popToast = () => {
-    this.setState({
-      toastContainer: {
-        ...this.state.toastContainer,
-        toasts: this.state.toastContainer.toasts.slice(1)
-      }
-    })
+
+  globalFunctions = {
+    createMessage: this.createMessage,
+    closeMessage: this.closeMessage,
+    createToast: this.createToast
   }
 
-  
   render() {
     const { Component, pageProps } = this.props
     
@@ -89,16 +80,19 @@ class MyApp extends App {
           <script src="https://kit.fontawesome.com/cae1618de2.js" crossorigin="anonymous"></script>
         </Head>
 
-        <Provider session={pageProps.session}>
-          <div className='pageContainer'>
-              <LoadingIndicator visible={this.state.loadingVisible} />
-              <Component {...pageProps} globalFunctions={this.state.globalFunctions} />
-          </div>
-          <Sidebar />
-        </Provider>
 
-        <MessageContainer {...this.state.messageContainer} globalFunctions={this.state.globalFunctions} />
-        <ToastContainer {...this.state.toastContainer} />
+        <AppContext.Provider value={{ globalFunctions: this.globalFunctions }}>
+          <Provider session={pageProps.session}>
+            <div className='pageContainer'>
+                <LoadingIndicator visible={this.state.loadingVisible} />
+                <Component {...pageProps}/>
+            </div>
+            <Sidebar />
+          </Provider>
+
+          <MessageContainer {...this.state.messageContainer}/>
+          <ToastContainer toasts={this.state.toasts} />
+        </AppContext.Provider>
       </>
     )
   }

@@ -1,8 +1,11 @@
 
 export default async (req, res) => {
 
+    // Get filename if path is absolute
+    let strippedTitle = req.query.title.split('/').slice(-1).join()
+
     // Remove file extension
-    let strippedTitle = req.query.title.split('.').slice(0, -1).join('.')
+    strippedTitle = strippedTitle.split('.').slice(0, -1).join('.')
     
     // Split at any four-digit numbers and get first part
     strippedTitle = strippedTitle.split(/[0-9]{4}/)[0]

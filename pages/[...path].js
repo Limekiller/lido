@@ -10,10 +10,13 @@ import { withRouter } from 'next/router'
 import Draggable from 'react-draggable';
 import { getSession } from 'next-auth/client'
 import Router from "next/router";
-
-
+import AppContext from '@/components/AppContext.js'
+import Search from '@/components/Search/Search.js'
 
 class FolderView extends Component {
+
+
+    static contextType = AppContext
 
     constructor(props) {
         super(props);
@@ -57,7 +60,7 @@ class FolderView extends Component {
             }
         })
         .catch(error => {
-            this.props.globalFunctions.createToast('alert', 'Location does not exist!')
+            this.context.globalFunctions.createToast('alert', 'Location does not exist!')
             Router.push('/')
         })
     }
@@ -76,7 +79,7 @@ class FolderView extends Component {
         .then(response => response.text())
         .then(data => {
             this.fetchContents();
-            this.props.globalFunctions.createToast('notify', 'Folder deleted!')
+            this.context.globalFunctions.createToast('notify', 'Folder deleted!')
         })
     }
 
@@ -169,7 +172,7 @@ class FolderView extends Component {
                         }
                         const innerHTML = <div 
                                             className='file'
-                                            onClick={() => this.props.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
+                                            onClick={() => this.context.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
                                             style={{
                                                 backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
                                                 color: hasPoster ? 'rgba(0,0,0,0)' : 'white'
@@ -201,6 +204,7 @@ class FolderView extends Component {
 
         return (
             <>
+                <Search />
                 <Breadcrumbs />
                 <h1 className='pageTitle'>{decodeURIComponent(this.props.router.asPath.split('/').slice(-1))}</h1>
                 {this.generateHTML(this.state.contents)}
