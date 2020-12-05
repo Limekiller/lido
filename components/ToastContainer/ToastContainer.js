@@ -12,7 +12,7 @@ export default class ToastContainer extends Component {
                 {this.props.toasts.map((toast, index) => {
                     let background = 'linear-gradient(orange, gold)'
                     if (toast.type == 'alert') {
-                        background = 'linear-gradient(darkred, #f44848)'
+                        background = 'linear-gradient(#530707, #973232)'
                     }
 
                     return (

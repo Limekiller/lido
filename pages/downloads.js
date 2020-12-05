@@ -64,7 +64,7 @@ export default class downloads extends Component {
     render() {
         return (
             <>
-                <h1 className='pageTitle'>Downloads</h1>
+                <h1 className='pageTitle dlPageTitle'>Downloads</h1>
                 <div className='downloadContainer'>
                     {this.state.downloads.map((file, index) => {
                         const percentage = ((file.completedLength / file.totalLength) * 100).toFixed(2);

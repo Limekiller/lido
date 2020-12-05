@@ -17,10 +17,8 @@ class MyApp extends App {
     this.state = {
       loadingVisible: false,
 
-      messageContainer: {
-        content: null,
-        visible: false,
-      },
+      messages: [
+      ],
 
       toasts: [],
     }
@@ -33,19 +31,17 @@ class MyApp extends App {
   }
 
   createMessage = (content) => {
+    let tempMessages = this.state.messages
+    tempMessages.push({ content: content })
     this.setState({
-      messageContainer: {
-        content: content,
-        visible: true,
-      }
+      messages: tempMessages
     })
   }
   closeMessage = () => {
+    let tempMessages = this.state.messages
+    tempMessages.pop()
     this.setState({
-      messageContainer: {
-        content: '',
-        visible: false,
-      }
+      messages: tempMessages
     })
   }
 
@@ -90,7 +86,7 @@ class MyApp extends App {
             <Sidebar />
           </Provider>
 
-          <MessageContainer {...this.state.messageContainer}/>
+          <MessageContainer messages={this.state.messages} />
           <ToastContainer toasts={this.state.toasts} />
         </AppContext.Provider>
       </>

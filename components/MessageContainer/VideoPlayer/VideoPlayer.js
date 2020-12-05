@@ -5,6 +5,7 @@ import { faTrash, faTimesCircle, faDownload } from '@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Router from 'next/router'
 import AppContext from '@/components/AppContext.js'
+import Message from '@/components/MessageContainer/Message/Message.js'
 
 class VideoPlayer extends Component {
 
@@ -25,10 +26,24 @@ class VideoPlayer extends Component {
         // instantiate Video.js
         this.getMovieData()
         this.player = videojs(this.videoNode, this.props);
-        let pauseHandler = this.player.on('pause', () => {
+        const pauseHandler = this.player.on('pause', () => {
             if (!this.player.seeking()) {
                 this.showOverlay()
             }
+        })
+        const errorHandler = this.player.on('error', () => {
+            this.context.globalFunctions.createMessage(
+                <Message>
+                    <h1>Can't play the file :(</h1>
+                    <p>
+                        The browser is not able to play the file.
+                        This is most likely because the video is in a format the browser does not support.
+                        Try using the download button to download the file locally, and play it using VLC or some other media player.
+                        Sorry!
+                    </p>
+                    <button onClick={this.context.globalFunctions.closeMessage}>Okay</button>
+                </Message>
+            )
         })
 
         // Router.push('/?video=true')

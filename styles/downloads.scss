@@ -1,3 +1,11 @@
+.pageTitle.dlPageTitle {
+    margin-top: -120px;
+
+    @media (max-width: 1000px) {
+        margin-top: -70px;
+    }
+}
+
 .downloadContainer {
     margin-top: 50px;
 

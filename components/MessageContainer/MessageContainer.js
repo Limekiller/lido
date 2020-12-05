@@ -1,28 +1,32 @@
-import { Component, cloneElement } from 'react'
+import { Component, cloneElement, useContext } from 'react'
 import styles from './MessageContainer.module.scss'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Router from 'next/router'
+import AppContext from '@/components/AppContext.js'
 
-export default class MessageContainer extends Component {
-    constructor(props) {
-        super(props);
-    }
+const MessageContainer = (props) => {
+    const context = useContext(AppContext)
 
-    render() {
-        return (
-            <div className={`
-                ${styles.messageContainer}
-                ${this.props.visible ? styles.visible : ''}
-            `}>
-                <div className={styles.closeButton}>
-                    <FontAwesomeIcon 
-                        icon={faTimes} 
-                        onClick={() => this.props.closeMessage()}
-                    />
-                </div>
-                {this.props.content ? this.props.content : ''}
-            </div>
-        )
-    }
+    return (
+        <>
+            {props.messages.map((message, index) => {
+                return (
+                    <div className={`
+                        ${styles.messageContainer}
+                    `}>
+                        <div className={styles.closeButton}>
+                            <FontAwesomeIcon 
+                                icon={faTimes} 
+                                onClick={() => context.globalFunctions.closeMessage()}
+                            />
+                        </div>
+                        {message.content ? message.content : ''}
+                    </div>
+                )
+            })}
+        </>
+    )
 }
+
+export default MessageContainer
