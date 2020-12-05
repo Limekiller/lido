@@ -65,6 +65,7 @@
         background: none;
         height: 75px;
         font-size: 30px;
+        margin-bottom: 50px;
 
         .searchBar {
             height: 100%;
@@ -73,7 +74,7 @@
             .searchIcon {
                 font-size: 45px;
                 width: 45px;
-                top: 75px;
+                top: 15px;
             }
 
             input {
@@ -86,6 +87,7 @@
             &:before {
                 content: 'Search downloaded files';
                 margin-bottom: 15px;
+                margin-top: -60px;
                 display: block;
                 color: $fg-color-light;
             }
