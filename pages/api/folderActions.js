@@ -23,14 +23,25 @@ export default (req, res) => {
 
   } else if (req.method == 'PUT') {
 
-    fs.renameSync(
-      path.join(
-        process.cwd(), '/media/' + req.body.currPath + '/' + req.body.fileName
-      ),
-      path.join(
-        process.cwd(), '/media/' + req.body.destPath + '/' + req.body.fileName
+    if (req.body.type == 'file') {
+      fs.renameSync(
+        path.join(
+          process.cwd(), '/media/' + req.body.currPath
+        ),
+        path.join(
+          process.cwd(), '/media/' + req.body.destPath
+        )
       )
-    )
+    } else {
+      fs.renameSync(
+        path.join(
+          process.cwd(), '/media/' + req.body.currPath + '/' + req.body.fileName
+        ),
+        path.join(
+          process.cwd(), '/media/' + req.body.destPath + '/' + req.body.fileName
+        )
+      )
+    }
 
     res.statusCode = 200
     res.end()

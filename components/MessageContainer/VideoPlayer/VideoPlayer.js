@@ -1,7 +1,7 @@
 import styles from './VideoPlayer.module.scss'
 import videojs from 'video.js'
 import { Component } from 'react'
-import { faTrash, faTimesCircle, faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faTimesCircle, faDownload, faFont } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Router from 'next/router'
 import AppContext from '@/components/AppContext.js'
@@ -72,20 +72,39 @@ class VideoPlayer extends Component {
         window.location.href = '/api/getVideo?download=true&path=' + encodeURIComponent(this.props.path)
     }
 
-    deleteFile = (path) => {
-        fetch('/api/fileActions', {
+    deleteFile = () => {
+        fetch('/api/folderActions', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                path: path
+                path: window.location.pathname,
+                name: this.state.title
             })
         })
         .then(response => response.text())
         .then(data => {
             this.context.globalFunctions.closeMessage()
             this.context.globalFunctions.createToast('notify', 'File deleted!')
+        })
+    }
+
+    renameFile = (newTitle) => {
+        fetch('/api/folderActions', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                currPath: window.location.pathname + '/' + this.state.title,
+                destPath: window.location.pathname + '/' + newTitle + '.mp4',
+                type: 'file'
+            })
+        })
+        .then(response => response.text())
+        .then(data => {
+            window.location.href = window.location.pathname
         })
     }
 
@@ -99,6 +118,13 @@ class VideoPlayer extends Component {
 
     render() {
 
+        const renameFileMessage = 
+                        <Message>
+                            <h1>Rename File</h1>
+                            <input type='text' id='rename' onKeyDown={(e) => {e.keyCode == 13 ? this.renameFile(document.querySelector('#rename').value) : '' }}/><br />
+                            <button onClick={() => this.renameFile(document.querySelector('#rename').value)}>Submit</button>
+                            <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
+                        </Message>
         return (
             <div className={styles.videoPlayer}>
                 <FontAwesomeIcon 
@@ -128,8 +154,12 @@ class VideoPlayer extends Component {
                                 onClick={() => this.hideOverlay()}
                             />
                             <FontAwesomeIcon 
+                                icon={faFont}
+                                onClick={() => this.context.globalFunctions.createMessage(renameFileMessage)}
+                            />
+                            <FontAwesomeIcon 
                                 icon={faTrash}
-                                onClick={() => this.deleteFile(this.props.path)}
+                                onClick={() => this.deleteFile()}
                             />
                             <FontAwesomeIcon 
                                 icon={faDownload}

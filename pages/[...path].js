@@ -113,7 +113,8 @@ class FolderView extends Component {
             body: JSON.stringify({
                 currPath: window.location.pathname,
                 destPath: destPath,
-                fileName: fileName
+                fileName: fileName,
+                type: 'folder'
             })
         })
         .then(response => response.text())
