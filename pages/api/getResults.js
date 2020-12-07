@@ -27,17 +27,27 @@ const scrapeMagnetDl = (query) => {
         const $ = cheerio.load(html);
 
         let results = []
-        const movieResults = $('.download tbody tr .t2').each((index, movie) => {
-            const parent = $(movie).parent();
-            const title = $(parent).children('.n').children('a').attr('title');
-            const link = $(parent).children('.m').children('a').attr('href');
-            const seeders = $(parent).children('.s').text();
-            const leechers = $(parent).children('.l').text();
+        const movieResults = $('.download tbody tr').each((index, movie) => {
+            const title = $(movie).children('.n').children('a').attr('title');
+            const link = $(movie).children('.m').children('a').attr('href');
+            const seeders = $(movie).children('.s').text();
+            const leechers = $(movie).children('.l').text();
+
+            let type;
+            if ($(movie).children('.t2')) {
+                type = 'Movie'
+            } else if ($(movie).children('.t5')) {
+                type = 'TV'
+            } else {
+                return
+            }
+
             results.push({
                 name: title,
                 link: link,
                 seeders: seeders,
-                leechers: leechers
+                leechers: leechers,
+                type: type
             })
         })
 

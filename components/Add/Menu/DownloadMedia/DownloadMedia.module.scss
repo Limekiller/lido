@@ -46,9 +46,12 @@
                 opacity: 0.5;
                 pointer-events: none;
             }
-
+            
             .dlInfo {
                 display: flex;
+                height: max-content;
+                flex-shrink: 0;
+                margin-left: 15px;
 
                 .seeders {
                     padding: 3px 10px 3px 10px;
