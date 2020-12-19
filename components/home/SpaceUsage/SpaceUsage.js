@@ -8,7 +8,11 @@ const SpaceUsage = () => {
     useEffect(() => {
         fetch('/api/getStorageSpace')
         .then(response => response.json())
-        .then(data => setStorageData(data))
+        .then(data => {
+            if (JSON.stringify(data) != JSON.stringify(storageData)) {
+                setStorageData(data)
+            }
+        })
     })
 
     if (storageData[4]) {

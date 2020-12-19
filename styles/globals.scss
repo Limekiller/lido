@@ -94,6 +94,16 @@ button {
   box-shadow: none;
 }
 
+.logo {
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 100px;
+  width: 200px;
+}
+.home {
+  margin-left: -5%;
+}
+
 @media (max-width: 1000px) {
   .pageContainer {
     padding: 20px;

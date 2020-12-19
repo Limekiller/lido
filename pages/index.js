@@ -13,8 +13,11 @@ export default function Home(props) {
 
   return (
     <>
-      <Search _style='fancy' />
-      <SpaceUsage />
+      <div class='home'>
+        <img className='logo' src='/images/lidoWhite.svg' />
+        <Search _style='fancy' />
+        <SpaceUsage />
+      </div>
     </>
   )
 }
