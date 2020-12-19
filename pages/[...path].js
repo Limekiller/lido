@@ -12,6 +12,7 @@ import { getSession } from 'next-auth/client'
 import Router from "next/router";
 import AppContext from '@/components/AppContext.js'
 import Search from '@/components/Search/Search.js'
+import LoadingFilesIndicator from '@/components/LoadingFilesIndicator/LoadingFilesIndicator.js'
 
 class FolderView extends Component {
 
@@ -21,6 +22,7 @@ class FolderView extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            hasLoaded: false,
             contents: {
                 folders: [],
                 files: []
@@ -41,6 +43,7 @@ class FolderView extends Component {
     }
 
     fetchContents() {
+        this.setState({ hasLoaded: false })
         fetch('/api/getContents', {
             method: 'POST',
             headers: {
@@ -53,6 +56,7 @@ class FolderView extends Component {
 
         .then(response => response.json())
         .then(data => {
+            this.setState({ hasLoaded: true })
             if (JSON.stringify(this.state.contents) != JSON.stringify(data)) {
                 this.setState({
                     contents: data
@@ -208,7 +212,7 @@ class FolderView extends Component {
                 <Search />
                 <Breadcrumbs />
                 <h1 className='pageTitle'>{decodeURIComponent(this.props.router.asPath.split('/').slice(-1))}</h1>
-                {this.generateHTML(this.state.contents)}
+                {this.state.hasLoaded ? this.generateHTML(this.state.contents) : <LoadingFilesIndicator />}
                 <Add 
                     fetchContents={this.fetchContents.bind(this)}
                     globalFunctions={this.props.globalFunctions}

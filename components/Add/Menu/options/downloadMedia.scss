@@ -1,6 +1,8 @@
 .menu {
     .menuOptionContainer {
         .menuOption {
+            transition: all 0.4s ease;
+
             &.active {
                 overflow: auto;
 

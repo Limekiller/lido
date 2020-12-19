@@ -1,0 +1,19 @@
+@import '/styles/variables.scss';
+
+.loadingFilesIndicator {
+    pointer-events: none;;
+
+    .loadingFile {
+        box-shadow: none;
+        background: $fg-color-light;
+        animation: loading-file 5s linear infinite;
+    }
+
+}
+
+@keyframes loading-file {
+    0% {opacity: 0.25;}
+    25% {opacity: 0.5;}
+    75% {opacity: 0.1;}
+    100% {opacity: 0.25;}
+}

@@ -6,6 +6,7 @@ import { getSession } from 'next-auth/client'
 import Router from "next/router";
 import AppContext from '@/components/AppContext.js'
 import Search from '@/components/Search/Search.js'
+import LoadingFilesIndicator from '@/components/LoadingFilesIndicator/LoadingFilesIndicator.js'
 
 class FolderView extends Component {
 
@@ -13,7 +14,7 @@ class FolderView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { files: [] };
+        this.state = { files: [], hasLoaded: false };
     }
 
     componentDidMount = () => {
@@ -24,7 +25,7 @@ class FolderView extends Component {
     getData = () => {
         fetch('/api/search?query=' + Router.query.query)
         .then(results => results.json())
-        .then(data => this.setState({ files: data }))
+        .then(data => this.setState({ files: data, hasLoaded: true }))
     }
 
     generateHTML(data) {
@@ -57,8 +58,19 @@ class FolderView extends Component {
         return (
             <>
                 <Search />
-                <h1 className='pageTitle' style={{ marginTop: '-90px' }}>Search Results</h1>
+                <h1 className='pageTitle searchTitle'>Search Results</h1>
+                {this.state.hasLoaded ? '' : <LoadingFilesIndicator />}
                 {this.generateHTML(this.state.files)}
+                <style jsx>{`
+                    .searchTitle {
+                        margin-top: -90px;
+                    }
+                    @media (max-width: 1000px) {
+                        .searchTitle {
+                            margin-top: -10px;
+                        }
+                    }
+                `}</style>
             </>
         )
     }
