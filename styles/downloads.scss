@@ -17,6 +17,7 @@
         padding: 20px;
         margin-bottom: 20px;
         transition: opacity 0.4s ease;
+        border-radius: 5px;
 
         &.inactive {
             opacity: 0.5;
