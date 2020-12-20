@@ -9,6 +9,7 @@ const LoadingFilesIndicator = () => {
                 ${styles.loadingFile}
                 file
             `} 
+            key={i}
             style={{ opacity: i, animationDelay: -i+'s'}}
             />
         )

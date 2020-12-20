@@ -41,6 +41,10 @@
             height: 30vw;
         }
     }
+
+    @media (max-width: 1000px) {
+        margin-top: 20px;
+    }
 }
 
 .files {

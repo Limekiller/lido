@@ -1,14 +1,17 @@
 const fs = require('fs-extra')
 const path = require('path')
 const FileType = require('file-type');
-const { getVideoDurationInSeconds } = require('get-video-duration')
 
-// Get file length in seconds
-// This is to determine if we should keep the file or not
+
+// Get file size
 // Some torrents include random other videos like trailers and stuff
-// Get that outta here!
-const getFileLength = async (filePath) => {
-  return await getVideoDurationInSeconds(filePath)
+// We're trying to avoid copying those, and only the large files
+// Probably not very consistent, you can't really determine length
+// from file size...
+const getFileSize = (filePath) => {
+    const stats = fs.statSync(filePath)
+    const fileSizeBytes = stats.size
+    return (fileSizeBytes / (1024*1024)) // in MB
 }
 
 
@@ -51,9 +54,8 @@ const filterFiles = async (downloadPath, mediaPath, finalPath) => {
     const fileData = await FileType.fromFile(file);
     if (fileData) {
       const isVideoFile = fileData.mime.substr(0, 5) == 'video'
-      const isMovie = await getFileLength(file) > 300 ? true : false
-
-      if (isVideoFile && isMovie) {
+      const isLargeEnough = getFileSize(file) > 125 ? true : false
+      if (isVideoFile && isLargeEnough) {
           fs.renameSync(file, mediaPath + finalPath + '/' + file.split('/').slice(-1)[0])
       }
     }

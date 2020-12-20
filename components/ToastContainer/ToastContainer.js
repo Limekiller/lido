@@ -7,6 +7,7 @@ export default class ToastContainer extends Component {
     }
 
     render() {
+
         return (
             <div className={styles.toastContainer}>
                 {this.props.toasts.map((toast, index) => {
@@ -16,14 +17,21 @@ export default class ToastContainer extends Component {
                     }
 
                     return (
-                        <>
-                            <div id={'toast'+index} className={styles.toast}>{toast.text}</div>
+                        <div key={index}>
+                            <div 
+                                id={'toast'+index} 
+                                className={`
+                                    ${styles.toast}
+                                    ${styles[toast.animation]}
+                                `}
+                                >{toast.text}
+                            </div>
                             <style jsx>{`
                                 #${'toast'+index} {
                                     background: ${background};
                                 }
                             `}</style>
-                        </>
+                        </div>
                     )
                 })}
             </div>

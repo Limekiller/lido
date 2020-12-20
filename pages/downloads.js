@@ -3,6 +3,7 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getSession } from 'next-auth/client'
 import AppContext from '@/components/AppContext.js'
+import Search from '@/components/Search/Search.js'
 
 export default class downloads extends Component {
     
@@ -64,6 +65,7 @@ export default class downloads extends Component {
     render() {
         return (
             <>
+                <Search />
                 <h1 className='pageTitle dlPageTitle'>Downloads</h1>
                 <div className='downloadContainer'>
                     {this.state.downloads.map((file, index) => {

@@ -47,13 +47,26 @@ class MyApp extends App {
 
   createToast = (type, text) => {
     let tempToasts = this.state.toasts
-    tempToasts.push({ text: text, type: type })
+    tempToasts.push({ text: text, type: type, animation: 'incoming' })
     this.setState({
       toasts: tempToasts
     })
+
+    // Add the outgoing animation to the first toast before it is deleted
+    setTimeout(() => {
+      let tempToasts = this.toastRef.current
+      tempToasts[0].animation = 'outgoing'
+      this.setState({ toasts: tempToasts })
+    }, 4400)
+
+    // Delete the first toast, and set the new first toast's animation to none
+    // so that it doesn't re-animate the incoming anim
     setTimeout(() => {
       let tempToasts = this.toastRef.current
       tempToasts.shift()
+      if (tempToasts[0]) {
+        tempToasts[0].animation = 'none'
+      }
       this.setState({
         toasts: tempToasts
       })

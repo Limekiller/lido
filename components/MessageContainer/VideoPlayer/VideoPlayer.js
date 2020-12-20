@@ -87,6 +87,7 @@ class VideoPlayer extends Component {
         .then(data => {
             this.context.globalFunctions.closeMessage()
             this.context.globalFunctions.createToast('notify', 'File deleted!')
+            Router.push(window.location.pathname)
         })
     }
 
