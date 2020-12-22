@@ -5,6 +5,7 @@
     height: 80vh;
     position: fixed;
     pointer-events: none;
+    z-index: 4;
 
     .toast {
         padding: 20px;

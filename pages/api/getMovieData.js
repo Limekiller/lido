@@ -9,7 +9,7 @@ export default async (req, res) => {
     
     // Split at any four-digit numbers and get first part
     strippedTitle = strippedTitle.split(/[0-9]{4}/)[0]
-    
+
     let data = await fetch('https://www.omdbapi.com/?apikey=' + process.env.OMDB_API_KEY + '&t=' + strippedTitle + '&plot=full')
 
     res.setHeader('Content-Type', 'application/json')
