@@ -17,7 +17,8 @@ class VideoPlayer extends Component {
             data: {},
             title: this.getTitle()[0],
             strippedTitle: this.getTitle()[1],
-            showOverlay: true
+            showOverlay: true,
+            hash: null
         })
     }
 
@@ -32,18 +33,43 @@ class VideoPlayer extends Component {
             }
         })
         const errorHandler = this.player.on('error', () => {
-            this.context.globalFunctions.createMessage(
-                <Message>
-                    <h1>Can't play the file :(</h1>
-                    <p>
-                        The browser is not able to play the file.
-                        This is most likely because the video is in a format the browser does not support.
-                        Try using the download button to download the file locally, and play it using VLC or some other media player.
-                        Sorry!
-                    </p>
-                    <button onClick={this.context.globalFunctions.closeMessage}>Okay</button>
-                </Message>
-            )
+            // this.context.globalFunctions.createMessage(
+            //     <Message>
+            //         <h1>Can't play the file :(</h1>
+            //         <p>
+            //             The browser is not able to play the file.
+            //             This is most likely because the video is in a format the browser does not support.
+            //             Try using the download button to download the file locally, and play it using VLC or some other media player.
+            //             Sorry!
+            //         </p>
+            //         <button onClick={this.context.globalFunctions.closeMessage}>Okay</button>
+            //     </Message>
+            // )
+            fetch('/api/streamActions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    source: window.location.pathname,
+                    name: this.state.title
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ hash: data.hash })
+                setTimeout(() => {
+                    this.player.src({
+                        src: `/api/getVideo?range=0&path=${encodeURIComponent(data.dest)}`,
+                        type: 'video/mp4'
+                    })
+                    this.player.load()
+                    this.player.on('ended', () => {
+                        const currTime = this.player.currentTime()
+                        this.player.load()
+                        this.player.currentTime(currTime)
+                        this.hideOverlay()
+                    })
+                }, 2000)
+            })
         })
 
         // Router.push('/?video=true')
@@ -53,7 +79,15 @@ class VideoPlayer extends Component {
     componentWillUnmount() {
         if (this.player) {
             this.player.dispose()
-            // Router.back()
+            if (this.state.hash) {
+                fetch('/api/streamActions', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        hash: this.state.hash,
+                    })
+                })
+            }
         }
     }
 

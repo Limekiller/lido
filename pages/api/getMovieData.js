@@ -8,9 +8,10 @@ export default async (req, res) => {
     strippedTitle = strippedTitle.split('.').slice(0, -1).join('.')
     
     // Split at any four-digit numbers and get first part
-    strippedTitle = strippedTitle.split(/[0-9]{4}/)[0]
+    const title = strippedTitle.split(/[0-9]{4}/)[0]
+    const year = strippedTitle.split(title)[1].slice(0, 4)
 
-    let data = await fetch('https://www.omdbapi.com/?apikey=' + process.env.OMDB_API_KEY + '&t=' + strippedTitle + '&plot=full')
+    let data = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${title}&y=${year}&plot=full`)
 
     res.setHeader('Content-Type', 'application/json')
     res.statusCode = 200
