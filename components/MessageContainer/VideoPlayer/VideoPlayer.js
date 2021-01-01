@@ -7,6 +7,21 @@ import Router from 'next/router'
 import AppContext from '@/components/AppContext.js'
 import Message from '@/components/MessageContainer/Message/Message.js'
 
+const supportedCodecs = {
+    video: [
+        'h264',
+        'av1',
+        'theora'
+    ],
+    audio: [
+        'aac',
+        'flac',
+        'mp3',
+        'opus',
+        'vorbis'
+    ]
+}
+
 class VideoPlayer extends Component {
 
     static contextType = AppContext
@@ -18,14 +33,17 @@ class VideoPlayer extends Component {
             title: this.getTitle()[0],
             strippedTitle: this.getTitle()[1],
             showOverlay: true,
-            hash: null
+
+            hash: null,
+            hasConverted: false
         })
     }
 
 
-    componentDidMount() {
+    async componentDidMount() {
         // instantiate Video.js
         this.getMovieData()
+
         this.player = videojs(this.videoNode, this.props);
         const pauseHandler = this.player.on('pause', () => {
             if (!this.player.seeking()) {
@@ -33,46 +51,16 @@ class VideoPlayer extends Component {
             }
         })
         const errorHandler = this.player.on('error', () => {
-            // this.context.globalFunctions.createMessage(
-            //     <Message>
-            //         <h1>Can't play the file :(</h1>
-            //         <p>
-            //             The browser is not able to play the file.
-            //             This is most likely because the video is in a format the browser does not support.
-            //             Try using the download button to download the file locally, and play it using VLC or some other media player.
-            //             Sorry!
-            //         </p>
-            //         <button onClick={this.context.globalFunctions.closeMessage}>Okay</button>
-            //     </Message>
-            // )
-            fetch('/api/streamActions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    source: window.location.pathname,
-                    name: this.state.title
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ hash: data.hash })
-                setTimeout(() => {
-                    this.player.src({
-                        src: `/api/getVideo?range=0&path=${encodeURIComponent(data.dest)}`,
-                        type: 'video/mp4'
-                    })
-                    this.player.load()
-                    this.player.on('ended', () => {
-                        const currTime = this.player.currentTime()
-                        this.player.load()
-                        this.player.currentTime(currTime)
-                        this.hideOverlay()
-                    })
-                }, 2000)
-            })
+            this.createStream()
         })
+        const codecs = await this.getCodecs()
 
-        // Router.push('/?video=true')
+        if (!supportedCodecs.video.includes(codecs.video) || !supportedCodecs.audio.includes(codecs.audio)) {
+            this.createStream()
+            this.player.reset()
+            return
+        }
+
     }
 
     // destroy player on unmount
@@ -89,6 +77,42 @@ class VideoPlayer extends Component {
                 })
             }
         }
+    }
+
+    createStream = () => {
+        // If we can't play the video, convert it to a fragmented MP4
+        // and start playback asap
+        if (!this.state.hasConverted) {
+            this.context.globalFunctions.createToast(
+                'notify',
+                'Please wait, converting file to a format compatible with your browser.',
+                10000
+            )
+            fetch('/api/streamActions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    source: window.location.pathname,
+                    name: this.state.title
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ hash: data.hash })
+                this.player.src({
+                    src: `/streams/${data.hash}/${data.hash}.m3u8`,
+                    type: 'application/x-mpegURL'
+                })
+                this.player.load()
+            })
+        }
+        this.setState({ hasConverted: true })
+
+    }
+
+    getCodecs = async () => {
+        const codecs = await fetch(`/api/streamActions?source=${window.location.pathname}&name=${this.state.title}`)
+        return await codecs.json()
     }
 
     getTitle = () => {
@@ -210,7 +234,8 @@ class VideoPlayer extends Component {
                     </div>
                     <video 
                         className='video-js'
-                        //preload="auto"
+                        preload="auto"
+                        id='video'
                         controls
                         autoPlay='autoplay'
                         ref={ node => this.videoNode = node }

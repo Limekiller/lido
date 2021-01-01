@@ -45,7 +45,7 @@ class MyApp extends App {
     })
   }
 
-  createToast = (type, text) => {
+  createToast = (type, text, time=5000) => {
     let tempToasts = this.state.toasts
     tempToasts.push({ text: text, type: type, animation: 'incoming' })
     this.setState({
@@ -57,7 +57,7 @@ class MyApp extends App {
       let tempToasts = this.toastRef.current
       tempToasts[0].animation = 'outgoing'
       this.setState({ toasts: tempToasts })
-    }, 4400)
+    }, time - 600)
 
     // Delete the first toast, and set the new first toast's animation to none
     // so that it doesn't re-animate the incoming anim
@@ -70,7 +70,7 @@ class MyApp extends App {
       this.setState({
         toasts: tempToasts
       })
-    }, 5000 )
+    }, time )
   }
 
   globalFunctions = {
