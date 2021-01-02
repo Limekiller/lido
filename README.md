@@ -8,8 +8,8 @@ A lido is a waterfront resort: a luxurious and fancy place where people go to re
 Clone this repository and install and update Node to the latest version >=15.3.0 and NPM >=7.0.14.
 
 You need a few dependencies:
-- aria2c >=1.35.0
-- ffmpeg >=4.2.4
+- aria2c >=1.33.1
+- ffmpeg >=3.4.8
 
 You need to add a few directories:
 - /media/Movies
@@ -23,4 +23,8 @@ And then finish her off
 - `npm run start`
 - `aria2c --enable-rpc --rpc-listen-all=true --rpc-allow-origin-all --seed-time=0 --on-bt-download-complete=/PATH/TO/INSTALL/DIRECTORY/media/temp/onDownloadComplete.sh`
 
-<span style="color:red">You need to edit the above command to point to your own install!</span>
+You need to edit the above command to point to your own install!
+
+#### Streaming
+
+One of the unique features of the server is the ability to stream video to the browser even if the video is not in a format the browser supports, like matroska in Firefox. It does this by converting the file in real-time to a fragmented MP4 HLS stream (h264/aac). Converting takes a lot of processing power, of course; to get any sort of reasonable performance out of this streaming mode, you may have to adjust the ffmpeg command in /pages/api/streamActions.js: I suggest adding the -preset flag before the output destination with your desired setting.
