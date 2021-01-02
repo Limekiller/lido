@@ -7,7 +7,7 @@ import fs from 'fs-extra'
 import hasha from 'hasha'
 
 const getFileHash = async (source) => {
-    const hash = await hasha.fromFile(source, {algorithm: 'md5'})
+    const hash = await hasha(source, {algorithm: 'md5'})
     return hash
 }
 
@@ -42,7 +42,7 @@ export default async (req, res) => {
 
         const processes = await execAwait(`pgrep -f ${req.body.hash}`)
         processes.stdout.split('\n').forEach(pid => {
-            exec(`kill ${pid}`)
+            exec(`kill -9 ${pid}`)
         })
 
         fs.removeSync(path.join(process.cwd(), `/media/temp/streams/${req.body.hash}`))
