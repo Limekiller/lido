@@ -17,13 +17,14 @@ export default async (req, res) => {
 
         const source = path.join(process.cwd(), '/media/' + req.body.source + '/' + req.body.name)
         const hash = await getFileHash(source)
-        const dest = path.join(process.cwd(), '/public/streams/' + hash + '/' + hash)
+        const dest = path.join(process.cwd(), '/media/temp/streams/' + hash + '/' + hash)
 
         if (!fs.existsSync(dest + '.m3u8')) {
-            const streamFolder = path.join(process.cwd(), '/public/streams/' + hash)
+            const streamFolder = path.join(process.cwd(), '/media/temp/streams/' + hash)
             fs.mkdirSync(streamFolder)
             exec(`ffmpeg -i "${source}" -c:v h264 -c:a aac -ac 2 -hls_segment_type fmp4 -hls_flags append_list -hls_playlist_type event "${dest}.m3u8"`)
-        }
+            await execAwait(`while [ ! -f "${dest}.m3u8" ]; do sleep 3; done`)
+        }    
 
         res.statusCode = 200
         res.end(JSON.stringify({ dest: `temp/streams/${hash}.mp4`, hash: hash }))
@@ -44,7 +45,7 @@ export default async (req, res) => {
             exec(`kill ${pid}`)
         })
 
-        fs.removeSync(path.join(process.cwd(), `/public/streams/${req.body.hash}`))
+        fs.removeSync(path.join(process.cwd(), `/media/temp/streams/${req.body.hash}`))
         res.statusCode = 200
         res.end()
 

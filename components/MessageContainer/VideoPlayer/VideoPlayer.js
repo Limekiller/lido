@@ -100,10 +100,10 @@ class VideoPlayer extends Component {
             .then(data => {
                 this.setState({ hash: data.hash })
                 this.player.src({
+                    //src: `/streams/${data.hash}/${data.hash}.m3u8`,
                     src: `/streams/${data.hash}/${data.hash}.m3u8`,
                     type: 'application/x-mpegURL'
                 })
-                this.player.load()
             })
         }
         this.setState({ hasConverted: true })
