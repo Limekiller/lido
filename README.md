@@ -5,11 +5,18 @@ A lido is a waterfront resort: a luxurious and fancy place where people go to re
 
 #### Installation
 
-Clone this repository and install and update Node to the latest version -- you definitely need at least v10. I'm running Node v15.3.0 and NPM v7.0.14.
-You'll also need Aria2 running in the background, so install that as well.
+Clone this repository and install and update Node to the latest version >=15.3.0 and NPM >=7.0.14.
 
-Then, add a "TV" and "Movies" directory to the /media subfolder. Then
+You need a few dependencies:
+- aria2c >=1.35.0
+- ffmpeg >=4.2.4
 
+You need to add a few directories:
+- /media/Movies
+- /media/TV
+- /public/streams
+
+And then finish her off
 - `cd /path/to/install`
 - `npm install`
 - `npm run build`
