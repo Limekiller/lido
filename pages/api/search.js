@@ -1,6 +1,7 @@
 import g from 'glob'
 import path from 'path'
 import { promisify } from "util";
+import FileType from 'file-type'
 
 export default async (req, res) => {
     
@@ -14,7 +15,12 @@ export default async (req, res) => {
     )
 
     let rankedResults = []
-    results.forEach(result => {
+    for (const result of results) {
+        const filetype = await FileType.fromFile(result)
+        if (!filetype || filetype.mime.split('/')[0] != 'video') {
+            continue
+        }
+
         let points = 0
         searchQuery.forEach(word => {
             if (result.includes(word)) {
@@ -28,7 +34,7 @@ export default async (req, res) => {
             path: result,
             points: points
         })
-    })
+    }
 
     let sortedResults = rankedResults.slice(0);
     sortedResults.sort(function(a,b) {
