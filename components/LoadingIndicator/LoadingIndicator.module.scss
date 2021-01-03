@@ -2,31 +2,21 @@
 
 .loadingIndicator {
     position: fixed;
-    width: 100vw;
-    height: 100vh;
+    height: 5px;
     top: 0px;
-    left: 100px;
-    background: #0000009e;
+    left: 0px;
     z-index: 9;
-    transition: opacity 0.5s 0.25s ease;
-
-    .loading {
-        position: absolute;
-        left: 45%;
-        top: 45%;
-        width: 100px;
-        font-size: 100px;
-        color: orange;
-        animation: spin 3s linear infinite;
-    }
-
-    @media (max-width: 1000px) {
-        left: 0px;
-    }
-
+    opacity: 1;
+    width: 100%;
+    transition: opacity 0.5s 0.25s ease, width 0.5s ease;
+    animation: loading-bar 60s 0.25s ease forwards;
+    background: linear-gradient(to right, orange, gold);
 }
 
-@keyframes spin {
-    from {transform: rotate(0deg);}
-    to {transform: rotate(364deg);}
+@keyframes loading-bar {
+    0% {width: 0%}
+    5% {width: 43%}
+    50% {width: 60%}
+    80% {width: 90%}
+    100% {width: 95%}
 }

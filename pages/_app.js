@@ -86,7 +86,7 @@ class MyApp extends App {
       <>
         <Head>
           <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
-          <script src="https://kit.fontawesome.com/cae1618de2.js" crossorigin="anonymous"></script>
+          <script src="https://kit.fontawesome.com/cae1618de2.js" crossOrigin="anonymous"></script>
         </Head>
 
 

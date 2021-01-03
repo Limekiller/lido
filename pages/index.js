@@ -13,7 +13,7 @@ export default function Home(props) {
 
   return (
     <>
-      <div class='home'>
+      <div className='home'>
         <img className='logo' src='/images/lidoWhite.svg' />
         <Search _style='fancy' />
         <SpaceUsage />
