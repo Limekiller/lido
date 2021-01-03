@@ -33,10 +33,18 @@ export default (req, res) => {
         )
       )
     } else {
+
+      let origFile = path.join(
+        process.cwd(), '/media/' + req.body.currPath + '/' + req.body.fileName
+      )
+      if (!fs.existsSync(origFile)) {
+        origFile = path.join(
+          process.cwd(), '/media/' + req.body.currPath + '/' + decodeURIComponent(req.body.fileName)
+        )
+      }
+
       fs.renameSync(
-        path.join(
-          process.cwd(), '/media/' + req.body.currPath + '/' + req.body.fileName
-        ),
+        origFile,
         path.join(
           process.cwd(), '/media/' + req.body.destPath + '/' + req.body.fileName
         )

@@ -3,7 +3,7 @@ import path from 'path'
 import { Component } from 'react'
 import Add from '@/components/Add/Add.js'
 import VideoPlayer from '@/components/MessageContainer/VideoPlayer/VideoPlayer.js'
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faList } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs.js'
 import { withRouter } from 'next/router'
@@ -136,6 +136,10 @@ class FolderView extends Component {
         return destPath
     }
 
+    toggleList = () => {
+        document.querySelector('.files').classList.toggle('listView')
+    }
+
     generateHTML(data) {
         return (
             <>
@@ -212,6 +216,13 @@ class FolderView extends Component {
                 <Search />
                 <Breadcrumbs />
                 <h1 className='pageTitle'>{decodeURIComponent(this.props.router.asPath.split('/').slice(-1))}</h1>
+                <div class='viewOptions'>
+                    <FontAwesomeIcon 
+                        className='listToggle'
+                        icon={faList}
+                        onClick={() => this.toggleList()} 
+                    />
+                </div>
                 {this.state.hasLoaded ? this.generateHTML(this.state.contents) : <LoadingFilesIndicator />}
                 <Add 
                     fetchContents={this.fetchContents.bind(this)}

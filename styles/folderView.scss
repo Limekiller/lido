@@ -47,6 +47,29 @@
     }
 }
 
+.viewOptions {
+    display: flex;
+    justify-content: right;
+    margin-top: -50px;
+    margin-bottom: 25px;
+
+    svg {
+        width: 25px;
+        font-size: 25px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .listToggle {
+        color: white;
+        margin-bottom: 20px;
+    }
+
+}
+
+
 .files {
     display: flex;
     margin-top: 25px;
@@ -69,6 +92,22 @@
             height: 46vw;
             margin-right: 10px;
             margin-bottom: 10px;
+        }
+    }
+
+    &.listView .file {
+        width: 100%;
+        background: $fg-color-dark;
+        background-image: none;
+        background-image: none !important;
+        height: 25px;
+        color: white !important;
+        box-shadow: none;
+
+        &:hover {
+            padding: 22px;
+            margin: -5px 15px 22px -5px;
+            box-shadow: 0px 0px 5px orange;
         }
     }
 
