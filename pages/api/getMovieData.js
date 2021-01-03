@@ -18,7 +18,7 @@ export default async (req, res) => {
         year = `&y=${year}`
     }
 
-    let data = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${title}${year}&plot=full`)
+    let data = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${title}${year}`)
 
     res.setHeader('Content-Type', 'application/json')
     res.statusCode = 200
