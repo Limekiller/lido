@@ -54,7 +54,7 @@ export default class DownloadMedia extends Component {
             resultsHTML = <>
                             <div />
                             {this.state.results.map((result, index) => {
-                                if (result.seeders > result.leechers) {
+                                if (parseInt(result.seeders) > parseInt(result.leechers)) {
                                     return (
                                         <div 
                                             key={index}
