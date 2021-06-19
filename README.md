@@ -16,6 +16,13 @@ You need to add a few directories:
 - /media/TV
 - /public/streams
 
+You need to create a .env.local file in the install directory with the following values:
+```
+OMDB_API_KEY={omdb_api_key}
+APP_PASSWORD={whatever_the_password_should_be}
+NEXTAUTH_URL=http(s)://{the_domain}
+```
+
 And then finish her off
 - `cd /path/to/install`
 - `npm install`
