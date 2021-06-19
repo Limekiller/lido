@@ -1,10 +1,13 @@
-// Because we are serving streams dynamically, 
+// Because we are serving streams dynamically,
 // we need a custom server file
-// any request starting with /streams will be routed to /media/streams
+// any request starting with /streams will be routed to /public/streams
 
 // This is because of the way m3u8 works
-// and the fact that items in the public folder are only available
-// if they existed at build time
+// and the fact that items in the public folder are only available if they existed at build time
+
+// When I came back to this 6 months after making it, I had no idea how in the hell I figured this out.
+// Turns out it's here: https://nextjs.org/docs/advanced-features/custom-server
+// Next.js is awesome!!!!
 
 const { createServer } = require('http')
 const { parse } = require('url')
@@ -29,7 +32,7 @@ app.prepare().then(() => {
     const { pathname, query } = parsedUrl
 
     if (pathname.split('/')[1] == 'streams') {
-        
+
         fs.readFile(path.join(process.cwd(), '/media/temp/' + pathname), (err,data) => {
             if (err) {
                 res.writeHead(404);

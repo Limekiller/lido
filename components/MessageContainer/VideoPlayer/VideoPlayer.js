@@ -41,26 +41,30 @@ class VideoPlayer extends Component {
 
 
     async componentDidMount() {
-        // instantiate Video.js
         this.getMovieData()
 
+        // instantiate Video.js
         this.player = videojs(this.videoNode, this.props);
         const pauseHandler = this.player.on('pause', () => {
             if (!this.player.seeking()) {
                 this.showOverlay()
             }
         })
-        const errorHandler = this.player.on('error', () => {
-            this.createStream()
-        })
+
+        const convertMessage =
+            <Message>
+                <h1>Convert File?</h1>
+                <p>This file can't be played by your current browser. You can click OK to convert the file in real-time for playback, or click cancel for other options. You may want to download the file locally, or try with a different browser.</p>
+                <button onClick={() => {this.createStream(); this.context.globalFunctions.closeMessage()}}>OK</button>
+                <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
+            </Message>
         const codecs = await this.getCodecs()
-
+        const errorHandler = this.player.on('error', () => {
+            this.context.globalFunctions.createMessage(convertMessage)
+        })
         if (!supportedCodecs.video.includes(codecs.video) || !supportedCodecs.audio.includes(codecs.audio)) {
-            this.createStream()
-            this.player.reset()
-            return
+            this.context.globalFunctions.createMessage(convertMessage)
         }
-
     }
 
     // destroy player on unmount
@@ -107,7 +111,7 @@ class VideoPlayer extends Component {
             })
         }
         this.setState({ hasConverted: true })
-
+        this.player.reset()
     }
 
     getCodecs = async () => {
@@ -177,7 +181,7 @@ class VideoPlayer extends Component {
 
     render() {
 
-        const renameFileMessage = 
+        const renameFileMessage =
                         <Message>
                             <h1>Rename File</h1>
                             <input type='text' id='rename' onKeyDown={(e) => {e.keyCode == 13 ? this.renameFile(document.querySelector('#rename').value) : '' }}/><br />
@@ -186,14 +190,14 @@ class VideoPlayer extends Component {
                         </Message>
         return (
             <div className={styles.videoPlayer}>
-                <FontAwesomeIcon 
-                    icon={faTimesCircle} 
+                <FontAwesomeIcon
+                    icon={faTimesCircle}
                     className={styles.close}
                     onClick={() => this.context.globalFunctions.closeMessage()}
                 />
 
                 <div data-vjs-player>
-                    <div 
+                    <div
                         className={`
                             ${styles.overlay}
                             ${!this.state.showOverlay ? styles.hidden : ''}
@@ -208,19 +212,19 @@ class VideoPlayer extends Component {
                         </p>
 
                         <div className={styles.videoOptions}>
-                            <img 
-                                src='/images/icons/playButton.svg' 
+                            <img
+                                src='/images/icons/playButton.svg'
                                 onClick={() => this.hideOverlay()}
                             />
-                            <FontAwesomeIcon 
+                            <FontAwesomeIcon
                                 icon={faFont}
                                 onClick={() => this.context.globalFunctions.createMessage(renameFileMessage)}
                             />
-                            <FontAwesomeIcon 
+                            <FontAwesomeIcon
                                 icon={faTrash}
                                 onClick={() => this.deleteFile()}
                             />
-                            <FontAwesomeIcon 
+                            <FontAwesomeIcon
                                 icon={faDownload}
                                 onClick={() => this.downloadMovie()}
                             />
@@ -232,7 +236,7 @@ class VideoPlayer extends Component {
                             }
                         `}</style>
                     </div>
-                    <video 
+                    <video
                         className='video-js'
                         preload="auto"
                         id='video'
