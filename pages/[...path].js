@@ -21,12 +21,12 @@ class FolderView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             hasLoaded: false,
             contents: {
                 folders: [],
                 files: []
-            } 
+            }
         };
         this.fetchContents = this.fetchContents.bind(this);
     }
@@ -53,7 +53,6 @@ class FolderView extends Component {
                 path: window.location.pathname,
             })
         })
-
         .then(response => response.json())
         .then(data => {
             this.setState({ hasLoaded: true })
@@ -146,10 +145,10 @@ class FolderView extends Component {
                 <div className='folders'>
                     {data.folders.map((folder, index) => {
                         const innerHTML = <div key={index} className='folderContainer'>
-                                            <FontAwesomeIcon 
+                                            <FontAwesomeIcon
                                                 className='trash'
                                                 icon={faTrashAlt}
-                                                onClick={() => this.deleteFolder(folder)} 
+                                                onClick={() => this.deleteFolder(folder)}
                                             />
                                             <Link href={window.location.pathname + '/' + folder}>
                                                 <div className='folder'>
@@ -163,7 +162,7 @@ class FolderView extends Component {
                                     position={{x: 0, y: 0}}
                                     onDrag={(e) => this.dragOperations(e)}
                                     onStop={(e) => this.checkDropZone(e)}
-                                    key={index} 
+                                    key={index}
                                 >
                                     {innerHTML}
                                 </Draggable>
@@ -179,7 +178,7 @@ class FolderView extends Component {
                         if (data.files[_key].data.Poster && data.files[_key].data.Poster != "N/A") {
                             hasPoster = true
                         }
-                        const innerHTML = <div 
+                        const innerHTML = <div
                                             className='file'
                                             onClick={() => this.context.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
                                             style={{
@@ -195,9 +194,9 @@ class FolderView extends Component {
                                     position={{x: 0, y: 0}}
                                     onDrag={(e) => this.dragOperations(e)}
                                     onStop={(e) => this.checkDropZone(e)}
-                                    key={index} 
+                                    key={index}
                                 >
-                                    {innerHTML}   
+                                    {innerHTML}
                                 </Draggable>
                             )
                         }
@@ -216,15 +215,15 @@ class FolderView extends Component {
                 <Search />
                 <Breadcrumbs />
                 <h1 className='pageTitle'>{decodeURIComponent(this.props.router.asPath.split('/').slice(-1))}</h1>
-                <div class='viewOptions'>
-                    <FontAwesomeIcon 
+                <div className='viewOptions'>
+                    <FontAwesomeIcon
                         className='listToggle'
                         icon={faList}
-                        onClick={() => this.toggleList()} 
+                        onClick={() => this.toggleList()}
                     />
                 </div>
                 {this.state.hasLoaded ? this.generateHTML(this.state.contents) : <LoadingFilesIndicator />}
-                <Add 
+                <Add
                     fetchContents={this.fetchContents.bind(this)}
                     globalFunctions={this.props.globalFunctions}
                 />
