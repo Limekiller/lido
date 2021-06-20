@@ -14,7 +14,7 @@ You need a few dependencies:
 You need to add a few directories:
 - /media/Movies
 - /media/TV
-- /public/streams
+- /media/temp/streams
 
 You need to create a .env.local file in the install directory with the following values:
 ```
