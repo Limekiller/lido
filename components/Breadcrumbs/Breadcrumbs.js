@@ -19,7 +19,7 @@ const Breadcrumbs = () => {
             {pathArray.map((path, index) => {
                 return (
                     <Link href={buildLink(index, pathArray)} key={index}>
-                        <span
+                        <a
                             className={`
                                 ${styles.breadcrumb}
                                 breadcrumb
@@ -28,7 +28,7 @@ const Breadcrumbs = () => {
                             key={index}
                         >
                             {decodeURIComponent(path)}
-                        </span>
+                        </a>
                     </Link>
                 )
             })}

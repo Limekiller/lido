@@ -33,6 +33,7 @@ class VideoPlayer extends Component {
             title: this.getTitle()[0],
             strippedTitle: this.getTitle()[1],
             showOverlay: true,
+            hasShownConvertMessage: false,
 
             hash: null,
             hasConverted: false
@@ -50,20 +51,24 @@ class VideoPlayer extends Component {
                 this.showOverlay()
             }
         })
-
         const convertMessage =
-            <Message>
-                <h1>Convert File?</h1>
-                <p>This file can't be played by your current browser. You can click OK to convert the file in real-time for playback, or click cancel for other options. You may want to download the file locally, or try with a different browser.</p>
-                <button onClick={() => {this.createStream(); this.context.globalFunctions.closeMessage()}}>OK</button>
-                <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
-            </Message>
-        const codecs = await this.getCodecs()
+        <Message>
+            <h1>Convert File?</h1>
+            <p>This file can't be played by your current browser. You can click OK to convert the file in real-time for playback, or click cancel for other options. You may want to download the file locally, or try with a different browser.</p>
+            <button onClick={() => {this.createStream(); this.context.globalFunctions.closeMessage()}}>OK</button>
+            <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
+        </Message>
         const errorHandler = this.player.on('error', () => {
             this.context.globalFunctions.createMessage(convertMessage)
+            this.setState({hasShownConvertMessage: true})
         })
-        if (!supportedCodecs.video.includes(codecs.video) || !supportedCodecs.audio.includes(codecs.audio)) {
-            this.context.globalFunctions.createMessage(convertMessage)
+
+        if (!this.state.hasShownConvertMessage) {
+            const codecs = await this.getCodecs()
+            if (!this.state.hasShownConvertMessage && (!supportedCodecs.video.includes(codecs.video) || !supportedCodecs.audio.includes(codecs.audio))) {
+                this.context.globalFunctions.createMessage(convertMessage)
+                this.setState({hasShownConvertMessage: true})
+            }
         }
     }
 
@@ -104,7 +109,6 @@ class VideoPlayer extends Component {
             .then(data => {
                 this.setState({ hash: data.hash })
                 this.player.src({
-                    //src: `/streams/${data.hash}/${data.hash}.m3u8`,
                     src: `/streams/${data.hash}/${data.hash}.m3u8`,
                     type: 'application/x-mpegURL'
                 })
@@ -182,18 +186,19 @@ class VideoPlayer extends Component {
     render() {
 
         const renameFileMessage =
-                        <Message>
-                            <h1>Rename File</h1>
-                            <input type='text' id='rename' onKeyDown={(e) => {e.keyCode == 13 ? this.renameFile(document.querySelector('#rename').value) : '' }}/><br />
-                            <button onClick={() => this.renameFile(document.querySelector('#rename').value)}>Submit</button>
-                            <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
-                        </Message>
+            <Message>
+                <h1>Rename File</h1>
+                <input type='text' id='rename' onKeyDown={(e) => {e.keyCode == 13 ? this.renameFile(document.querySelector('#rename').value) : '' }}/><br />
+                <button onClick={() => this.renameFile(document.querySelector('#rename').value)}>Submit</button>
+                <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
+            </Message>
         return (
             <div className={styles.videoPlayer}>
                 <FontAwesomeIcon
                     icon={faTimesCircle}
                     className={styles.close}
                     onClick={() => this.context.globalFunctions.closeMessage()}
+                    onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.closeMessage() }}}
                 />
 
                 <div data-vjs-player>
@@ -219,14 +224,17 @@ class VideoPlayer extends Component {
                             <FontAwesomeIcon
                                 icon={faFont}
                                 onClick={() => this.context.globalFunctions.createMessage(renameFileMessage)}
+                                onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.createMessage(renameFileMessage) }}}
                             />
                             <FontAwesomeIcon
                                 icon={faTrash}
                                 onClick={() => this.deleteFile()}
+                                onKeyDown={e => {if (e.key === 'Enter') { this.deleteFile() }}}
                             />
                             <FontAwesomeIcon
                                 icon={faDownload}
                                 onClick={() => this.downloadMovie()}
+                                onKeyDown={e => {if (e.key === 'Enter') { this.downloadMovie() }}}
                             />
                         </div>
 

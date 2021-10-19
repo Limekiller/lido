@@ -19,7 +19,8 @@
             content: '>';
             padding-left: 15px;
         }
-        &:hover {
+        &:hover, &:focus {
+            outline: none;
             color: white;
             cursor: pointer;
         }

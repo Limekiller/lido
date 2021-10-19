@@ -21,7 +21,7 @@ export default async (req, res) => {
 const scrapeMagnetDl = (query) => {
 
 
-    return axios.get("https://www.magnetdl.com/" + query[0] + "/" + query.split(" ").join("-") + "/se/desc/")
+    return axios.get("https://www.magnetdl.com/" + query[0] + "/" + query.split(" ").join("-").replaceAll('"', '').replaceAll("'", "") + "/se/desc/")
     .then((response) => {
         const html = response.data;
         const $ = cheerio.load(html);

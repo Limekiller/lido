@@ -10,7 +10,10 @@ function Sidebar() {
 
     if (session) {
         return (
-                <div className={styles.sidebar}>
+                <div className={`
+                    ${styles.sidebar}
+                    sidebar
+                `}>
                     <div className={styles.topOptions}>
                         <Link href='/Movies'>
                             <a><FontAwesomeIcon icon={faFilm} /></a>
@@ -26,7 +29,9 @@ function Sidebar() {
                         <Link href='/downloads'>
                             <a><FontAwesomeIcon icon={faDownload} /></a>
                         </Link>
-                        <a><FontAwesomeIcon icon={faSignOutAlt} onClick={signOut} /></a>
+                        <a href='javascript:void(0);' >
+                            <FontAwesomeIcon icon={faSignOutAlt} onClick={signOut} />
+                        </a>
                     </div>
                 </div>
             )

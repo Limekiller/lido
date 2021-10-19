@@ -28,7 +28,7 @@ input {
   box-sizing: border-box;
   font-family: halyard-text, sans-serif;
 }
-button {
+button:not(.link) {
   background: linear-gradient(orange, gold);
   border: none;
   padding: 10px 20px 10px 20px;

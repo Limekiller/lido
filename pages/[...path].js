@@ -100,6 +100,7 @@ class FolderView extends Component {
         }
     }
     dragOperations = (e) => {
+        e.preventDefault();
         document.querySelector('.react-draggable-dragging').classList.add('dragging')
         if (e.target.classList.contains('folder') || e.target.classList.contains('breadcrumb')) {
             document.querySelector('.react-draggable-dragging').classList.add('droppable')
@@ -144,18 +145,23 @@ class FolderView extends Component {
             <>
                 <div className='folders'>
                     {data.folders.map((folder, index) => {
-                        const innerHTML = <div key={index} className='folderContainer'>
-                                            <FontAwesomeIcon
-                                                className='trash'
-                                                icon={faTrashAlt}
-                                                onClick={() => this.deleteFolder(folder)}
-                                            />
-                                            <Link href={window.location.pathname + '/' + folder}>
-                                                <div className='folder'>
-                                                    <span>{decodeURIComponent(folder)}</span>
-                                                </div>
-                                            </Link>
-                                        </div>
+                        const innerHTML = <div 
+                            tabIndex="0" 
+                            key={index} 
+                            className='folderContainer'
+                            onKeyDown={e => {if (e.key === 'Enter') { e.target.querySelector('.folder').click() }}}
+                        >
+                            <FontAwesomeIcon
+                                className='trash'
+                                icon={faTrashAlt}
+                                onClick={() => this.deleteFolder(folder)}
+                            />
+                            <Link href={window.location.pathname + '/' + folder}>
+                                <div className='folder'>
+                                    <span>{decodeURIComponent(folder)}</span>
+                                </div>
+                            </Link>
+                        </div>
                         if (window.innerWidth > 1000) {
                             return (
                                 <Draggable
@@ -179,15 +185,17 @@ class FolderView extends Component {
                             hasPoster = true
                         }
                         const innerHTML = <div
-                                            className='file'
-                                            onClick={() => this.context.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
-                                            style={{
-                                                backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
-                                                color: hasPoster ? 'rgba(0,0,0,0)' : 'white'
-                                            }}
-                                        >
-                                            <span>{decodeURIComponent(data.files[_key].name)}</span>
-                                        </div>
+                                className='file'
+                                onClick={() => this.context.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
+                                onKeyDown={e => {if (e.key === 'Enter') { e.target.click() }}}
+                                style={{
+                                    backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
+                                    color: hasPoster ? 'rgba(0,0,0,0)' : 'white'
+                                }}
+                                tabIndex='0'
+                            >
+                            <span>{decodeURIComponent(data.files[_key].name)}</span>
+                        </div>
                         if (window.innerWidth > 1000) {
                             return (
                                 <Draggable

@@ -31,18 +31,37 @@ class MyApp extends App {
   }
 
   createMessage = (content) => {
+    const messageID = Math.floor(Math.random()*90000) + 10000
+    SpatialNavigation.add(
+      `message${messageID}`,
+      {selector: `.message${messageID} button, .message${messageID} svg`}
+    );
+
     let tempMessages = this.state.messages
-    tempMessages.push({ content: content })
+    tempMessages.push({ content: content, id: messageID })
     this.setState({
       messages: tempMessages
     })
   }
   closeMessage = () => {
     let tempMessages = this.state.messages
-    tempMessages.pop()
+    const lastMessage = tempMessages.pop()
+    SpatialNavigation.remove(`message${lastMessage.id}`);
     this.setState({
       messages: tempMessages
     })
+  }
+
+  componentDidMount() {
+    window.addEventListener('load', function() {
+      SpatialNavigation.init();
+      SpatialNavigation.add(
+        'mainNav',
+        {selector: '.sidebar a, .pageContainer a, .pageContainer input, .pageContainer button, .folderContainer, .file'}
+      );
+      SpatialNavigation.makeFocusable('mainNav');
+      SpatialNavigation.focus();
+    });
   }
 
   createToast = (type, text, time=5000) => {
@@ -87,6 +106,7 @@ class MyApp extends App {
         <Head>
           <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
           <script src="https://kit.fontawesome.com/cae1618de2.js" crossOrigin="anonymous"></script>
+          <script src="https://luke-chang.github.io/js-spatial-navigation/spatial_navigation.js"></script>
         </Head>
 
 
