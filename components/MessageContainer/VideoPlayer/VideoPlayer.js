@@ -59,16 +59,16 @@ class VideoPlayer extends Component {
             <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
         </Message>
         const errorHandler = this.player.on('error', () => {
-            this.context.globalFunctions.createMessage(convertMessage)
-            this.setState({hasShownConvertMessage: true})
-        })
-
-        if (!this.state.hasShownConvertMessage) {
-            const codecs = await this.getCodecs()
-            if (!this.state.hasShownConvertMessage && (!supportedCodecs.video.includes(codecs.video) || !supportedCodecs.audio.includes(codecs.audio))) {
+            console.log(this.state.hasShownConvertMessage);
+            if (!this.state.hasShownConvertMessage) {
                 this.context.globalFunctions.createMessage(convertMessage)
                 this.setState({hasShownConvertMessage: true})
             }
+        })
+        const codecs = await this.getCodecs()
+        if (!this.state.hasShownConvertMessage && (!supportedCodecs.video.includes(codecs.video) || !supportedCodecs.audio.includes(codecs.audio))) {
+            this.context.globalFunctions.createMessage(convertMessage)
+            this.setState({hasShownConvertMessage: true})
         }
     }
 
