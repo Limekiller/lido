@@ -14,6 +14,9 @@ export default class downloads extends Component {
         this.state = { downloads: [] }
     }
 
+    /**
+     * Helper function to fetch all in-progress downloads from the server
+     */
     getDownloads = () => {
         fetch('/api/downloadActions', {
             method: 'GET',
@@ -24,6 +27,14 @@ export default class downloads extends Component {
         })
     }
 
+    /**
+     * Helper function to cancel an in-progress download
+     * 
+     * @param {string} gid The aria2 gid of the download
+     * @param {string} path The final path the download will be moved to
+     * @param {string} name The name of the file
+     * @param {event} e 
+     */
     cancelDownload = (gid, path, name, e) => {
         e.target.parentElement.parentElement.classList.add('inactive')
         fetch('/api/downloadActions?gid=' + gid + '&path=' + path + '&name=' + name, {
@@ -36,6 +47,11 @@ export default class downloads extends Component {
         })
     }
 
+    /**
+     * Helper function to parse the downloads and update the component state
+     * 
+     * @param {obj} data The data returned from /api/downloadActions
+     */
     parseDownloads = (data) => {
         let downloads = [];
         data.forEach((item, index) => {
@@ -52,6 +68,7 @@ export default class downloads extends Component {
         this.setState({ downloads: downloads })
     }
 
+    // Get download data every second
     componentDidMount = () => {
         this.getDownloads();
         this.interval = setInterval(() => {
@@ -80,11 +97,12 @@ export default class downloads extends Component {
                                     <span className='percentage'>{percentage + '%'}</span>
                                     <FontAwesomeIcon 
                                         icon={faTimesCircle} 
-                                        onClick={(e) => this.cancelDownload(file.gid,
-                                                                            file.path,
-                                                                            file.name,
-                                                                            e
-                                                                            )}
+                                        onClick={(e) => this.cancelDownload(
+                                            file.gid,
+                                            file.path,
+                                            file.name,
+                                            e
+                                        )}
                                     />
                                 </div>
                             </div>

@@ -16,10 +16,7 @@ class MyApp extends App {
     super(props);
     this.state = {
       loadingVisible: false,
-
-      messages: [
-      ],
-
+      messages: [],
       toasts: [],
     }
 
@@ -30,6 +27,13 @@ class MyApp extends App {
     Router.events.on("routeChangeStart", () => {this.setState({ loadingVisible: true })} );
   }
 
+
+  /**
+   * Global function to add a new message to the stack
+   * Message contents and unique ID are tracked in the messages variable in this component's state
+   * 
+   * @param {JSX} content The content that the message should contain
+   */
   createMessage = (content) => {
     const messageID = Math.floor(Math.random()*90000) + 10000
     SpatialNavigation.add(
@@ -43,6 +47,10 @@ class MyApp extends App {
       messages: tempMessages
     })
   }
+
+  /**
+   * Global function to clear the last message on the stack
+   */
   closeMessage = () => {
     let tempMessages = this.state.messages
     const lastMessage = tempMessages.pop()
@@ -52,6 +60,7 @@ class MyApp extends App {
     })
   }
 
+  // Init spatial nav on app load
   componentDidMount() {
     window.addEventListener('load', function() {
       SpatialNavigation.init();
@@ -64,6 +73,13 @@ class MyApp extends App {
     });
   }
 
+  /**
+   * Global function for creating pop-up toasts
+   * 
+   * @param {string} type The "alert level" of the toast
+   * @param {string} text What thet toast should say
+   * @param {int} time How long the toast should appear 
+   */
   createToast = (type, text, time=5000) => {
     let tempToasts = this.state.toasts
     tempToasts.push({ text: text, type: type, animation: 'incoming' })
@@ -92,6 +108,8 @@ class MyApp extends App {
     }, time )
   }
 
+  // Function refs are stored in the app context and passed to every component,
+  // so they can be used anywhere
   globalFunctions = {
     createMessage: this.createMessage,
     closeMessage: this.closeMessage,

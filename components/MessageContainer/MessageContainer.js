@@ -9,6 +9,10 @@ import { useEffect } from 'react'
 const MessageContainer = (props) => {
     const context = useContext(AppContext)
 
+    // When a message appears, we want to move focus to it and CONSTRAIN focus to only the new message
+    // When a message is cleared, we want to move focus to the message that is now on top of the stack
+    // Every time this component updates, we iterate through messages and disable spatial nav for each one except the last
+    // Message IDs are tracked by the higher-order component _app.js that maintains message stack state
     useEffect(() =>{
         props.messages.length ? SpatialNavigation.disable('mainNav') : SpatialNavigation.enable('mainNav')
         props.messages.forEach((message, index) => {

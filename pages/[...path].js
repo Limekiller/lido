@@ -42,6 +42,9 @@ class FolderView extends Component {
         Router.events.off("routeChangeComplete", this.fetchContents);
     }
 
+    /**
+     * Helper function to populate the page with the folder contents
+     */
     fetchContents() {
         this.setState({ hasLoaded: false })
         fetch('/api/getContents', {
@@ -68,7 +71,12 @@ class FolderView extends Component {
         })
     }
 
-    deleteFolder(folderName) {
+    /**
+     * Helper function to delete folders or files
+     * 
+     * @param {string} folderName The path to the folder
+     */
+    deleteItem(folderName) {
         fetch('/api/folderActions', {
             method: 'DELETE',
             headers: {
@@ -86,16 +94,21 @@ class FolderView extends Component {
         })
     }
 
+    /**
+     * When a file or folder is dropped, this function checks what it was dropped on
+     * and fires the appropriate action
+     * 
+     * @param {event} e 
+     */
     checkDropZone = (e) => {
         if (document.querySelector('.dragging')) {
+            const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').innerText)
             if (e.target.classList.contains('folder')) {
-                const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').innerText)
                 const pathName = window.location.pathname + '/' + encodeURIComponent(e.target.innerText)
-                this.moveFile(fileName, pathName)
+                this.moveItem(fileName, pathName)
             } else if (e.target.classList.contains('breadcrumb')) {
-                const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').innerText)
                 const pathName = this.getBreadcrumbPath(e.target.id)
-                this.moveFile(fileName, pathName)
+                this.moveItem(fileName, pathName)
             }
         }
     }
@@ -108,7 +121,15 @@ class FolderView extends Component {
             document.querySelector('.react-draggable-dragging').classList.remove('droppable')
         }
     }
-    moveFile = (fileName, destPath) => {
+
+    /**
+     * Helper function to move files or folders to a new location
+     * Rename is the same operation
+     * 
+     * @param {string} fileName The name of the file or folder we want to move
+     * @param {string} destPath The path to the new location
+     */
+    moveItem = (fileName, destPath) => {
         fetch('/api/folderActions', {
             method: 'PUT',
             headers: {
@@ -126,6 +147,14 @@ class FolderView extends Component {
             this.fetchContents()
         })
     }
+
+    /**
+     * Given the id of an element in the breadcrumb path, get the full path to the location of that breadcrumb
+     * Called when an item is dropped on a breadcrumb
+     * 
+     * @param {string} id The DOM id of the breadcrumb
+     * @returns {string} The path to this breadcrumb
+     */
     getBreadcrumbPath = (id) => {
         const index = id.slice(-1)
         let destPath = ''
@@ -140,6 +169,12 @@ class FolderView extends Component {
         document.querySelector('.files').classList.toggle('listView')
     }
 
+    /**
+     * Helper function to get all the html for the folder and file views
+     * 
+     * @param {obj} data The data from this.state.contents
+     * @returns {JSX}
+     */
     generateHTML(data) {
         return (
             <>
@@ -154,7 +189,7 @@ class FolderView extends Component {
                             <FontAwesomeIcon
                                 className='trash'
                                 icon={faTrashAlt}
-                                onClick={() => this.deleteFolder(folder)}
+                                onClick={() => this.deleteItem(folder)}
                             />
                             <Link href={window.location.pathname + '/' + folder}>
                                 <div className='folder'>

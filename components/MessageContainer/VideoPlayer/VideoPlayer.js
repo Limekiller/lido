@@ -51,6 +51,8 @@ class VideoPlayer extends Component {
                 this.showOverlay()
             }
         })
+
+        // If we get a playback error or one of the codecs isn't supported, ask if we should convert the file
         const convertMessage =
         <Message>
             <h1>Convert File?</h1>
@@ -90,8 +92,12 @@ class VideoPlayer extends Component {
         }
     }
 
+    /**
+     * Checks key presses and fires appropriate event
+     * 
+     * @param {event} e
+     */
     onKey = e => {
-        console.log(e.target)
         if (!this.state.showOverlay) {
             if (e.code == 'Enter' && !e.target.classList.contains('mainPlayButton')) {
                 this.showOverlay();
@@ -107,6 +113,9 @@ class VideoPlayer extends Component {
         }
     }
 
+    /**
+     * Helper function to create m3u8 stream
+     */
     createStream = () => {
         // If we can't play the video, convert it to a fragmented MP4
         // and start playback asap
@@ -137,26 +146,44 @@ class VideoPlayer extends Component {
         this.player.reset()
     }
 
+    /**
+     * Helper function to get the codec information of the file
+     * 
+     * @returns {JSON obj} The video and audio codecs of the file
+     */
     getCodecs = async () => {
         const codecs = await fetch(`/api/streamActions?source=${window.location.pathname}&name=${this.state.title}`)
         return await codecs.json()
     }
 
+    /**
+     * 
+     * @returns {obj} The filename both including and excluding the filetype
+     */
     getTitle = () => {
         let title = this.props.path.split('/').slice(-1).join()
         let strippedTitle = title.split('.').slice(0, -1).join('.')
         return [title, strippedTitle]
     }
 
+    /**
+     * Helper function to get the OMDB movie data, and update the component state
+     */
     getMovieData = async () => {
         let data = await fetch('/api/getMovieData?title=' + this.state.title)
         this.setState({ data: await data.json() })
     }
 
+    /**
+     * Helper function to trigger a browser download of the file
+     */
     downloadMovie = () => {
         window.location.href = '/api/getVideo?download=true&path=' + encodeURIComponent(this.props.path)
     }
 
+    /**
+     * Helper function to delete the file
+     */
     deleteFile = () => {
         fetch('/api/folderActions', {
             method: 'DELETE',
@@ -176,6 +203,11 @@ class VideoPlayer extends Component {
         })
     }
 
+    /**
+     * Helper function to rename the file
+     * 
+     * @param {string} newTitle The title we want to rename the file to
+     */
     renameFile = (newTitle) => {
         fetch('/api/folderActions', {
             method: 'PUT',
@@ -194,11 +226,18 @@ class VideoPlayer extends Component {
         })
     }
 
+    /**
+     * Helper functions to show or hide the video overlay
+     */
     showOverlay = () => {
+        // We don't want to pause the video every time we show the overlay, 
+        // because we call this method when the video first loads -- we want the overlay to show, but with the video playin in the background
         this.setState({ showOverlay: true })
+        // Every time we show the overlay, we should move focus to the play button
         SpatialNavigation.focus(document.querySelector('.mainPlayButton'))
     }
     hideOverlay = () => {
+        // However, we always want the video to start playing when the overlay is hidden
         this.setState({ showOverlay: false })
         this.player.play()
     }
@@ -288,8 +327,6 @@ class VideoPlayer extends Component {
                         <source src={'/api/getVideo?range=0&path=' + encodeURIComponent(this.props.path)} type="video/mp4" />
                     </video>
                 </div>
-
-
             </div>
         )
     }
