@@ -97,6 +97,26 @@ button:not(.link):not(.vjs-control) {
   box-shadow: none;
 }
 
+/* For TV control */
+.vjs-control-bar.tv-control {
+  background: transparent;
+}
+.vjs-control-bar.tv-control .vjs-progress-holder {
+  height: 1.3em;
+  border-radius: 50px;
+}
+.vjs-control-bar.tv-control .vjs-load-progress,
+.vjs-control-bar.tv-control .vjs-load-progress *,
+.vjs-control-bar.tv-control .vjs-play-progress {
+  border-radius: 50px;
+}
+.vjs-control-bar.tv-control .vjs-play-progress::before {
+  display: none;
+}
+.vjs-control-bar.tv-control button {
+  display: none;
+}
+
 .logo {
   margin: 0 auto;
   display: block;

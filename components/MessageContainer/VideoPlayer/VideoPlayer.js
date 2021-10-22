@@ -73,10 +73,12 @@ class VideoPlayer extends Component {
         }
         
         document.addEventListener('keydown', this.onKey);
+        document.addEventListener('mousemove', this.onMouseMove);
     }
 
     // destroy player on unmount
     componentWillUnmount() {
+        document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('keydown', this.onKey);
         if (this.player) {
             this.player.dispose()
@@ -98,11 +100,13 @@ class VideoPlayer extends Component {
      * @param {event} e
      */
     onKey = e => {
+        document.querySelector('.vjs-control-bar').classList.add('tv-control')
         if (!this.state.showOverlay) {
             if (e.code == 'Enter' && !e.target.classList.contains('mainPlayButton')) {
                 this.showOverlay();
                 this.player.pause();
             } else  {
+                this.player.reportUserActivity(e)
                 const currTime = this.player.currentTime();
                 if (e.code == 'ArrowLeft') {
                     this.player.currentTime(currTime - 10);
@@ -111,6 +115,10 @@ class VideoPlayer extends Component {
                 }
             }
         }
+    }
+
+    onMouseMove = e => {
+        document.querySelector('.vjs-control-bar').classList.remove('tv-control')
     }
 
     /**
