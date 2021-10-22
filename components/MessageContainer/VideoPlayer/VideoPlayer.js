@@ -59,7 +59,6 @@ class VideoPlayer extends Component {
             <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
         </Message>
         const errorHandler = this.player.on('error', () => {
-            console.log(this.state.hasShownConvertMessage);
             if (!this.state.hasShownConvertMessage) {
                 this.context.globalFunctions.createMessage(convertMessage)
                 this.setState({hasShownConvertMessage: true})
@@ -70,10 +69,13 @@ class VideoPlayer extends Component {
             this.context.globalFunctions.createMessage(convertMessage)
             this.setState({hasShownConvertMessage: true})
         }
+        
+        document.addEventListener('keydown', this.onKey);
     }
 
     // destroy player on unmount
     componentWillUnmount() {
+        document.removeEventListener('keydown', this.onKey);
         if (this.player) {
             this.player.dispose()
             if (this.state.hash) {
@@ -84,6 +86,23 @@ class VideoPlayer extends Component {
                         hash: this.state.hash,
                     })
                 })
+            }
+        }
+    }
+
+    onKey = e => {
+        console.log(e.target)
+        if (!this.state.showOverlay) {
+            if (e.code == 'Enter' && !e.target.classList.contains('mainPlayButton')) {
+                this.showOverlay();
+                this.player.pause();
+            } else  {
+                const currTime = this.player.currentTime();
+                if (e.code == 'ArrowLeft') {
+                    this.player.currentTime(currTime - 10);
+                } else if (e.code == 'ArrowRight') {
+                    this.player.currentTime(currTime + 10);
+                }
             }
         }
     }
@@ -177,6 +196,7 @@ class VideoPlayer extends Component {
 
     showOverlay = () => {
         this.setState({ showOverlay: true })
+        SpatialNavigation.focus(document.querySelector('.mainPlayButton'))
     }
     hideOverlay = () => {
         this.setState({ showOverlay: false })
@@ -193,14 +213,22 @@ class VideoPlayer extends Component {
                 <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
             </Message>
         return (
-            <div className={styles.videoPlayer}>
+            <div 
+                className={`
+                    ${styles.videoPlayer}
+                    ${!this.state.showOverlay ? '' : 'overlay'}
+                `}
+            >
                 <FontAwesomeIcon
                     icon={faTimesCircle}
-                    className={styles.close}
+                    className={`
+                        video-close
+                        ${styles.close}
+                        ${!this.state.showOverlay ? 'display-none' : ''}
+                    `}
                     onClick={() => this.context.globalFunctions.closeMessage()}
                     onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.closeMessage() }}}
                 />
-
                 <div data-vjs-player>
                     <div
                         className={`
@@ -217,10 +245,15 @@ class VideoPlayer extends Component {
                         </p>
 
                         <div className={styles.videoOptions}>
-                            <img
-                                src='/images/icons/playButton.svg'
-                                onClick={() => this.hideOverlay()}
-                            />
+                            <button 
+                                className='link mainPlayButton'
+                                onKeyDown={e => {if (e.key === 'Enter') { this.hideOverlay() }}}
+                            >
+                                <img
+                                    src='/images/icons/playButton.svg'
+                                    onClick={() => this.hideOverlay()}
+                                />
+                            </button>
                             <FontAwesomeIcon
                                 icon={faFont}
                                 onClick={() => this.context.globalFunctions.createMessage(renameFileMessage)}

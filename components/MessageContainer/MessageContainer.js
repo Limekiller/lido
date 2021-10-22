@@ -13,6 +13,7 @@ const MessageContainer = (props) => {
         props.messages.length ? SpatialNavigation.disable('mainNav') : SpatialNavigation.enable('mainNav')
         props.messages.forEach((message, index) => {
             if (index == (props.messages.length - 1)) {
+                SpatialNavigation.init();
                 SpatialNavigation.enable(`message${message.id}`);
                 SpatialNavigation.makeFocusable(`message${message.id}`);
                 SpatialNavigation.focus(document.querySelector(`.message${message.id} button`));

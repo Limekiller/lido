@@ -34,7 +34,7 @@ class MyApp extends App {
     const messageID = Math.floor(Math.random()*90000) + 10000
     SpatialNavigation.add(
       `message${messageID}`,
-      {selector: `.message${messageID} button, .message${messageID} svg`}
+      {selector: `.message${messageID} button, .message${messageID} svg, .message${messageID} button.vjs-control`}
     );
 
     let tempMessages = this.state.messages

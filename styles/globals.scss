@@ -78,6 +78,9 @@ button:not(.link):not(.vjs-control) {
   width: 100%;
   height: 100%;
 }
+.overlay .video-js .vjs-control-bar, .display-none {
+  display: none;
+}
 .video-js .vjs-control-bar {
   width: 80%;
   bottom: 50px;
