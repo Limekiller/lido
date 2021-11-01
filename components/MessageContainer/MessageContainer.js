@@ -39,12 +39,6 @@ const MessageContainer = (props) => {
                             message${message.id}
                         `}
                     >
-                        <div className={styles.closeButton}>
-                            <FontAwesomeIcon 
-                                icon={faTimes} 
-                                onClick={() => context.globalFunctions.closeMessage()}
-                            />
-                        </div>
                         {message.content ? message.content : ''}
                     </div>
                 )

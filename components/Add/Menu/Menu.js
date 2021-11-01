@@ -3,13 +3,14 @@ import { Component } from 'react'
 import { faFolderPlus, faFilm } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import DownloadMedia from './DownloadMedia/DownloadMedia.js'
+import AppContext from '@/components/AppContext.js'
+import Message from '@/components/MessageContainer/Message/Message'
 
 export class Menu extends Component {
-    constructor(props) {
-        super(props);
-    }
 
-    createFolder(folderName) {
+    static contextType = AppContext
+
+    createFolder = folderName => {
         fetch('/api/folderActions', {
             method: 'POST',
             headers: {
@@ -22,10 +23,34 @@ export class Menu extends Component {
         })
         .then(response => response.text())
         .then(data => {
-            this.setState({ activeOption: null })
-            this.props.functions.toggleVisibility()
+            this.props.functions.toggleMenu()
             this.props.functions.fetchContents()
         })
+    }
+
+    setActiveOption = option => {
+        let message
+
+        switch (option) {
+            case 'createFolder':
+                message = <Message>
+                    <input 
+                        id='folderName' 
+                        type='text' 
+                        onKeyDown={(e) => {if (e.keyCode == 13) {this.createFolder(document.querySelector('#folderName').value)}}}
+                    /><br />
+                    <button onClick={() => this.createFolder(document.querySelector('#folderName').value)}>Add folder</button>
+                    <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
+                </Message>
+                break;
+            case 'downloadMedia':
+                message = <Message>
+                    <DownloadMedia globalFunctions={this.props.globalFunctions} />
+                </Message>
+                break;
+        }
+
+        this.context.globalFunctions.createMessage(message)
     }
 
     render() {
@@ -33,64 +58,32 @@ export class Menu extends Component {
             <div className={`
                 ${styles.menu}
                 ${this.props.menuOpen ? styles.active : ''}
-            `}>
-
-                <div className={`
-                    ${styles.menuOptionContainer}
-                    ${this.props.activeOption && this.props.activeOption != 'createFolder' ? styles.inactive : ''}
-                `}>                    
-                <div 
-                        className={`
-                            ${styles.createFolder}
-                            ${styles.menuOption}
-                            ${this.props.activeOption == 'createFolder' ? styles.active : ''}
-                        `}
-                        onClick={() => this.props.functions.setActiveOption('createFolder')}
-                    >
-                        <div className={styles.optionLabel}>
-                            <FontAwesomeIcon icon={faFolderPlus} />
-                            <span>Create<br />folder</span>
-                        </div>
-
-                        <div className={styles.activeOptions}>
-                            <input 
-                                id='folderName' 
-                                type='text' 
-                                onKeyDown={(e) => {if (e.keyCode == 13) {this.createFolder(document.querySelector('#folderName').value)}}}
-                            />
-                            <button 
-                                onClick={() => this.createFolder(document.querySelector('#folderName').value)}>
-                                Submit
-                            </button>
-                        </div>
-
+            `}>              
+                <button 
+                    className={`
+                        link
+                        ${styles.menuOption}
+                    `}
+                    onClick={() => this.setActiveOption('createFolder')}
+                >
+                    <div className={styles.optionLabel}>
+                        <FontAwesomeIcon icon={faFolderPlus} />
+                        <span>Create<br />folder</span>
                     </div>
-                </div>
+                </button>
 
-                <div className={`
-                    ${styles.menuOptionContainer}
-                    ${this.props.activeOption && this.props.activeOption != 'downloadMedia' ? styles.inactive : ''}
-                `}>
-                    <div 
-                        className={`
-                            ${styles.downloadMedia}
-                            ${styles.menuOption}
-                            ${this.props.activeOption == 'downloadMedia' ? styles.active : ''}
-                        `}
-                        onClick={() => this.props.functions.setActiveOption('downloadMedia')}
-                    >
-                        <div className={styles.optionLabel}>
-                            <FontAwesomeIcon icon={faFilm} />
-                            <span>Download<br />Media</span>
-                        </div>
-
-                        <div className={styles.activeOptions}>
-                            <DownloadMedia globalFunctions={this.props.globalFunctions} />
-                        </div>
-
+                <button 
+                    className={`
+                        link
+                        ${styles.menuOption}
+                    `}
+                    onClick={() => this.setActiveOption('downloadMedia')}
+                >
+                    <div className={styles.optionLabel}>
+                        <FontAwesomeIcon icon={faFilm} />
+                        <span>Download<br />Media</span>
                     </div>
-                </div>
-
+                </button>
             </div>
         )
     }

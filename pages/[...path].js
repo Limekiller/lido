@@ -266,10 +266,7 @@ class FolderView extends Component {
                     />
                 </div>
                 {this.state.hasLoaded ? this.generateHTML(this.state.contents) : <LoadingFilesIndicator />}
-                <Add
-                    fetchContents={this.fetchContents.bind(this)}
-                    globalFunctions={this.props.globalFunctions}
-                />
+                <Add fetchContents={this.fetchContents.bind(this)}/>
             </>
         )
     }

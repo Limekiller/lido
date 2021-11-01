@@ -52,25 +52,25 @@ export default class DownloadMedia extends Component {
             // Add an empty element before results or
             // the first result will catch the end of the loading animation
             resultsHTML = <>
-                            <div />
-                            {this.state.results.map((result, index) => {
-                                if (parseInt(result.seeders) > parseInt(result.leechers)) {
-                                    return (
-                                        <div 
-                                            key={index}
-                                            className={styles.result}
-                                            onClick={(e) => this.queueDownload(result.link, e)}
-                                        >
-                                            <div>{result.name}</div>
-                                            <div className={styles.dlInfo}>
-                                                <div className={styles.seeders}>{result.seeders}</div>
-                                                <div className={styles.leechers}>{result.leechers}</div>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            })}
-                        </>
+                <div />
+                {this.state.results.map((result, index) => {
+                    if (parseInt(result.seeders) > parseInt(result.leechers)) {
+                        return (
+                            <button 
+                                key={index}
+                                className={styles.result}
+                                onClick={(e) => this.queueDownload(result.link, e)}
+                            >
+                                <div>{result.name}</div>
+                                <div className={styles.dlInfo}>
+                                    <div className={styles.seeders}>{result.seeders}</div>
+                                    <div className={styles.leechers}>{result.leechers}</div>
+                                </div>
+                            </button>
+                        )
+                    }
+                })}
+            </>
         }
 
         return (
@@ -79,19 +79,21 @@ export default class DownloadMedia extends Component {
                 body
             `}>
                 <h1><label htmlFor='search'>Search</label></h1>
-                <input 
-                    type='text' 
-                    name='search' 
-                    id='search' 
-                    className={styles.search} 
-                    onKeyDown={(e) => {if (e.keyCode == 13) { this.getResults(document.querySelector('#search').value) }}} 
-                />
-                <button 
-                    className={styles.confirmSearch}
-                    onClick={() => this.getResults(document.querySelector('#search').value)}
-                >
-                    Go
-                </button>
+                <div style={{display: 'flex'}}>
+                    <input 
+                        type='text' 
+                        name='search' 
+                        id='search' 
+                        className={styles.search} 
+                        onKeyDown={(e) => {if (e.keyCode == 13) { this.getResults(document.querySelector('#search').value) }}} 
+                    />
+                    <button 
+                        className={styles.confirmSearch}
+                        onClick={() => this.getResults(document.querySelector('#search').value)}
+                    >
+                        Go
+                    </button>
+                </div>
                 <div className={styles.results}>
                     {resultsHTML}
                 </div>

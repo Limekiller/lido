@@ -14,9 +14,13 @@
     align-items: center;
     justify-content: center;
 
-    &:hover {
+    &:hover, &:focus {
         cursor: pointer;
         transform: scale(1.1);
+    }
+
+    &.active {
+        z-index: 100;
     }
 
     svg {

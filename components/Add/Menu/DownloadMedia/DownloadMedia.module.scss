@@ -6,7 +6,7 @@
     .search {
         padding: 10px;
         height: 50px;
-        width: 88%;
+        width: 500px;
         display: inline-block;
 
         @media (max-width: 1000px) {
@@ -18,6 +18,7 @@
         height: 50px;
         display: inline-block;
         margin-left: 2%;
+        margin-top: 0px;
 
         @media (max-width: 1000px) {
             width: unset;
@@ -25,7 +26,17 @@
     }
 
     .results {
-        margin-top: 50px;
+        margin-top: 15px;
+        max-height: 45vh;
+        overflow-y: scroll;
+        width: 105%;
+        padding: 2%;
+        margin-left: -2%;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         .result {
             padding: 20px;
@@ -36,11 +47,16 @@
             display: flex;
             justify-content: space-between;
             border-radius: 5px;
+            width: 95%;
+            font-size: initial;
+            box-shadow: none;
+            font-weight: normal;
 
-            &:hover {
+            &:hover, &:focus {
                 box-shadow: 0px 0px 5px orange;
                 transform: scale(1.01);
                 cursor: pointer;
+                outline: none;
             }
 
             &.inactive {

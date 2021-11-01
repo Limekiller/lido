@@ -143,11 +143,13 @@ class VideoPlayer extends Component {
             })
             .then(response => response.json())
             .then(data => {
-                this.setState({ hash: data.hash })
-                this.player.src({
-                    src: `/streams/${data.hash}/${data.hash}.m3u8`,
-                    type: 'application/x-mpegURL'
-                })
+                setTimeout(() => {
+                    this.setState({ hash: data.hash })
+                    this.player.src({
+                        src: `/streams/${data.hash}/${data.hash}.m3u8`,
+                        type: 'application/x-mpegURL'
+                    })
+                }, 5000)
             })
         }
         this.setState({ hasConverted: true })
@@ -270,6 +272,7 @@ class VideoPlayer extends Component {
                     icon={faTimesCircle}
                     className={`
                         video-close
+                        selectable
                         ${styles.close}
                         ${!this.state.showOverlay ? 'display-none' : ''}
                     `}
@@ -303,16 +306,19 @@ class VideoPlayer extends Component {
                             </button>
                             <FontAwesomeIcon
                                 icon={faFont}
+                                className='selectable'
                                 onClick={() => this.context.globalFunctions.createMessage(renameFileMessage)}
                                 onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.createMessage(renameFileMessage) }}}
                             />
                             <FontAwesomeIcon
                                 icon={faTrash}
+                                className='selectable'
                                 onClick={() => this.deleteFile()}
                                 onKeyDown={e => {if (e.key === 'Enter') { this.deleteFile() }}}
                             />
                             <FontAwesomeIcon
                                 icon={faDownload}
+                                className='selectable'
                                 onClick={() => this.downloadMovie()}
                                 onKeyDown={e => {if (e.key === 'Enter') { this.downloadMovie() }}}
                             />

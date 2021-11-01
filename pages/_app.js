@@ -38,7 +38,7 @@ class MyApp extends App {
     const messageID = Math.floor(Math.random()*90000) + 10000
     SpatialNavigation.add(
       `message${messageID}`,
-      {selector: `.message${messageID} button, .message${messageID} svg, .message${messageID} button.vjs-control`}
+      {selector: `.message${messageID} button, .message${messageID} svg.selectable, .message${messageID} button.vjs-control, .message${messageID} input`}
     );
 
     let tempMessages = this.state.messages
@@ -60,13 +60,30 @@ class MyApp extends App {
     })
   }
 
+  /**
+   * Global function to close all messages
+   */
+  closeAllMessages = () => {
+    for (let i = 0; i <= this.state.messages.length; i++) {
+      this.closeMessage()
+    }
+  }
+
   // Init spatial nav on app load
   componentDidMount() {
     window.addEventListener('load', function() {
       SpatialNavigation.init();
       SpatialNavigation.add(
         'mainNav',
-        {selector: '.sidebar a, .pageContainer a, .pageContainer input, .pageContainer button, .folderContainer, .file'}
+        {selector: 
+          `.sidebar a, 
+          .pageContainer a, 
+          .pageContainer input, 
+          .pageContainer button, 
+          .folderContainer, 
+          .file,
+          #addButton`
+        }
       );
       SpatialNavigation.makeFocusable('mainNav');
       SpatialNavigation.focus();
@@ -113,6 +130,7 @@ class MyApp extends App {
   globalFunctions = {
     createMessage: this.createMessage,
     closeMessage: this.closeMessage,
+    closeAllMessages: this.closeAllMessages,
     createToast: this.createToast
   }
 
