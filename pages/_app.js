@@ -23,8 +23,41 @@ class MyApp extends App {
     this.toastRef = createRef(this.state.toasts)
     this.toastRef.current = this.state.toasts
 
-    Router.events.on("routeChangeComplete", () => {this.setState({ loadingVisible: false })} );
+    Router.events.on("routeChangeComplete", () => {
+      this.setState({ loadingVisible: false })
+      console.log(SpatialNavigation.getSections())
+    });
     Router.events.on("routeChangeStart", () => {this.setState({ loadingVisible: true })} );
+  }
+
+  componentDidUpdate() {
+    Keyboard.bindButtons();
+    if (SpatialNavigation.getSections().mainNav === undefined) {
+      this.initSpatialNav();
+    }
+    SpatialNavigation.makeFocusable('mainNav');
+  }
+
+  componentDidMount() {
+    this.initSpatialNav();
+
+    // Add osk script
+    const script = document.createElement("script");
+    script.src = "/osk/js/keyboard.js";
+    script.async = false;
+    document.body.appendChild(script);
+
+    // Disable the osk on mousemove and enable it on keyboard press
+    window.onload = () => {
+      window.addEventListener('mousemove', () => {
+        Keyboard.properties.enabled = false;
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key == 'ArrowLeft' || e.key == 'ArrowRight' || e.key == 'ArrowUp' || e.key == 'ArrowDown') {
+          Keyboard.properties.enabled = true;
+        }
+      })
+    }
   }
 
 
@@ -38,7 +71,10 @@ class MyApp extends App {
     const messageID = Math.floor(Math.random()*90000) + 10000
     SpatialNavigation.add(
       `message${messageID}`,
-      {selector: `.message${messageID} button, .message${messageID} svg.selectable, .message${messageID} button.vjs-control, .message${messageID} input`}
+      {
+        selector: `.message${messageID} button, .message${messageID} svg.selectable, .message${messageID} button.vjs-control, .message${messageID} input`,
+        defaultElement: `.message${messageID} button`
+      }
     );
 
     let tempMessages = this.state.messages
@@ -69,25 +105,32 @@ class MyApp extends App {
     }
   }
 
-  // Init spatial nav on app load
-  componentDidMount() {
-    window.addEventListener('load', function() {
-      SpatialNavigation.init();
-      SpatialNavigation.add(
-        'mainNav',
-        {selector: 
+  initSpatialNav = () => {
+    // Init spatial nav on app load
+    // SpatialNavigation.uninit()
+    SpatialNavigation.init();
+    SpatialNavigation.add(
+      'mainNav', {
+        selector: 
           `.sidebar a, 
           .pageContainer a, 
           .pageContainer input, 
           .pageContainer button, 
           .folderContainer, 
           .file,
-          #addButton`
-        }
-      );
-      SpatialNavigation.makeFocusable('mainNav');
-      SpatialNavigation.focus();
-    });
+          #addButton`,
+        defaultElement: '#movies'
+      }
+    );
+    SpatialNavigation.makeFocusable('mainNav');
+
+    SpatialNavigation.add(
+      'keyboard',
+      {selector: '.keyboard__key', defaultElement: '.keyboard__key'}
+    );
+    SpatialNavigation.makeFocusable('keyboard');
+    SpatialNavigation.disable('keyboard');
+    SpatialNavigation.focus(document.querySelector('#movies'));
   }
 
   /**
@@ -131,7 +174,7 @@ class MyApp extends App {
     createMessage: this.createMessage,
     closeMessage: this.closeMessage,
     closeAllMessages: this.closeAllMessages,
-    createToast: this.createToast
+    createToast: this.createToast,
   }
 
   render() {
@@ -141,8 +184,11 @@ class MyApp extends App {
       <>
         <Head>
           <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+
           <script src="https://kit.fontawesome.com/cae1618de2.js" crossOrigin="anonymous"></script>
-          <script src="https://luke-chang.github.io/js-spatial-navigation/spatial_navigation.js"></script>
+          <script src="/spatialnav/spatial_navigation.js"></script>
+
+          <link href="/osk/css/style.css" rel="stylesheet" />
         </Head>
 
 

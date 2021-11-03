@@ -16,7 +16,7 @@ function Sidebar() {
                 `}>
                     <div className={styles.topOptions}>
                         <Link href='/Movies'>
-                            <a><FontAwesomeIcon icon={faFilm} /></a>
+                            <a id='movies'><FontAwesomeIcon icon={faFilm} /></a>
                         </Link>
                         <Link href='/TV'>
                             <a><FontAwesomeIcon icon={faTv} /></a>

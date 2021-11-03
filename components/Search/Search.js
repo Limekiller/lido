@@ -18,7 +18,7 @@ const Search = (props) => {
             ${props._style && props._style == 'fancy' ? styles.fancy : ''}
         `}>
             <div className={styles.searchBar} >
-                <input id='searchBar' type='text' onKeyDown={(e) => onKeyDown(e)} className='search' />
+                <input id='searchBar' type='text' onKeyDown={(e) => onKeyDown(e)} className='search use-keyboard-input' />
                 <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
             </div>
         </div>

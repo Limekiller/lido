@@ -84,7 +84,10 @@ export default class DownloadMedia extends Component {
                         type='text' 
                         name='search' 
                         id='search' 
-                        className={styles.search} 
+                        className={`
+                            ${styles.search}
+                            use-keyboard-input
+                        `}
                         onKeyDown={(e) => {if (e.keyCode == 13) { this.getResults(document.querySelector('#search').value) }}} 
                     />
                     <button 

@@ -257,7 +257,7 @@ class VideoPlayer extends Component {
         const renameFileMessage =
             <Message>
                 <h1>Rename File</h1>
-                <input type='text' id='rename' onKeyDown={(e) => {e.keyCode == 13 ? this.renameFile(document.querySelector('#rename').value) : '' }}/><br />
+                <input type='text' className='use-keyboard-input' id='rename' onKeyDown={(e) => {e.keyCode == 13 ? this.renameFile(document.querySelector('#rename').value) : '' }}/><br />
                 <button onClick={() => this.renameFile(document.querySelector('#rename').value)}>Submit</button>
                 <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
             </Message>

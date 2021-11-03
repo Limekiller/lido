@@ -27,8 +27,13 @@ input {
   padding: 10px;
   box-sizing: border-box;
   font-family: halyard-text, sans-serif;
+  transition: all 0.4s ease;
 }
-button:not(.link):not(.vjs-control) {
+input.keyboard-focus {
+  box-shadow: 0px 0px 5px orange;
+  transform: scale(1.01);
+}
+button:not(.link):not(.vjs-control):not(.keyboard__key) {
   background: linear-gradient(orange, gold);
   border: none;
   padding: 10px 20px 10px 20px;

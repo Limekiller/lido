@@ -37,6 +37,7 @@ export class Menu extends Component {
                     <input 
                         id='folderName' 
                         type='text' 
+                        className='use-keyboard-input'
                         onKeyDown={(e) => {if (e.keyCode == 13) {this.createFolder(document.querySelector('#folderName').value)}}}
                     /><br />
                     <button onClick={() => this.createFolder(document.querySelector('#folderName').value)}>Add folder</button>
