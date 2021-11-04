@@ -72,12 +72,14 @@ class VideoPlayer extends Component {
             this.setState({hasShownConvertMessage: true})
         }
         
+        SpatialNavigation.disable('add');
         document.addEventListener('keydown', this.onKey);
         document.addEventListener('mousemove', this.onMouseMove);
     }
 
     // destroy player on unmount
     componentWillUnmount() {
+        SpatialNavigation.enable('add');
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('keydown', this.onKey);
         if (this.player) {
@@ -102,7 +104,7 @@ class VideoPlayer extends Component {
     onKey = e => {
         document.querySelector('.vjs-control-bar').classList.add('tv-control')
         if (!this.state.showOverlay) {
-            if (e.code == 'Enter' && !e.target.classList.contains('mainPlayButton')) {
+            if ((e.code == 'Enter' || e.code == 'Space') && !e.target.classList.contains('mainPlayButton')) {
                 this.showOverlay();
                 this.player.pause();
             } else  {

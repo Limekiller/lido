@@ -58,7 +58,10 @@ export default class DownloadMedia extends Component {
                         return (
                             <button 
                                 key={index}
-                                className={styles.result}
+                                className={`
+                                    ${styles.result}
+                                    download-result
+                                `}
                                 onClick={(e) => this.queueDownload(result.link, e)}
                             >
                                 <div>{result.name}</div>

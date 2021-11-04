@@ -32,10 +32,8 @@ class MyApp extends App {
 
   componentDidUpdate() {
     Keyboard.bindButtons();
-    if (SpatialNavigation.getSections().mainNav === undefined) {
-      this.initSpatialNav();
-    }
     SpatialNavigation.makeFocusable('mainNav');
+    SpatialNavigation.makeFocusable('add');
   }
 
   componentDidMount() {
@@ -105,9 +103,10 @@ class MyApp extends App {
     }
   }
 
+  /**
+   * Helper function to initialize all the spatial nav stuff
+   */
   initSpatialNav = () => {
-    // Init spatial nav on app load
-    // SpatialNavigation.uninit()
     SpatialNavigation.init();
     SpatialNavigation.add(
       'mainNav', {
@@ -117,12 +116,17 @@ class MyApp extends App {
           .pageContainer input, 
           .pageContainer button, 
           .folderContainer, 
-          .file,
-          #addButton`,
+          .file`,
         defaultElement: '#movies'
       }
     );
     SpatialNavigation.makeFocusable('mainNav');
+
+    SpatialNavigation.add(
+      'add',
+      {selector: '#addButton', defaultElement: '#addButton'}
+    );
+    SpatialNavigation.enable('add');
 
     SpatialNavigation.add(
       'keyboard',

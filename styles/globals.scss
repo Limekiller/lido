@@ -33,7 +33,7 @@ input.keyboard-focus {
   box-shadow: 0px 0px 5px orange;
   transform: scale(1.01);
 }
-button:not(.link):not(.vjs-control):not(.keyboard__key) {
+button:not(.link):not(.vjs-control):not(.keyboard__key):not(.download-result) {
   background: linear-gradient(orange, gold);
   border: none;
   padding: 10px 20px 10px 20px;

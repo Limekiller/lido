@@ -5,6 +5,9 @@
  * https://github.com/luke-chang/js-spatial-navigation
  *
  * Licensed under the MPL 2.0.
+ * 
+ * Modified by Bryce Yoder for Lido (c) 2021
+ * https://github.com/Limekiller/lido
  */
 ;(function($) {
     'use strict';
@@ -958,6 +961,8 @@
       }
     }
 
+    // Remove circular references from an object so we can stringify it
+    // See below for more
     function removeCircularRefs() {
         const seen = new WeakSet();
         return (key, value) => {
@@ -1003,7 +1008,13 @@
         _duringFocusChange = false;
       },
 
+      // Public getter and setter for the _sections object
+      // Allows this library to integrate with the on-screen keyboard
+      // When the OSK activates, it disables all existing sections except for the keyboard (see disableAllButOneSection())
+      // When it deactivates, we want to restore state to what it was before the OSK activated
+      // So we use this getter, save the value to the keyboard object, and then restore it when the OSK closes
       getSections: function() {
+        // Return 
         return JSON.parse(JSON.stringify(_sections, removeCircularRefs()));
       },
 
@@ -1241,6 +1252,7 @@
       }
     };
   
+    // React will call this code multiple times, so only set this if it's not already defined
     if (window.SpatialNavigation === undefined) {
       window.SpatialNavigation = SpatialNavigation;
     }

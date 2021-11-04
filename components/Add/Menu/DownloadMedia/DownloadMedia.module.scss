@@ -51,6 +51,9 @@
             font-size: initial;
             box-shadow: none;
             font-weight: normal;
+            color: white;
+            border: 0px;
+            font-family: "Halyard-Text", sans-serif;
 
             &:hover, &:focus {
                 box-shadow: 0px 0px 5px orange;
