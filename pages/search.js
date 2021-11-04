@@ -25,7 +25,10 @@ class FolderView extends Component {
     getData = () => {
         fetch('/api/search?query=' + Router.query.query)
         .then(results => results.json())
-        .then(data => this.setState({ files: data, hasLoaded: true }))
+        .then(data => {
+            this.setState({ files: data, hasLoaded: true })
+            SpatialNavigation.makeFocusable('mainNav');
+        })
     }
 
     generateHTML(data) {
@@ -41,6 +44,7 @@ class FolderView extends Component {
                             key={index}
                             className='file'
                             onClick={() => this.context.globalFunctions.createMessage(<VideoPlayer path={data[_key].name}/>)}
+                            onKeyDown={e => {if (e.key === 'Enter') { e.target.click() }}}
                             style={{
                                 backgroundImage: hasPoster ? 'url("' + data[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
                                 color: hasPoster ? 'rgba(0,0,0,0)' : 'white'

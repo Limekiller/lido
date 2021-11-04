@@ -164,7 +164,7 @@ class VideoPlayer extends Component {
      * @returns {JSON obj} The video and audio codecs of the file
      */
     getCodecs = async () => {
-        const codecs = await fetch(`/api/streamActions?source=${window.location.pathname}&name=${this.state.title}`)
+        const codecs = await fetch(`/api/streamActions?source=${this.props.path.split('/').slice(0, -1).join('/')}&name=${this.state.title}`)
         return await codecs.json()
     }
 
@@ -221,6 +221,10 @@ class VideoPlayer extends Component {
      * @param {string} newTitle The title we want to rename the file to
      */
     renameFile = (newTitle) => {
+        if (!newTitle) {
+            this.context.globalFunctions.createToast('alert', 'Filename cannot be empty!')
+            return
+        }
         fetch('/api/folderActions', {
             method: 'PUT',
             headers: {
