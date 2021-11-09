@@ -78,6 +78,18 @@ button:not(.link):not(.vjs-control):not(.keyboard__key):not(.download-result) {
     transform: translateY(-50%);
   }
 }
+.emptyIcon {
+  width: min-content;
+  margin: 0 auto;
+  text-align: center;
+  opacity: 0.4;
+  line-height: 20px;
+  margin-top: 150px;
+
+  img {
+    max-width: 160px;
+  }
+}
 
 .video-js {
   width: 100%;

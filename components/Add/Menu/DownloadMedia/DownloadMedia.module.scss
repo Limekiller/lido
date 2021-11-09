@@ -2,6 +2,13 @@
 
 .downloadMedia {
     z-index: 99;
+    overflow: auto;
+    scrollbar-width: none;
+    padding: 20px;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     .search {
         padding: 10px;
@@ -26,17 +33,9 @@
     }
 
     .results {
-        margin-top: 15px;
+        padding: 20px 0px;
         max-height: 45vh;
-        overflow-y: scroll;
-        width: 105%;
-        padding: 2%;
-        margin-left: -2%;
-        scrollbar-width: none;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
+        width: 100%;
 
         .result {
             padding: 20px;
@@ -47,13 +46,14 @@
             display: flex;
             justify-content: space-between;
             border-radius: 5px;
-            width: 95%;
+            width: 100%;
             font-size: initial;
             box-shadow: none;
             font-weight: normal;
             color: white;
             border: 0px;
             font-family: "Halyard-Text", sans-serif;
+            text-align: left;
 
             &:hover, &:focus {
                 box-shadow: 0px 0px 5px orange;

@@ -52,7 +52,6 @@ export default class DownloadMedia extends Component {
             // Add an empty element before results or
             // the first result will catch the end of the loading animation
             resultsHTML = <>
-                <div />
                 {this.state.results.map((result, index) => {
                     if (parseInt(result.seeders) > parseInt(result.leechers)) {
                         return (

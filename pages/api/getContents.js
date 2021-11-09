@@ -28,10 +28,11 @@ export default async (req, res) => {
       let data = await fetch(req.headers.origin + '/api/getMovieData?title=' + file.name)
       return { name: file.name, data: await data.json()}
     }))
+    // files = files.map(file => {return {name: file.name, data: {}}})
 
     const data = {
         folders: folders,
-        files: await files
+        files: files
     }
 
     res.statusCode = 200;

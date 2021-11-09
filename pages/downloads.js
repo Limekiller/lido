@@ -42,7 +42,6 @@ export default class downloads extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            this.parseDownloads(data);
             this.context.globalFunctions.createToast('notify', 'Download canceled!')
         })
     }
@@ -85,29 +84,36 @@ export default class downloads extends Component {
                 <Search />
                 <h1 className='pageTitle dlPageTitle'>Downloads</h1>
                 <div className='downloadContainer'>
-                    {this.state.downloads.map((file, index) => {
-                        const percentage = ((file.completedLength / file.totalLength) * 100).toFixed(2);
-                        return (
-                            <div 
-                                className='download' 
-                                key={index} 
-                            >
-                                <span className='name'>{file.name}</span>
-                                <div className='endActions'>
-                                    <span className='percentage'>{percentage + '%'}</span>
-                                    <FontAwesomeIcon 
-                                        icon={faTimesCircle} 
-                                        onClick={(e) => this.cancelDownload(
-                                            file.gid,
-                                            file.path,
-                                            file.name,
-                                            e
-                                        )}
-                                    />
+                    {this.state.downloads.length === 0 ? 
+                        <div className='emptyIcon'>
+                            <img src='/images/icons/empty.svg' />
+                            <h3>No downloads in progress</h3>
+                        </div>
+                    : 
+                        this.state.downloads.map((file, index) => {
+                            const percentage = ((file.completedLength / file.totalLength) * 100).toFixed(2);
+                            return (
+                                <div 
+                                    className='download' 
+                                    key={index} 
+                                >
+                                    <span className='name'>{file.name}</span>
+                                    <div className='endActions'>
+                                        <span className='percentage'>{percentage + '%'}</span>
+                                        <FontAwesomeIcon 
+                                            icon={faTimesCircle} 
+                                            onClick={(e) => this.cancelDownload(
+                                                file.gid,
+                                                file.path,
+                                                file.name,
+                                                e
+                                            )}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })}
+                            )
+                        })
+                    }
                 </div>
             </>
         )

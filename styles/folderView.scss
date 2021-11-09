@@ -40,13 +40,14 @@
         }
 
         @media (max-width: 1000px) {
-            width: 30vw;
-            height: 30vw;
+            width: 100px;
+            height: 100px;
         }
     }
 
     @media (max-width: 1000px) {
         margin-top: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(min-content, 140px));
     }
 }
 
@@ -116,6 +117,7 @@
 
     @media (max-width: 1000px) {
         grid-template-columns: repeat(auto-fit, minmax(min-content, 33vw));
+        padding-bottom: 150px;
     }
 
 }
@@ -134,12 +136,13 @@
     }
 
     &.dragging {
-        transition: opacity 0.4s ease;
+        transition: opacity 0.4s ease, padding 0.4s ease;
         pointer-events: none;
         z-index: 9;
     }
     &.droppable {
         opacity: 0.5;
+        padding: 10px;
     }
 
     span.posterLoaded {

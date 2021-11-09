@@ -83,17 +83,18 @@
                 bottom: 10px;
             }
         }
+
+        @media (max-width: 1000px) {
+            margin-right: 0px;
+            width: 150px;
+            height: 150px;
+        }
     }
 
     @media (max-width: 1000px) {
-        width: 150px;
-        height: 150px;
-        margin-right: 0px;
-    }
-
-
-    @media (max-width: 1000px) {
-        justify-content: space-around;
+        left: -50vw;
+        flex-direction: column;
+        justify-content: center;
     }
 
 }

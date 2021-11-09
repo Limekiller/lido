@@ -22,11 +22,9 @@ class PosterBg extends Component {
 
         setTimeout(() => {
             const numPosters = document.querySelectorAll('.' + styles.poster).length;
-            console.log(numPosters)
             fetch('/api/getRandomPoster?number=' + numPosters)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 document.querySelectorAll('.' + styles.poster).forEach((poster, i) => {
                     poster.style.backgroundImage = 'url("/images/posters/' + data[i] + '")'
                 })

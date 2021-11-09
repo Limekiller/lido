@@ -60,9 +60,16 @@ class FolderView extends Component {
         .then(data => {
             this.setState({ hasLoaded: true })
             if (JSON.stringify(this.state.contents) != JSON.stringify(data)) {
-                this.setState({
-                    contents: data
-                });
+                this.setState({contents: data})
+                // this.state.contents.files.forEach(async (file, index) => {
+                //     let data = fetch('/api/getMovieData?title=' + file.name)
+                //     .then(response => response.json())
+                //     .then(data => {
+                //         const tempFiles = this.state.contents.files
+                //         tempFiles[index]['data'] = data
+                //         this.setState({contents: {...this.state.contents, files: tempFiles}})
+                //     })
+                // })
             }
         })
         .catch(error => {
