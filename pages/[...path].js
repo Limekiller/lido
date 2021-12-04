@@ -1,21 +1,22 @@
-import Link from 'next/link'
-import path from 'path'
 import { Component } from 'react'
+
+import Link from 'next/link'
+import Router from "next/router";
+import { getSession } from 'next-auth/client'
+import { withRouter } from 'next/router'
+
+import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs.js'
 import Add from '@/components/Add/Add.js'
 import VideoPlayer from '@/components/MessageContainer/VideoPlayer/VideoPlayer.js'
-import { faTrashAlt, faList } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs.js'
-import { withRouter } from 'next/router'
-import Draggable from 'react-draggable';
-import { getSession } from 'next-auth/client'
-import Router from "next/router";
 import AppContext from '@/components/AppContext.js'
 import Search from '@/components/Search/Search.js'
 import LoadingFilesIndicator from '@/components/LoadingFilesIndicator/LoadingFilesIndicator.js'
 
-class FolderView extends Component {
+import Draggable from 'react-draggable';
+import { faTrashAlt, faList } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+class FolderView extends Component {
 
     static contextType = AppContext
 
@@ -61,6 +62,7 @@ class FolderView extends Component {
             this.setState({ hasLoaded: true })
             if (JSON.stringify(this.state.contents) != JSON.stringify(data)) {
                 this.setState({contents: data})
+                // Uncomment to fetch media info for each file asynchronously
                 // this.state.contents.files.forEach(async (file, index) => {
                 //     let data = fetch('/api/getMovieData?title=' + file.name)
                 //     .then(response => response.json())
@@ -185,6 +187,13 @@ class FolderView extends Component {
     generateHTML(data) {
         return (
             <>
+                {data.folders.length === 0 && data.files.length === 0 ?
+                    <div className='emptyIcon'>
+                        <img src='/images/icons/empty.svg' />
+                        <h3>There's nothing here! Why not add some files?</h3>
+                    </div>
+                : ''}
+                
                 <div className='folders'>
                     {data.folders.map((folder, index) => {
                         const innerHTML = <div 
@@ -220,11 +229,22 @@ class FolderView extends Component {
                     })}
                 </div>
 
-                <div className='files'>
+                <div 
+                    className={`
+                        files
+                        ${this.props.router.asPath.slice(0, 3) == '/TV' ? 'listView' : ''}
+                    `}
+                >
                     {Object.keys(data.files).map((_key, index) => {
                         let hasPoster = false
                         if (data.files[_key].data.Poster && data.files[_key].data.Poster != "N/A") {
                             hasPoster = true
+                        }
+                        let seriesTitle = ''
+                        if (data.files[_key].data.Type === 'episode') {
+                            let title = data.files[_key].name.split(/s[0-9]{2}e[0-9]{2}/i)[0].slice(0, -1)
+                            let episodeInfo = data.files[_key].name.split(title)[1].slice(1, 7)
+                            seriesTitle = `${title} • ${episodeInfo}`
                         }
                         const innerHTML = <div
                                 className='file'
@@ -232,11 +252,15 @@ class FolderView extends Component {
                                 onKeyDown={e => {if (e.key === 'Enter') { e.target.click() }}}
                                 style={{
                                     backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
-                                    color: hasPoster ? 'rgba(0,0,0,0)' : 'white'
+                                    color: hasPoster && data.files[_key].data.Type === 'movie' ? 'rgba(0,0,0,0)' : 'white'
                                 }}
                                 tabIndex='0'
                             >
-                            <span>{decodeURIComponent(data.files[_key].name)}</span>
+                            <span className='title'>{
+                                data.files[_key].data.Title ??
+                                decodeURIComponent(data.files[_key].name)
+                            }</span>
+                            <span className='seriesTitle'>{seriesTitle}</span>
                         </div>
                         if (window.innerWidth > 1000) {
                             return (

@@ -25,7 +25,6 @@ class MyApp extends App {
 
     Router.events.on("routeChangeComplete", () => {
       this.setState({ loadingVisible: false })
-      console.log(SpatialNavigation.getSections())
     });
     Router.events.on("routeChangeStart", () => {this.setState({ loadingVisible: true })} );
   }
