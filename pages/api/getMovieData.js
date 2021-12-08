@@ -33,9 +33,16 @@ export default async (req, res) => {
     }
     let data = await fetch(OMDBLink)
 
+    // if fetch times out, we'll just sent some empty JSON
+    if (data.status === 522) {
+        data = {}
+    } else {
+        data = await data.json()
+    }
+
     res.setHeader('Content-Type', 'application/json')
     res.statusCode = 200
-    res.end(JSON.stringify(await data.json()))
+    res.end(JSON.stringify(data))
     
 }
 

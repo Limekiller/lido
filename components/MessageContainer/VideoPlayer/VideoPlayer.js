@@ -114,6 +114,10 @@ class VideoPlayer extends Component {
                     this.player.currentTime(currTime - 10);
                 } else if (e.code == 'ArrowRight') {
                     this.player.currentTime(currTime + 10);
+                } else if (e.code == 'ArrowUp') {
+                    const captionState = this.state.captions ? 'disabled' : 'enabled'
+                    this.context.globalFunctions.createToast('notify', `Captions ${captionState}`)
+                    document.querySelector('.vjs-subs-caps-button').click()
                 }
             }
         }
@@ -320,9 +324,9 @@ class VideoPlayer extends Component {
                         <h3>{this.state.data.Year}</h3>
                         <p>{this.state.data.Plot}</p>
                         <p className={styles.note}>
-                            Film information is retrieved based on the filename.<br />
+                            Film information and subtitles are retrieved based on the filename.<br />
                             If this information is not correct, try renaming the file.<br />
-                            {this.state.strippedTitle}
+                            ({this.state.title})
                         </p>
 
                         <div className={styles.videoOptions}>
