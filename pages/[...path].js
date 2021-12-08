@@ -111,7 +111,8 @@ class FolderView extends Component {
      */
     checkDropZone = (e) => {
         if (document.querySelector('.dragging')) {
-            const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').innerText)
+            //const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').innerText)
+            const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').dataset.filename)
             if (e.target.classList.contains('folder')) {
                 const pathName = window.location.pathname + '/' + encodeURIComponent(e.target.innerText)
                 this.moveItem(fileName, pathName)
@@ -201,6 +202,7 @@ class FolderView extends Component {
                             key={index} 
                             className='folderContainer'
                             onKeyDown={e => {if (e.key === 'Enter') { e.target.querySelector('.folder').click() }}}
+                            data-filename={decodeURIComponent(folder)}
                         >
                             <FontAwesomeIcon
                                 className='trash'
@@ -255,6 +257,7 @@ class FolderView extends Component {
                                     color: hasPoster && data.files[_key].data.Type === 'movie' ? 'rgba(0,0,0,0)' : 'white'
                                 }}
                                 tabIndex='0'
+                                data-filename={decodeURIComponent(data.files[_key].name)}
                             >
                             <span className='title'>{
                                 data.files[_key].data.Title ??

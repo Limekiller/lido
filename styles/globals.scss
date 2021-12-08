@@ -33,7 +33,7 @@ input.keyboard-focus {
   box-shadow: 0px 0px 5px orange;
   transform: scale(1.01);
 }
-button:not(.link):not(.vjs-control):not(.keyboard__key):not(.download-result) {
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
   background: linear-gradient(orange, gold);
   border: none;
   padding: 10px 20px 10px 20px;
@@ -133,6 +133,20 @@ button:not(.link):not(.vjs-control):not(.keyboard__key):not(.download-result) {
 .vjs-control-bar.tv-control button {
   display: none;
 }
+.vjs-text-track-cue div {
+  background: transparent !important;
+  text-shadow: 0px 0px 10px black,
+               -2px 2px 0 black,
+               2px -2px 0 black,
+               -2px -2px 0 black;
+}
+.vjs-subs-caps-button .vjs-menu {
+  display: none !important;
+}
+.captions .vjs-subs-caps-button .vjs-icon-placeholder:before {
+  color: gold !important;
+}
+
 
 .logo {
   margin: 0 auto;

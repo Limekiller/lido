@@ -31,10 +31,10 @@ class VideoPlayer extends Component {
         this.state = ({
             data: {},
             title: this.getTitle()[0],
+            captions: false,
             strippedTitle: this.getTitle()[1],
             showOverlay: true,
             hasShownConvertMessage: false,
-
             hash: null,
             hasConverted: false
         })
@@ -183,7 +183,30 @@ class VideoPlayer extends Component {
      */
     getMovieData = async () => {
         let data = await fetch('/api/getMovieData?title=' + this.state.title)
-        this.setState({ data: await data.json() })
+        data = await data.json()
+        this.setState({ data: data })
+        if (data.imdbID) {
+            this.getSubtitles(parseInt(data.imdbID.slice(2), 10))
+        }
+    }
+
+    /**
+     * Helper function to get .srt file
+     */
+    getSubtitles = (imdbID) => {
+        fetch(`/api/getSubtitles?imdbid=${imdbID}`)
+        .then(response => response.json())
+        .then(data => {
+            this.player.addRemoteTextTrack({src: data.link}, false);
+            document.querySelector('.vjs-subs-caps-button').addEventListener('click', (e) => {
+                document.querySelector('.vjs-subs-caps-button .vjs-menu-item[role="menuitemradio"]').click()
+                if (!this.state.captions) {
+                    document.querySelector('.vjs-subtitles-menu-item').click()
+                }
+                this.setState({ captions: !this.state.captions })
+            })
+        })
+        
     }
 
     /**
@@ -260,18 +283,19 @@ class VideoPlayer extends Component {
 
     render() {
 
-        const renameFileMessage =
-            <Message>
+        const renameFileMessage = <Message>
                 <h1>Rename File</h1>
                 <input type='text' className='use-keyboard-input' id='rename' onKeyDown={(e) => {e.keyCode == 13 ? this.renameFile(document.querySelector('#rename').value) : '' }}/><br />
                 <button onClick={() => this.renameFile(document.querySelector('#rename').value)}>Submit</button>
                 <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
-            </Message>
+        </Message>
+
         return (
             <div 
                 className={`
                     ${styles.videoPlayer}
                     ${!this.state.showOverlay ? '' : 'overlay'}
+                    ${this.state.captions ? 'captions' : ''}
                 `}
             >
                 <FontAwesomeIcon
@@ -297,7 +321,8 @@ class VideoPlayer extends Component {
                         <p>{this.state.data.Plot}</p>
                         <p className={styles.note}>
                             Film information is retrieved based on the filename.<br />
-                            If this information is not correct, try renaming the file.
+                            If this information is not correct, try renaming the file.<br />
+                            {this.state.strippedTitle}
                         </p>
 
                         <div className={styles.videoOptions}>
@@ -337,12 +362,13 @@ class VideoPlayer extends Component {
                         `}</style>
                     </div>
                     <video
-                        className='video-js'
+                        className='video-js '
                         preload="auto"
                         id='video'
                         controls
                         autoPlay='autoplay'
                         ref={ node => this.videoNode = node }
+                        crossOrigin="anonymous"
                     >
                         <source src={'/api/getVideo?range=0&path=' + encodeURIComponent(this.props.path)} type="video/mp4" />
                     </video>
