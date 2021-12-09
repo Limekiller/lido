@@ -13,22 +13,14 @@
         background: linear-gradient(orange, gold);
         box-shadow: 0px 0px 20px #00000091;
         margin-bottom: 20px;
-    
-        &.incoming {
-            animation: slide-in 0.4s cubic-bezier(0.83, 0, 0.17, 1) forwards;
-        }
-        &.outgoing {
-            animation: slide-out 0.6s cubic-bezier(0.83, 0, 0.17, 1) forwards;
-        }
+        animation: toast cubic-bezier(0.22, 1, 0.36, 1);
     }
 }
 
-@keyframes slide-in {
-    from {transform: translate(300px);}
-    to {transform: translate(0px);}
-}
-@keyframes slide-out {
-    0% {transform: translate(0px);}
-    75% {transform: translate(350px); margin-top: 0px;}
-    100% {transform: translate(350px); margin-top: -85px;}
+@keyframes toast {
+    0% {transform: translate(350px);}
+    5% {transform: translate(0px);}
+    90% {transform: translate(0px);}
+    95% {transform: translate(350px); margin-top: 0px}
+    100% {margin-top: -80px; transform: translate(350px);}
 }

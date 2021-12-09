@@ -140,35 +140,20 @@ class MyApp extends App {
    * Global function for creating pop-up toasts
    * 
    * @param {string} type The "alert level" of the toast
-   * @param {string} text What thet toast should say
+   * @param {string} text What the toast should say
    * @param {int} time How long the toast should appear 
    */
   createToast = (type, text, time=5000) => {
+    const toastID = Math.floor(Math.random()*90000) + 10000;
     let tempToasts = this.state.toasts
-    tempToasts.push({ text: text, type: type, animation: 'incoming' })
-    this.setState({
-      toasts: tempToasts
-    })
+    tempToasts.push({ text: text, type: type, id: toastID, time: time })
+    this.setState({ toasts: tempToasts })
 
-    // Add the outgoing animation to the first toast before it is deleted
-    setTimeout(() => {
-      let tempToasts = this.toastRef.current
-      tempToasts[0].animation = 'outgoing'
-      this.setState({ toasts: tempToasts })
-    }, time - 600)
-
-    // Delete the first toast, and set the new first toast's animation to none
-    // so that it doesn't re-animate the incoming anim
     setTimeout(() => {
       let tempToasts = this.toastRef.current
       tempToasts.shift()
-      if (tempToasts[0]) {
-        tempToasts[0].animation = 'none'
-      }
-      this.setState({
-        toasts: tempToasts
-      })
-    }, time )
+      this.setState({ toasts: tempToasts })
+    }, time)
   }
 
   // Function refs are stored in the app context and passed to every component,

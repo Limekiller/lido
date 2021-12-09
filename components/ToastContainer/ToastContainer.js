@@ -10,25 +10,22 @@ export default class ToastContainer extends Component {
 
         return (
             <div className={styles.toastContainer}>
-                {this.props.toasts.map((toast, index) => {
+                {this.props.toasts.map((toast) => {
                     let background = 'linear-gradient(orange, gold)'
                     if (toast.type == 'alert') {
                         background = 'linear-gradient(#530707, #973232)'
                     }
 
                     return (
-                        <div key={index}>
+                        <div key={toast.id}>
                             <div 
-                                id={'toast'+index} 
-                                className={`
-                                    ${styles.toast}
-                                    ${styles[toast.animation]}
-                                `}
-                                >{toast.text}
-                            </div>
+                                id={'toast'+toast.id} 
+                                className={styles.toast}
+                            >{toast.text}</div>
                             <style jsx>{`
-                                #${'toast'+index} {
+                                #${'toast'+toast.id} {
                                     background: ${background};
+                                    animation-duration: ${toast.time}ms;
                                 }
                             `}</style>
                         </div>
