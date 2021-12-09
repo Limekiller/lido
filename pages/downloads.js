@@ -90,12 +90,12 @@ export default class downloads extends Component {
                             <h3>No downloads in progress</h3>
                         </div>
                     : 
-                        this.state.downloads.map((file, index) => {
+                        this.state.downloads.map(file => {
                             const percentage = ((file.completedLength / file.totalLength) * 100).toFixed(2);
                             return (
                                 <div 
                                     className='download' 
-                                    key={index} 
+                                    key={file.gid} 
                                 >
                                     <span className='name'>{file.name}</span>
                                     <div className='endActions'>
