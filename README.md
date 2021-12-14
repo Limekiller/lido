@@ -18,7 +18,8 @@ You need to add a few directories:
 
 You need to create a .env.local file in the install directory with the following values:
 ```
-OMDB_API_KEY={omdb_api_key}
+OMDB_API_KEY={your_omdb_api_key (http://www.omdbapi.com/) -- this is needed to fetch metadata + subtitles}
+OPENSUBTITLES_API_KEY={your_opensubs_api_key (https://www.opensubtitles.com) -- this is needed to fetch metadata}
 APP_PASSWORD={whatever_the_password_should_be}
 NEXTAUTH_URL=http(s)://{the_domain}
 ```
