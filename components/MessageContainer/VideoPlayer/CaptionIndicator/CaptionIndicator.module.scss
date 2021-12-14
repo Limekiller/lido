@@ -2,13 +2,17 @@
     width: min-content;
     display: flex;
     background: #353535;
-    padding: 10px;
+    padding: 10px 10px 5px 10px;
     border-radius: 5px;
     position: absolute;
     bottom: 50px;
 
     span {
         margin-right: 10px;
+    }
+
+    svg {
+        width: 20px;
     }
 
     .CILoading {
