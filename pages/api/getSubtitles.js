@@ -1,4 +1,3 @@
-
 export default async (req, res) => {
 
     let searchResults = await fetch(`https://api.opensubtitles.com/api/v1/subtitles?imdb_id=${req.query.imdbid}?languages=en`, {
@@ -20,10 +19,18 @@ export default async (req, res) => {
             'sub_format': 'webvtt'
         })
     })
+    try {
+        subtitleInfo = await subtitleInfo.json()
+    } catch (error) {
+        res.setHeader('Content-Type', 'application/json')
+        res.statusCode = 500
+        res.end(JSON.stringify({}))
+        return
+    }
 
     res.setHeader('Content-Type', 'application/json')
     res.statusCode = 200
-    res.end(JSON.stringify(await subtitleInfo.json()))
+    res.end(JSON.stringify(subtitleInfo))
     
 }
 

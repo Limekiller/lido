@@ -1,0 +1,25 @@
+.CaptionIndicator {
+    width: min-content;
+    display: flex;
+    background: #353535;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 50px;
+
+    span {
+        margin-right: 10px;
+    }
+
+    .CILoading {
+        width: 20px;
+        height: 20px;
+        position: unset;
+
+        &:after {
+            width: 8px;
+            height: 8px;
+            background: #353535
+        }
+    }
+}

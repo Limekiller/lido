@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Router from 'next/router'
 import AppContext from '@/components/AppContext.js'
 import Message from '@/components/MessageContainer/Message/Message.js'
+import CaptionIndicator from './CaptionIndicator/CaptionIndicator'
 
 const supportedCodecs = {
     video: [
@@ -31,9 +32,12 @@ class VideoPlayer extends Component {
         this.state = ({
             data: {},
             title: this.getTitle()[0],
-            captions: false,
             strippedTitle: this.getTitle()[1],
             showOverlay: true,
+
+            captions: false,
+            captionState: 'error',
+
             hasShownConvertMessage: false,
             hash: null,
             hasConverted: false
@@ -56,7 +60,7 @@ class VideoPlayer extends Component {
         const convertMessage =
         <Message>
             <h1>Convert File?</h1>
-            <p>This file can't be played by your current browser. You can click OK to convert the file in real-time for playback, or click cancel for other options. You may want to download the file locally, or try with a different browser.</p>
+            <p>This file can't be played by your current browser. You can click OK to convert the file in real-time for playback, or click cancel for other options. You may want to download the file locally, or try with a different browser. Note that subtitles will not be available in real-time conversion mode.</p>
             <button onClick={() => {this.createStream(); this.context.globalFunctions.closeMessage()}}>OK</button>
             <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
         </Message>
@@ -198,17 +202,24 @@ class VideoPlayer extends Component {
      * Helper function to get .srt file
      */
     getSubtitles = (imdbID) => {
+        this.setState({captionState: 'fetching'})  
         fetch(`/api/getSubtitles?imdbid=${imdbID}`)
         .then(response => response.json())
         .then(data => {
-            this.player.addRemoteTextTrack({src: data.link}, false);
-            document.querySelector('.vjs-subs-caps-button').addEventListener('click', (e) => {
-                document.querySelector('.vjs-subs-caps-button .vjs-menu-item[role="menuitemradio"]').click()
-                if (!this.state.captions) {
-                    document.querySelector('.vjs-subtitles-menu-item').click()
-                }
-                this.setState({ captions: !this.state.captions })
-            })
+            if (data.link) {
+                this.player.addRemoteTextTrack({src: data.link}, false);
+                this.setState({ captionState: 'ok' })
+                document.querySelector('.vjs-subs-caps-button').addEventListener('click', (e) => {
+                    document.querySelector('.vjs-subs-caps-button .vjs-menu-item[role="menuitemradio"]').click()
+                    if (!this.state.captions) {
+                        document.querySelector('.vjs-subtitles-menu-item').click()
+                    }
+                    this.setState({ captions: !this.state.captions })
+                })
+            } else {
+                this.context.globalFunctions.createToast('error', 'Could not fetch subtitles!')
+                this.setState({ captionState: 'error' })
+            }
         })
         
     }
@@ -357,6 +368,10 @@ class VideoPlayer extends Component {
                                 onClick={() => this.downloadMovie()}
                                 onKeyDown={e => {if (e.key === 'Enter') { this.downloadMovie() }}}
                             />
+                        </div>
+
+                        <div class='CIWrapper' onClick={() => this.state.captionState === 'error' ? this.getSubtitles(parseInt(this.state.data.imdbID.slice(2), 10)) : ""}>
+                            <CaptionIndicator state={this.state.captionState} />
                         </div>
 
                         <style jsx>{`
