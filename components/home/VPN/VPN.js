@@ -11,7 +11,7 @@ function VPN() {
         .then(data => setIPs(data))
     })
 
-    const VPNActive = IPs.ingress === IPs.egress ? true : false;
+    const VPNActive = IPs.ingress === IPs.egress ? false : true;
 
     return (
         <>
