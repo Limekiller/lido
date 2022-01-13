@@ -155,7 +155,14 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
   width: 200px;
 }
 .home {
-  margin-left: -5%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.dashboardModules {
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 0px));
+  grid-gap: 20px;
 }
 
 @media (max-width: 1000px) {

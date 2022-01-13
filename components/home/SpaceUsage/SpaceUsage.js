@@ -6,7 +6,7 @@ const SpaceUsage = () => {
     const [storageData, setStorageData] = useState([])
 
     useEffect(() => {
-        fetch('/api/getStorageSpace')
+        fetch('/api/dashboard?module=space')
         .then(response => response.json())
         .then(data => {
             if (JSON.stringify(data) != JSON.stringify(storageData)) {

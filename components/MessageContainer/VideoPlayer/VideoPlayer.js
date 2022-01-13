@@ -44,8 +44,8 @@ class VideoPlayer extends Component {
         })
     }
 
-
     async componentDidMount() {
+        Router.events.on('routeChangeStart', this.context.globalFunctions.closeAllMessages)
         this.getMovieData()
 
         // instantiate Video.js
@@ -83,6 +83,7 @@ class VideoPlayer extends Component {
 
     // destroy player on unmount
     componentWillUnmount() {
+        Router.events.off('routeChangeStart', this.context.globalFunctions.closeAllMessages)
         SpatialNavigation.enable('add');
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('keydown', this.onKey);

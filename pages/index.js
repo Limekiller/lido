@@ -2,6 +2,7 @@ import { getSession } from 'next-auth/client'
 import { useEffect } from 'react'
 import Search from '@/components/Search/Search.js'
 import SpaceUsage from '@/components/home/SpaceUsage/SpaceUsage.js'
+import VPN from '@/components/home/VPN/VPN.js'
 
 export default function Home(props) {
 
@@ -16,7 +17,10 @@ export default function Home(props) {
       <div className='home'>
         <img className='logo' src='/images/lidoWhite.svg' />
         <Search _style='fancy' />
-        <SpaceUsage />
+        <div className='dashboardModules'>
+          <SpaceUsage />
+          <VPN />
+        </div>
       </div>
     </>
   )

@@ -1,7 +1,9 @@
+@import '/styles/variables.scss';
+
 .CaptionIndicator {
     width: min-content;
     display: flex;
-    background: #353535;
+    background: $bg-color;
     padding: 10px 10px 5px 10px;
     border-radius: 5px;
     position: absolute;
@@ -23,7 +25,7 @@
         &:after {
             width: 8px;
             height: 8px;
-            background: #353535
+            background: $bg-color;
         }
     }
 }
