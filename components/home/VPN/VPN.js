@@ -6,10 +6,10 @@ function VPN() {
     const [IPs, setIPs] = useState({})
 
     useEffect(() => {
-        fetch('/api/dashboard?module=space')
+        fetch('/api/dashboard?module=vpn')
         .then(response => response.json())
         .then(data => setIPs(data))
-    })
+    }, [])
 
     const VPNActive = IPs.ingress === IPs.egress ? false : true;
 

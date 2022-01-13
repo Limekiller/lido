@@ -13,7 +13,7 @@ const SpaceUsage = () => {
                 setStorageData(data)
             }
         })
-    })
+    }, [])
 
     if (storageData[4]) {
         let from, to
