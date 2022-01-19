@@ -161,7 +161,7 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
 .dashboardModules {
   display: grid;
   justify-content: space-between;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 0px));
+  grid-template-columns: repeat(auto-fill, minmax(175px, 175px));
   grid-gap: 20px;
 }
 
@@ -174,6 +174,12 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
     font-size: 60px;
     margin-top: 40px;
     line-height: 65px;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboardModules {
+    justify-content: center;
   }
 }
 

@@ -11,7 +11,7 @@ function VPN() {
         .then(data => setIPs(data))
     }, [])
 
-    const VPNActive = IPs.ingress === IPs.egress ? false : true;
+    const VPNActive = IPs.ingress == IPs.egress ? false : true;
 
     return (
         <>
@@ -22,6 +22,7 @@ function VPN() {
             <style jsx>{`
                 .VPN {
                     background: ${VPNActive ? 'linear-gradient(to bottom, #4ec84e, #0a600a)' : 'linear-gradient(to top, darkred, #f44848)'};
+                    mask: url("/images/icons/${VPNActive ? 'lock.svg' : 'lockOpen.svg'}") no-repeat 50% 50%;
                 }
             `}</style>
         </>
