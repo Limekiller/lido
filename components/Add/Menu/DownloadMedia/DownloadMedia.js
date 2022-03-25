@@ -27,7 +27,7 @@ export default class DownloadMedia extends Component {
 
     queueDownload = (magnet, e) => {
         e.target.classList.add('inactive')
-        fetch('/api/downloadActions', {
+        fetch('/api/download', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

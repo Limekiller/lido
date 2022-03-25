@@ -6,11 +6,28 @@ import path from 'path'
 import fs from 'fs-extra'
 import hasha from 'hasha'
 
+
+// File hashes are used as the ID for the stream
 const getFileHash = async (source) => {
     const hash = await hasha(source, {algorithm: 'md5'})
     return hash
 }
 
+/**
+ * Api for managing streams
+ * POST: Create a new stream
+ * @param string source The parent folder of the file to convert
+ * @param string name The name of the file to convert
+ * @return JSON Object containing details of the new stream
+ * 
+ * GET: Retrieve the video and audio encoding for a file
+ * @param string source The parent folder of the file to retrive encoding info for
+ * @param string name The name of the file to retrieve encoding info for
+ * @return JSON Object containing the video and audio encoding
+ * 
+ * DELETE: Delete a stream
+ * @param string hash The filehash of the original file
+ */
 export default async (req, res) => {
 
     if (req.method == 'POST') {

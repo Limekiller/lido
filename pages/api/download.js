@@ -11,6 +11,8 @@ let generateID = () => {
       .substring(1);
 }
 
+// Lido has no database, but in-progress downloads are tracked via a JSON file
+// Contains a unique key for each download and a path the download will be saved to
 let saveJSON = (id, path) => {
   const data = fs.readFileSync(mediaPath + 'temp/downloads.json', 'utf8')
   let JSONData = JSON.parse(data)
@@ -25,6 +27,18 @@ let removeJSON = (id) => {
   fs.writeFileSync( mediaPath + 'temp/downloads.json', JSON.stringify(JSONData))
 }
 
+/**
+ * Api to manage in-progress downloads
+ * POST: start a new download
+ * @param string magnet The magnet link to the torrent 
+ * @param string dir The path to the folder the download will be eventually saved in
+ * 
+ * GET: get information on in-progress downloads
+ * 
+ * DELETE: Cancel a current download
+ * @param string gid The aria2 ID of the download
+ * @param string path The path to the folder the download would have been saved in
+ */
 export default async (req, res) => {
 
   if (req.method == 'POST') {

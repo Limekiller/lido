@@ -18,7 +18,7 @@ export default class downloads extends Component {
      * Helper function to fetch all in-progress downloads from the server
      */
     getDownloads = () => {
-        fetch('/api/downloadActions', {
+        fetch('/api/download', {
             method: 'GET',
         })
         .then(response => response.json())
@@ -37,7 +37,7 @@ export default class downloads extends Component {
      */
     cancelDownload = (gid, path, name, e) => {
         e.target.parentElement.parentElement.classList.add('inactive')
-        fetch('/api/downloadActions?gid=' + gid + '&path=' + path + '&name=' + name, {
+        fetch('/api/download?gid=' + gid + '&path=' + path + '&name=' + name, {
             method: 'DELETE',
         })
         .then(response => response.json())
@@ -49,7 +49,7 @@ export default class downloads extends Component {
     /**
      * Helper function to parse the downloads and update the component state
      * 
-     * @param {obj} data The data returned from /api/downloadActions
+     * @param {obj} data The data returned from /api/download
      */
     parseDownloads = (data) => {
         let downloads = [];

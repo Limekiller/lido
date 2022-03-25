@@ -86,7 +86,7 @@ class FolderView extends Component {
      * @param {string} folderName The path to the folder
      */
     deleteItem(folderName) {
-        fetch('/api/folderActions', {
+        fetch('/api/folder', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ class FolderView extends Component {
      * @param {string} destPath The path to the new location
      */
     moveItem = (fileName, destPath) => {
-        fetch('/api/folderActions', {
+        fetch('/api/folder', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,6 +1,20 @@
 import fs from 'fs-extra'
 import path from 'path'
 
+/**
+ * Api for managing folders and files
+ * POST: Create a new folder
+ * @param string path The path to the parent folder
+ * @param string name The name of the new folder to create
+ * 
+ * DELETE: Delete a folder or file
+ * @param string path The path to the parent folder
+ * @param string name The name of the object to delete
+ * 
+ * PUT: Rename a folder or file
+ * @param string currPath The current full path to the object
+ * @param string destPath The new path to the object
+ */
 export default (req, res) => {
   if (req.method == 'POST') {
 

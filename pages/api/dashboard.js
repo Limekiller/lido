@@ -2,6 +2,11 @@ import util from 'util'
 import { getSession } from "next-auth/client"
 const exec = util.promisify(require('child_process').exec);
 
+/**
+ * Render widgets on the dashboard
+ * @param GET module The widget name to get info for
+ * @return JSON The data for the widget
+ */
 export default async (req, res) => {
 
     const session = await getSession({ req })

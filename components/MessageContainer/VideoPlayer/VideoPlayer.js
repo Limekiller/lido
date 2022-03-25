@@ -90,7 +90,7 @@ class VideoPlayer extends Component {
         if (this.player) {
             this.player.dispose()
             if (this.state.hash) {
-                fetch('/api/streamActions', {
+                fetch('/api/stream', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -144,7 +144,7 @@ class VideoPlayer extends Component {
                 'Please wait, converting file to a format compatible with your browser.',
                 10000
             )
-            fetch('/api/streamActions', {
+            fetch('/api/stream', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -173,7 +173,7 @@ class VideoPlayer extends Component {
      * @returns {JSON obj} The video and audio codecs of the file
      */
     getCodecs = async () => {
-        const codecs = await fetch(`/api/streamActions?source=${this.props.path.split('/').slice(0, -1).join('/')}&name=${this.state.title}`)
+        const codecs = await fetch(`/api/stream?source=${this.props.path.split('/').slice(0, -1).join('/')}&name=${this.state.title}`)
         return await codecs.json()
     }
 
@@ -204,11 +204,11 @@ class VideoPlayer extends Component {
      */
     getSubtitles = (imdbID) => {
         this.setState({captionState: 'fetching'})  
-        fetch(`/api/getSubtitles?imdbid=${imdbID}`)
+        fetch(`/api/subtitles?imdbid=${imdbID}`)
         .then(response => response.json())
         .then(data => {
             if (data) {
-                this.player.addRemoteTextTrack({src: `/api/getSubtitles?link=${data.link}`}, false);
+                this.player.addRemoteTextTrack({src: `/api/subtitles?link=${data.link}`}, false);
                 this.setState({ captionState: 'ok' })
                 document.querySelector('.vjs-subs-caps-button').addEventListener('click', (e) => {
                     document.querySelector('.vjs-subs-caps-button .vjs-menu-item[role="menuitemradio"]').click()
@@ -236,7 +236,7 @@ class VideoPlayer extends Component {
      * Helper function to delete the file
      */
     deleteFile = () => {
-        fetch('/api/folderActions', {
+        fetch('/api/folder', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -264,7 +264,7 @@ class VideoPlayer extends Component {
             this.context.globalFunctions.createToast('alert', 'Filename cannot be empty!')
             return
         }
-        fetch('/api/folderActions', {
+        fetch('/api/folder', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,3 +1,17 @@
+
+/**
+ * Api for managing subtitles
+ * GET:
+ * @param string imdbid:
+ *  The IMDB ID of the movie to get subtitles for
+ *  When present, retrieve the remote URL to the subtitle file
+ *  @return JSON Object containing subtitle info
+ * 
+ * @param string link:
+ *  The URL of the subtitle file
+ *  When present, retrieve subtitles from link and return as plaintext
+ *  @return text The content of the subtitle file
+ */
 export default async (req, res) => {
 
     // On first request, the IMDB id is sent

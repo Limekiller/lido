@@ -3,6 +3,13 @@ import path from 'path'
 import { promisify } from "util";
 import FileType from 'file-type'
 
+
+/**
+ * Api for fetching search results
+ * GET: Get search results
+ * @param string query The query to search for
+ * @return JSON A list of matching files
+ */
 export default async (req, res) => {
     
     const glob = promisify(g)
