@@ -25,7 +25,7 @@ export default async (req, res) => {
 
     // Get movie data for files
     files = await Promise.all(files.map(async file => {
-      let data = await fetch(req.headers.origin + '/api/getMovieData?title=' + file.name)
+      let data = await fetch(req.headers.origin + '/api/getMovieData?title=' + encodeURI(file.name))
       return { name: file.name, data: await data.json()}
     }))
     // files = files.map(file => {return {name: file.name, data: {}}})

@@ -2,7 +2,7 @@
 export default async (req, res) => {
 
     // Get filename if path is absolute
-    let strippedTitle = req.query.title.split('/').slice(-1).join()
+    let strippedTitle = decodeURI(req.query.title).split('/').slice(-1).join()
 
     // Remove file extension
     strippedTitle = strippedTitle.split('.').slice(0, -1).join('.')
@@ -27,7 +27,7 @@ export default async (req, res) => {
         year = `&y=${year}`
     }
 
-    let OMDBLink = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${title}${year}`
+    let OMDBLink = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${encodeURI(title)}${year}`
     if (season && episode) {
         OMDBLink += `&season=${season}&episode=${episode}`
     }
