@@ -200,15 +200,15 @@ class VideoPlayer extends Component {
     }
 
     /**
-     * Helper function to get .srt file
+     * Helper function to get .vtt file
      */
     getSubtitles = (imdbID) => {
         this.setState({captionState: 'fetching'})  
         fetch(`/api/getSubtitles?imdbid=${imdbID}`)
         .then(response => response.json())
         .then(data => {
-            if (data.link) {
-                this.player.addRemoteTextTrack({src: data.link}, false);
+            if (data) {
+                this.player.addRemoteTextTrack({src: `/api/getSubtitles?link=${data.link}`}, false);
                 this.setState({ captionState: 'ok' })
                 document.querySelector('.vjs-subs-caps-button').addEventListener('click', (e) => {
                     document.querySelector('.vjs-subs-caps-button .vjs-menu-item[role="menuitemradio"]').click()
