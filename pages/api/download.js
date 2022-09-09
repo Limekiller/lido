@@ -75,6 +75,15 @@ export default async (req, res) => {
       .close()
       .catch(err => console.log("error", err));
 
+    // For each download in progress, grab the final path from the JSON file so we can display it
+    status.forEach(download => {
+      const JSONFilePath = download.dir.split('/').slice(0, -1).join('/') + '/downloads.json'
+      const data = fs.readFileSync(JSONFilePath, 'utf8')
+      let JSONData = JSON.parse(data)
+      const downloadID = download.dir.split('/').slice(-1)[0]
+      download['path'] = JSONData[downloadID]
+    })
+
     res.statusCode = 200;
     res.end(JSON.stringify(status))
 

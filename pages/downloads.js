@@ -60,7 +60,8 @@ export default class downloads extends Component {
                     totalLength: item.totalLength,
                     completedLength: item.completedLength,
                     gid: item.gid,
-                    path: item.dir
+                    path: item.dir,
+                    finalPath: item.path
                 })
             }
         })
@@ -97,7 +98,10 @@ export default class downloads extends Component {
                                     className='download' 
                                     key={file.gid} 
                                 >
-                                    <span className='name'>{file.name}</span>
+                                    <div className='name'>
+                                        {file.name}<br />
+                                        <span style={{fontSize: '0.75rem'}}>{file.finalPath}</span>
+                                    </div>
                                     <div className='endActions'>
                                         <span className='percentage'>{percentage + '%'}</span>
                                         <FontAwesomeIcon 

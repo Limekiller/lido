@@ -21,7 +21,14 @@ export default class DownloadMedia extends Component {
         })
         .then(response => response.json())
         .then(data => {
+            if (data.length == 0) {
+                this.context.globalFunctions.createToast('warning', 'No results found!')
+            }
             this.setState({ results: data, loading: false })
+        })
+        .catch(error => {
+            this.setState({ loading: false })
+            this.context.globalFunctions.createToast('alert', 'Couldn\'t fetch results! Is your VPN turned on?')
         })
     }
 

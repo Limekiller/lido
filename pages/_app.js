@@ -45,7 +45,7 @@ class MyApp extends App {
     document.body.appendChild(script);
 
     // Disable the osk on mousemove and enable it on keyboard press
-    window.onload = () => {
+    setTimeout(() => {
       window.addEventListener('mousemove', () => {
         Keyboard.properties.enabled = false;
       });
@@ -54,7 +54,7 @@ class MyApp extends App {
           Keyboard.properties.enabled = true;
         }
       })
-    }
+    }, 1000)
   }
 
 

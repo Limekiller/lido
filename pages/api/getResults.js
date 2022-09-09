@@ -15,13 +15,12 @@ export default async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(results))
-    
 }
 
 const scrapeMagnetDl = (query) => {
 
-
-    return axios.get("https://www.magnetdl.com/" + query[0] + "/" + query.split(" ").join("-").replace(/["']/g, '') + "/se/desc/")
+    query = query.toLowerCase()
+    return axios.get("https://www.magnetdl.com/" + query[0] + "/" + query.split(" ").join("-").replace(/["']/g, '') + "/se/desc/",)
     .then((response) => {
         const html = response.data;
         const $ = cheerio.load(html);
