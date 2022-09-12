@@ -7,9 +7,11 @@ const Search = (props) => {
 
     const router = useRouter()
     const onKeyDown = (e) => {
-        if (e.keyCode == 13) {
-            router.push('/search?query=' + document.querySelector('#searchBar').value)
-        }
+        setTimeout(() => {
+            if (e.keyCode == 13 && (document.querySelector('.keyboard').classList.contains('keyboard--hidden'))) {
+                router.push('/search?query=' + document.querySelector('#searchBar').value)
+            }
+        }, 10)
     }
 
     return (

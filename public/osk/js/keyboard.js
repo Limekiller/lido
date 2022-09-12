@@ -20,9 +20,9 @@ const Keyboard = {
 
     bindButtons() {
         document.querySelectorAll(".use-keyboard-input").forEach(element => {
-            element.addEventListener("focus", () => {
-                if (this.properties.enabled) {
-                    element.classList.add('keyboard-focus');
+            element.addEventListener("keydown", (e) => {
+                if (e.which === 13 && this.properties.enabled) {
+                    element.classList.add('keyboard-focus')
                     this.open(
                         element.value, 
                         currentValue => {
