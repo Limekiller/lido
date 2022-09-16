@@ -8,6 +8,8 @@
     top: 0;
     //display: none;
     z-index: 9;
+    opacity: 0;
+    animation: fadeIn 0.2s ease forwards;
 
     &.visible {
         display: block;
@@ -32,4 +34,8 @@
         }
     }
 
+    @keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
 }

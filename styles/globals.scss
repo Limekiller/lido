@@ -187,5 +187,9 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
   from {transform: rotate(0deg);}
   to {transform: rotate(364deg);}
 }
+@keyframes fadeIn {
+  from {opacity:0;}
+  to {opacity:1;}
+}
 
 @import url("https://use.typekit.net/nne8qgd.css");

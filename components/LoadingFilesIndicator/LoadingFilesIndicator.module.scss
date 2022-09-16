@@ -3,7 +3,8 @@
 .loadingFilesIndicator {
     pointer-events: none;
     opacity: 0;
-    animation: fade-in 0.4s 0.5s ease forwards;
+    animation: fadeIn 0.4s 0.5s ease forwards;
+    margin-top: 55px;
 
     .loadingFile {
         box-shadow: none;
@@ -13,7 +14,7 @@
 
 }
 
-@keyframes fade-in {
+@keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}
 }
