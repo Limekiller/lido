@@ -71,7 +71,7 @@ class VideoPlayer extends Component {
             }
         })
         const codecs = await this.getCodecs()
-        if (!this.state.hasShownConvertMessage && (!supportedCodecs.video.includes(codecs.video) || !supportedCodecs.audio.includes(codecs.audio))) {
+        if ((!this.state.hasShownConvertMessage && (!supportedCodecs.video.includes(codecs.video)) || (!this.state.hasShownConvertMessage && !supportedCodecs.audio.includes(codecs.audio)))) {
             this.context.globalFunctions.createMessage(convertMessage)
             this.setState({hasShownConvertMessage: true})
         }
@@ -332,7 +332,11 @@ class VideoPlayer extends Component {
                             ${!this.state.showOverlay ? styles.hidden : ''}
                         `}>
                         <div className={styles.overlayBg} />
-                        <h1>{this.state.data.Title ? this.state.data.Title : this.state.strippedTitle}</h1>
+                        <h1 
+                            style={{wordBreak: this.state.data.Title ? 'break-word' : 'break-all'}}
+                        >
+                            {this.state.data.Title ? this.state.data.Title : this.state.strippedTitle}
+                        </h1>
                         <h3>{this.state.data.Year}</h3>
                         <p>{this.state.data.Plot}</p>
                         <p className={styles.note}>
