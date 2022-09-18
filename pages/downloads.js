@@ -53,6 +53,7 @@ export default class downloads extends Component {
      */
     parseDownloads = (data) => {
         let downloads = [];
+        console.log(data)
         data.forEach((item, index) => {
             if (item.bittorrent.info) {
                 downloads.push({ 

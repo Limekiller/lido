@@ -4,12 +4,12 @@ import cheerio from 'cheerio'
 export default async (req, res) => {
 
     const searchQuery = req.query.search;
-    const source = 'magnetdl'
+    const source = 'torrentgalaxy'
     let results
 
     switch (source) {
-        case 'magnetdl':
-            results = await scrapeMagnetDl(searchQuery)
+        case 'torrentgalaxy':
+            results = await scrapeTorrentGalaxy(searchQuery)
             break;
     }
 
@@ -17,25 +17,26 @@ export default async (req, res) => {
     res.end(JSON.stringify(results))
 }
 
-const scrapeMagnetDl = (query) => {
+const scrapeTorrentGalaxy = (query) => {
 
     query = query.toLowerCase()
-    return axios.get("https://www.magnetdl.com/" + query[0] + "/" + query.split(" ").join("-").replace(/["']/g, '') + "/se/desc/",)
+    return axios.get("https://torrentgalaxy.to/torrents.php?c3=1&c46=1&c45=1&c42=1&c4=1&c1=1&c41=1&c5=1&c11=1&c6=1&c7=1&sort=seeders&order=desc&search=" + query.split(" ").join("+").replace(/["']/g, ''))
     .then((response) => {
+
         const html = response.data;
         const $ = cheerio.load(html);
 
         let results = []
-        const movieResults = $('.download tbody tr').each((index, movie) => {
-            const title = $(movie).children('.n').children('a').attr('title');
-            const link = $(movie).children('.m').children('a').attr('href');
-            const seeders = $(movie).children('.s').text();
-            const leechers = $(movie).children('.l').text();
+        const movieResults = $('.tgxtablerow').each((index, movie) => {
+            const title = $(movie).children('#click').first().text().trim();
+            const link = $(movie).children().find('a[role="button"]').attr('href');
+            const seeders = $(movie).children().find('font[color="green"] b').first().text();
+            const leechers = $(movie).children().find('font[color="#ff0000"] b').first().text();
 
             let type;
-            if ($(movie).children('.t2')) {
+            if ($(movie).children().first().text().includes('Movies')) {
                 type = 'Movie'
-            } else if ($(movie).children('.t5')) {
+            } else if ($(movie).children().first().text().includes('TV')) {
                 type = 'TV'
             } else {
                 return
