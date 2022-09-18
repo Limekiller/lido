@@ -1,15 +1,14 @@
-import axios from 'axios'
-import cheerio from 'cheerio'
+import jsdom from 'jsdom'
 
 export default async (req, res) => {
 
     const searchQuery = req.query.search;
-    const source = 'torrentgalaxy'
+    const source = 'PirateBay'
     let results
 
     switch (source) {
-        case 'torrentgalaxy':
-            results = await scrapeTorrentGalaxy(searchQuery)
+        case 'PirateBay':
+            results = await scrapePirateBay(searchQuery)
             break;
     }
 
@@ -17,26 +16,45 @@ export default async (req, res) => {
     res.end(JSON.stringify(results))
 }
 
-const scrapeTorrentGalaxy = (query) => {
+const scrapePirateBay = (query) => {
+    //query = query.toLowerCase().split(" ").join("+").replace(/["']/g, '')
+    query = query.toLowerCase().replace(/["']/g, '')
+    return fetch(`https://thepiratebay10.org/search/${query}/1/7/0`, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Referer": "https://thepiratebay10.org/",
+            "DNT": "1",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-User": "?1",
+            "TE": "trailers"
+        }
+    })
+    .then(response => {return response.text()})
+    .then(html => {
+        let dom = new jsdom.JSDOM(html)
+        
+        let results = [];
+        dom.window.document.querySelectorAll('tbody tr').forEach((row, index) => {
+            if (index == dom.window.document.querySelectorAll('tbody tr').length - 1) {
+                return
+            }
 
-    query = query.toLowerCase()
-    return axios.get("https://torrentgalaxy.to/torrents.php?c3=1&c46=1&c45=1&c42=1&c4=1&c1=1&c41=1&c5=1&c11=1&c6=1&c7=1&sort=seeders&order=desc&search=" + query.split(" ").join("+").replace(/["']/g, ''))
-    .then((response) => {
-
-        const html = response.data;
-        const $ = cheerio.load(html);
-
-        let results = []
-        const movieResults = $('.tgxtablerow').each((index, movie) => {
-            const title = $(movie).children('#click').first().text().trim();
-            const link = $(movie).children().find('a[role="button"]').attr('href');
-            const seeders = $(movie).children().find('font[color="green"] b').first().text();
-            const leechers = $(movie).children().find('font[color="#ff0000"] b').first().text();
+            const title = row.querySelector('.detName').textContent.trim()
+            const link = row.querySelector('.detName').nextElementSibling.href
+            const seeders = row.childNodes[row.childNodes.length - 4].textContent
+            const leechers = row.childNodes[row.childNodes.length - 2].textContent
 
             let type;
-            if ($(movie).children().first().text().includes('Movies')) {
+            if (row.querySelector('.vertTh').textContent.trim().includes('Movies')) {
                 type = 'Movie'
-            } else if ($(movie).children().first().text().includes('TV')) {
+            } else if (row.querySelector('.vertTh').textContent.trim().includes('TV')) {
                 type = 'TV'
             } else {
                 return

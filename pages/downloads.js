@@ -53,18 +53,15 @@ export default class downloads extends Component {
      */
     parseDownloads = (data) => {
         let downloads = [];
-        console.log(data)
         data.forEach((item, index) => {
-            if (item.bittorrent.info) {
-                downloads.push({ 
-                    name: item.bittorrent.info.name,
-                    totalLength: item.totalLength,
-                    completedLength: item.completedLength,
-                    gid: item.gid,
-                    path: item.dir,
-                    finalPath: item.path
-                })
-            }
+            downloads.push({ 
+                name: item.bittorrent.info ? item.bittorrent.info.name : item.files[0].path.split('[METADATA]')[1],
+                totalLength: item.totalLength,
+                completedLength: item.completedLength,
+                gid: item.gid,
+                path: item.dir,
+                finalPath: item.path
+            })
         })
         this.setState({ downloads: downloads })
     }
@@ -104,7 +101,7 @@ export default class downloads extends Component {
                                         <span style={{fontSize: '0.75rem'}}>{file.finalPath}</span>
                                     </div>
                                     <div className='endActions'>
-                                        <span className='percentage'>{percentage + '%'}</span>
+                                        <span className='percentage'>{isNaN(percentage) ? 'Fetching metadata...' : percentage + '%'}</span>
                                         <FontAwesomeIcon 
                                             icon={faTimesCircle} 
                                             onClick={(e) => this.cancelDownload(
