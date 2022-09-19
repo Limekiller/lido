@@ -52,7 +52,7 @@ const scrapePirateBay = (query) => {
             const leechers = row.childNodes[row.childNodes.length - 2].textContent
 
             let type;
-            if (row.querySelector('.vertTh').textContent.trim().includes('Movies')) {
+            if (row.querySelector('.vertTh').textContent.trim().includes('Movies') && !row.querySelector('.vertTh').textContent.trim().includes('Porn')) {
                 type = 'Movie'
             } else if (row.querySelector('.vertTh').textContent.trim().includes('TV')) {
                 type = 'TV'
