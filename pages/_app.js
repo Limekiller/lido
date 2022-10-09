@@ -55,6 +55,14 @@ class MyApp extends App {
         }
       })
     }, 1000)
+
+    // Watch for activeelement changes
+    document.addEventListener('focus', () => {
+      if (document.activeElement.closest('.pageContainer') && Keyboard.properties.enabled) {
+        const position = document.activeElement.getBoundingClientRect()
+        window.scrollTo({left: position.left, top: position.top + window.scrollY - 160, behavior: 'smooth'})
+      }      
+    }, true);
   }
 
 

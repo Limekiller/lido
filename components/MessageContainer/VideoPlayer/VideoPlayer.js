@@ -109,7 +109,7 @@ class VideoPlayer extends Component {
     onKey = e => {
         document.querySelector('.vjs-control-bar').classList.add('tv-control')
         if (!this.state.showOverlay) {
-            if ((e.code == 'Enter' || e.code == 'Space') && !e.target.classList.contains('mainPlayButton')) {
+            if ((e.code == 'Enter' || e.code == 'Space') && !document.activeElement.classList.contains('mainPlayButton')) {
                 this.showOverlay();
                 this.player.pause();
             } else  {

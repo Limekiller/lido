@@ -204,16 +204,16 @@ class FolderView extends Component {
                             onKeyDown={e => {if (e.key === 'Enter') { e.target.querySelector('.folder').click() }}}
                             data-filename={decodeURIComponent(folder)}
                         >
-                            <FontAwesomeIcon
-                                className='trash'
-                                icon={faTrashAlt}
-                                onClick={() => this.deleteItem(folder)}
-                            />
                             <Link href={window.location.pathname + '/' + folder}>
                                 <div className='folder'>
                                     <span>{decodeURIComponent(folder)}</span>
                                 </div>
                             </Link>
+                            <FontAwesomeIcon
+                                className='trash'
+                                icon={faTrashAlt}
+                                onClick={() => this.deleteItem(folder)}
+                            />
                         </div>
                         if (window.innerWidth > 1000) {
                             return (
