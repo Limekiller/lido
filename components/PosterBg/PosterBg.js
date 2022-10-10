@@ -5,19 +5,20 @@ class PosterBg extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            numCols: 8,
+            numCols: 9,
             numRows: 4,
-            offset: 5,
-            time: 20 
+            offset: 17,
+            time: 120
+
         };
     }
 
     componentDidMount = () => {
         this.setState({
-            numCols: Math.round(window.innerWidth / 230) + 1,
-            numRows: Math.round(window.innerHeight / 250),
-            offset: Math.round(window.innerHeight / (this.state.numRows * window.innerHeight / 40)),
-            time: Math.round(window.innerHeight / 25)
+            numCols: window.innerWidth / (window.innerHeight / 4.5),
+            numRows: 4,
+            offset: (Math.round(window.innerHeight / 10) / 4),
+            time: Math.round(window.innerHeight / 10)
         })
 
         setTimeout(() => {
