@@ -27,7 +27,14 @@ class PosterBg extends Component {
             .then(response => response.json())
             .then(data => {
                 document.querySelectorAll('.' + styles.poster).forEach((poster, i) => {
-                    poster.style.backgroundImage = 'url("/images/posters/' + data[i] + '")'
+                    // Load the image into a new element so we can use a load listener to know when to make the poster opaque
+                    const src = `/images/posters/${data[i]}`
+                    const img = new Image();
+                    img.addEventListener('load', () => {
+                        poster.style.opacity = 1;
+                        poster.style.backgroundImage = 'url("/images/posters/' + data[i] + '")'
+                    })
+                    img.src = src;
                 })
             })
         }, 500)

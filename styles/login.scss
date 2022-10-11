@@ -15,7 +15,17 @@
     top: 40%;
     transform: translate(-50%, -50%);
 
+    label h2 {
+        margin: -2.5rem 0 0.5rem 0;
+    }
+
     input {
-        margin-right: 20px;
+        border: none;
+        width: 65%;
+    }
+
+    button {
+        width: 30%;
+        float: right;
     }
 }
