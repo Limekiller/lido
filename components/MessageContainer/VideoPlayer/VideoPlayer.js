@@ -1,12 +1,17 @@
-import styles from './VideoPlayer.module.scss'
-import videojs from 'video.js'
 import { Component } from 'react'
+import Router from 'next/router'
+import Link from 'next/link'
+
+import videojs from 'video.js'
 import { faTrash, faUsers, faDownload, faFont, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Router from 'next/router'
+
 import AppContext from '@/components/AppContext.js'
 import Message from '@/components/MessageContainer/Message/Message.js'
 import CaptionIndicator from './CaptionIndicator/CaptionIndicator'
+
+import styles from './VideoPlayer.module.scss'
+
 
 const supportedCodecs = {
     video: [
@@ -81,11 +86,11 @@ class VideoPlayer extends Component {
                 this.setState({hasShownConvertMessage: true})
             }
         })
-        const codecs = await this.getCodecs()
-        if ((!this.state.hasShownConvertMessage && (!supportedCodecs.video.includes(codecs.video)) || (!this.state.hasShownConvertMessage && !supportedCodecs.audio.includes(codecs.audio)))) {
-            this.context.globalFunctions.createMessage(convertMessage)
-            this.setState({hasShownConvertMessage: true})
-        }
+        // const codecs = await this.getCodecs()
+        // if ((!this.state.hasShownConvertMessage && !this.props.partyMode && (!supportedCodecs.video.includes(codecs.video)) || (!this.state.hasShownConvertMessage && !supportedCodecs.audio.includes(codecs.audio)))) {
+        //     this.context.globalFunctions.createMessage(convertMessage)
+        //     this.setState({hasShownConvertMessage: true})
+        // }
         
         SpatialNavigation.disable('add');
         document.addEventListener('keydown', this.onKey);
@@ -146,7 +151,7 @@ class VideoPlayer extends Component {
 
         document.querySelector('.vjs-control-bar').classList.add('tv-control')
         if (!this.state.showOverlay) {
-            if ((e.code == 'Enter' || e.code == 'Space') && !document.activeElement.classList.contains('mainPlayButton')) {
+            if ((e.code == 'Enter' || e.code == 'Space')) {
                 this.showOverlay();
                 this.player.pause();
             } else  {
@@ -162,6 +167,8 @@ class VideoPlayer extends Component {
                     document.querySelector('.vjs-subs-caps-button').click()
                 }
             }
+        } else if ((e.code == 'Enter' || e.code == 'Space') && document.activeElement.classList.contains('mainPlayButton')) {
+            this.hideOverlay();
         }
     }
 
@@ -326,7 +333,7 @@ class VideoPlayer extends Component {
         // because we call this method when the video first loads -- we want the overlay to show, but with the video playin in the background
         this.setState({ showOverlay: true })
         // Every time we show the overlay, we should move focus to the play button
-        SpatialNavigation.focus(document.querySelector('.mainPlayButton'))
+        setTimeout(() => SpatialNavigation.focus(document.querySelector('.mainPlayButton')), 50)
     }
     hideOverlay = () => {
         // However, we always want the video to start playing when the overlay is hidden
@@ -379,12 +386,10 @@ class VideoPlayer extends Component {
                         <div className={styles.videoOptions}>
                             <button 
                                 className='link mainPlayButton'
-                                onKeyDown={e => {if (e.key === 'Enter') { this.hideOverlay() }}}
+                                // onKeyDown={e => {if (e.key === 'Enter') { this.hideOverlay() }}}
+                                onClick={() => this.hideOverlay()}
                             >
-                                <img
-                                    src='/images/icons/playButton.svg'
-                                    onClick={() => this.hideOverlay()}
-                                />
+                                <img src='/images/icons/playButton.svg' />
                             </button>
                             {this.props.partyMode ? "" :
                             <>
@@ -416,12 +421,12 @@ class VideoPlayer extends Component {
                                     onClick={() => this.downloadMovie()}
                                     onKeyDown={e => {if (e.key === 'Enter') { this.downloadMovie() }}}
                                 />
-                                <a href={`/party?path=${this.props.path}`}>
+                                <Link href={`/party?path=${this.props.path}`}>
                                     <FontAwesomeIcon
                                         icon={faUsers}
                                         className='selectable'
                                     />
-                                </a>
+                                </Link>
                             </>
                             }     
                         </div>
@@ -441,7 +446,7 @@ class VideoPlayer extends Component {
                         preload="auto"
                         id='video'
                         controls
-                        autoPlay='autoplay'
+                        autoPlay={this.props.partyMode ? '' : 'autoplay'}
                         ref={ node => this.videoNode = node }
                         crossOrigin="anonymous"
                     >
