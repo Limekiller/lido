@@ -76,7 +76,7 @@ class VideoPlayer extends Component {
             <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
         </Message>
         const errorHandler = this.player.on('error', () => {
-            if (!this.state.hasShownConvertMessage) {
+            if (!this.state.hasShownConvertMessage && !this.props.partyMode) {
                 this.context.globalFunctions.createMessage(convertMessage)
                 this.setState({hasShownConvertMessage: true})
             }
