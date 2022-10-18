@@ -17,7 +17,7 @@ export default function SignIn({ csrfToken }) {
 
         <form className='loginForm' method='post' action='/api/auth/callback/credentials'>
           <input name='csrfToken' type='hidden' defaultValue={csrfToken}/>
-          <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_PclCeNBIjw.json"  background="transparent"  speed="1"  style={{pointerEvents: 'none', width: '100%', height: '200px;', transform: 'scale(1.5);'}}  autoplay></lottie-player>
+          <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_PclCeNBIjw.json"  background="transparent"  speed="1"  style={{pointerEvents: 'none', width: '100%', height: '200px', transform: 'scale(1.5)'}}  autoplay></lottie-player>
           <label>
             <h2>Password</h2>
             <input name='password' id='password' type='password'/>

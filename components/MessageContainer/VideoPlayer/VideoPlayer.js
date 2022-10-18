@@ -1,7 +1,7 @@
 import styles from './VideoPlayer.module.scss'
 import videojs from 'video.js'
 import { Component } from 'react'
-import { faTrash, faTimesCircle, faDownload, faFont } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faUsers, faDownload, faFont, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Router from 'next/router'
 import AppContext from '@/components/AppContext.js'
@@ -29,6 +29,7 @@ class VideoPlayer extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = ({
             data: {},
             title: this.getTitle()[0],
@@ -40,19 +41,29 @@ class VideoPlayer extends Component {
 
             hasShownConvertMessage: false,
             hash: null,
-            hasConverted: false
+            hasConverted: false,
         })
     }
 
     async componentDidMount() {
-        Router.events.on('routeChangeStart', this.context.globalFunctions.closeAllMessages)
+        if (!this.props.partyMode) {
+            Router.events.on('routeChangeStart', this.context.globalFunctions.closeAllMessages)
+        }
         this.getMovieData()
 
         // instantiate Video.js
         this.player = videojs(this.videoNode, this.props);
-        const pauseHandler = this.player.on('pause', () => {
+        this.player.on('pause', () => {
             if (!this.player.seeking()) {
+                if (this.props.partyListeners) {
+                    this.props.partyListeners.pause()
+                }
                 this.showOverlay()
+            }
+        })
+        this.player.on('seeked', () => {
+            if (this.props.partyListeners) {
+                this.props.partyListeners.seek(this.player.currentTime())
             }
         })
 
@@ -99,6 +110,27 @@ class VideoPlayer extends Component {
                 })
             }
         }
+    }
+
+    /**
+     * Explicit pause function for party mode
+     */
+    pauseVideo = () => {
+        this.player.pause()
+    }
+    /**
+     * Explicit play function for party mode
+     */
+    playVideo = () => {
+        this.setState({ showOverlay: false })
+        this.props.partyListeners.seek(this.player.currentTime())
+        this.player.play()
+    }
+    /**
+     * Explicit seek function for party mode
+    */
+    seekVideo = time => {
+        this.player.currentTime(time)
     }
 
     /**
@@ -293,6 +325,9 @@ class VideoPlayer extends Component {
     }
     hideOverlay = () => {
         // However, we always want the video to start playing when the overlay is hidden
+        if (this.props.partyListeners) {
+            this.props.partyListeners.play()
+        }
         this.setState({ showOverlay: false })
         this.player.play()
     }
@@ -312,20 +347,11 @@ class VideoPlayer extends Component {
                     ${styles.videoPlayer}
                     ${!this.state.showOverlay ? '' : 'overlay'}
                     ${this.state.captions ? 'captions' : ''}
+                    ${this.props.partyMode === 2 ? styles.partyLoggedIn : ''}
                 `}
             >
-                <FontAwesomeIcon
-                    icon={faTimesCircle}
-                    className={`
-                        video-close
-                        selectable
-                        ${styles.close}
-                        ${!this.state.showOverlay ? 'display-none' : ''}
-                    `}
-                    onClick={() => this.context.globalFunctions.closeMessage()}
-                    onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.closeMessage() }}}
-                />
                 <div data-vjs-player>
+                    {this.props.partyMode ? <a href="https://github.com/limekiller/lido" target="_blank"><img className={styles.lidoLogo} src='images/lidoWhite.svg' /></a> : ''}
                     <div
                         className={`
                             ${styles.overlay}
@@ -355,27 +381,47 @@ class VideoPlayer extends Component {
                                     onClick={() => this.hideOverlay()}
                                 />
                             </button>
-                            <FontAwesomeIcon
-                                icon={faFont}
-                                className='selectable'
-                                onClick={() => this.context.globalFunctions.createMessage(renameFileMessage)}
-                                onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.createMessage(renameFileMessage) }}}
-                            />
-                            <FontAwesomeIcon
-                                icon={faTrash}
-                                className='selectable'
-                                onClick={() => this.deleteFile()}
-                                onKeyDown={e => {if (e.key === 'Enter') { this.deleteFile() }}}
-                            />
-                            <FontAwesomeIcon
-                                icon={faDownload}
-                                className='selectable'
-                                onClick={() => this.downloadMovie()}
-                                onKeyDown={e => {if (e.key === 'Enter') { this.downloadMovie() }}}
-                            />
+                            {this.props.partyMode ? "" :
+                            <>
+                                <FontAwesomeIcon
+                                    icon={faArrowLeft}
+                                    className={`
+                                        video-close
+                                        selectable
+                                        ${styles.close}
+                                    `}
+                                    onClick={() => this.context.globalFunctions.closeMessage()}
+                                    onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.closeMessage() }}}
+                                />
+                                <FontAwesomeIcon
+                                    icon={faFont}
+                                    className='selectable'
+                                    onClick={() => this.context.globalFunctions.createMessage(renameFileMessage)}
+                                    onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.createMessage(renameFileMessage) }}}
+                                />
+                                <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className='selectable'
+                                    onClick={() => this.deleteFile()}
+                                    onKeyDown={e => {if (e.key === 'Enter') { this.deleteFile() }}}
+                                />
+                                <FontAwesomeIcon
+                                    icon={faDownload}
+                                    className='selectable'
+                                    onClick={() => this.downloadMovie()}
+                                    onKeyDown={e => {if (e.key === 'Enter') { this.downloadMovie() }}}
+                                />
+                                <a href={`/party?path=${this.props.path}`}>
+                                    <FontAwesomeIcon
+                                        icon={faUsers}
+                                        className='selectable'
+                                    />
+                                </a>
+                            </>
+                            }     
                         </div>
 
-                        <div class='CIWrapper' onClick={() => this.state.captionState === 'error' ? this.getSubtitles(parseInt(this.state.data.imdbID.slice(2), 10)) : ""}>
+                        <div className='CIWrapper' onClick={() => this.state.captionState === 'error' ? this.getSubtitles(parseInt(this.state.data.imdbID.slice(2), 10)) : ""}>
                             <CaptionIndicator state={this.state.captionState} />
                         </div>
 

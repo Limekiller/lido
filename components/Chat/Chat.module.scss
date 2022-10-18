@@ -1,0 +1,126 @@
+.Chat {
+    z-index: 9;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    color: white;
+    pointer-events: none;
+
+    .window {
+        top: 0;
+        left: 100%;
+        background: #2d2d2d;
+        height: 100%;
+        width: 15rem;
+        padding: 0rem 1rem 1rem 1rem;
+        position: relative;
+        box-shadow: inset 15px 0px 25px #242424;
+        transition: left 0.2s ease;
+        box-sizing: border-box;
+        pointer-events: all;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &.open {
+            left: calc(100% - 15rem);
+        }
+
+        input {
+            width: 100%;
+            border-radius: 0.5rem;
+            border: none;
+        }
+
+        .messageContainer {
+            display: flex;
+            flex-direction: column-reverse;
+            height: calc(100% - 5rem);
+            overflow-y: auto;
+
+            .message {
+                background:#464646;
+                padding: 0.5rem;
+                margin-bottom: 2.25rem;
+                border-radius: 0.5rem 0.5rem 0.5rem 0;
+                position: relative;
+                
+                &.self {
+                    background: #6c6c6c;
+                    border-radius: 0.5rem 0.5rem 0rem 0.5rem;
+                }
+
+                .nameLabel {
+                    position: absolute;
+                    top: -1.35rem;
+                    left: 0;
+                    font-size: 0.9rem;
+                }
+            }
+        }
+
+        .buttonContainer {
+            display: flex;
+
+            > *:hover {
+                cursor: pointer;
+                transform: scale(1.05);
+                box-shadow: 0px 0px 5px orange;
+            }
+
+            .roomLink {
+                position: relative;
+                right: 16rem;
+                top: 2rem;
+                padding: 0.5rem 1.25rem;
+                background: #2d2d2d;
+                color: white;
+                border-radius: 1rem;
+                transition: all 0.2s ease;
+
+                @media screen and (max-width: 575px) {
+                    right: 12rem;
+                }
+            }
+
+            .toggle {
+                background: #2d2d2d;
+                position: relative;
+                width: 2.5rem;
+                height: 2.5rem;
+                right: 17rem;
+                border-radius: 99rem;
+                top: 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+
+                .unreadNotif {
+                    width: 0.5rem;
+                    height: 0.5rem;
+                    border-radius: 99rem;
+                    background: linear-gradient(orange, gold);
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    opacity: 0;
+                    transform: scale(0);
+                    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+                    &.active {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+
+                @media screen and (max-width: 575px) {
+                    display: none;
+                }
+            }
+        }
+
+    }
+}
