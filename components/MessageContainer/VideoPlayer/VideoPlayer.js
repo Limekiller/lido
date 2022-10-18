@@ -40,6 +40,7 @@ class VideoPlayer extends Component {
             title: this.getTitle()[0],
             strippedTitle: this.getTitle()[1],
             showOverlay: true,
+            overlayLock: false,
 
             captions: false,
             captionState: 'error',
@@ -151,7 +152,7 @@ class VideoPlayer extends Component {
 
         document.querySelector('.vjs-control-bar').classList.add('tv-control')
         if (!this.state.showOverlay) {
-            if ((e.code == 'Enter' || e.code == 'Space')) {
+            if ((e.code == 'Enter' || e.code == 'Space') && !this.state.overlayLock) {
                 this.showOverlay();
                 this.player.pause();
             } else  {
@@ -167,8 +168,6 @@ class VideoPlayer extends Component {
                     document.querySelector('.vjs-subs-caps-button').click()
                 }
             }
-        } else if ((e.code == 'Enter' || e.code == 'Space') && document.activeElement.classList.contains('mainPlayButton')) {
-            this.hideOverlay();
         }
     }
 
@@ -336,6 +335,8 @@ class VideoPlayer extends Component {
         setTimeout(() => SpatialNavigation.focus(document.querySelector('.mainPlayButton')), 50)
     }
     hideOverlay = () => {
+        this.setState({overlayLock: true})
+        setTimeout(() => this.setState({overlayLock: false}), 150)
         // However, we always want the video to start playing when the overlay is hidden
         if (this.props.partyListeners) {
             this.props.partyListeners.play()
@@ -386,10 +387,9 @@ class VideoPlayer extends Component {
                         <div className={styles.videoOptions}>
                             <button 
                                 className='link mainPlayButton'
-                                // onKeyDown={e => {if (e.key === 'Enter') { this.hideOverlay() }}}
-                                onClick={() => this.hideOverlay()}
+                                onKeyDown={e => {if (e.code === 'Enter') {this.hideOverlay()}}}
                             >
-                                <img src='/images/icons/playButton.svg' />
+                                <img src='/images/icons/playButton.svg' onClick={() => this.hideOverlay()}/>
                             </button>
                             {this.props.partyMode ? "" :
                             <>
