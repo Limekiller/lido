@@ -139,6 +139,11 @@ class VideoPlayer extends Component {
      * @param {event} e
      */
     onKey = e => {
+        // TV input not supported in party mode yet
+        if (this.props.partyMode) {
+            return
+        }
+
         document.querySelector('.vjs-control-bar').classList.add('tv-control')
         if (!this.state.showOverlay) {
             if ((e.code == 'Enter' || e.code == 'Space') && !document.activeElement.classList.contains('mainPlayButton')) {

@@ -75,7 +75,9 @@ function party(props) {
         if (!seekLock) {
             socket.emit("seek", time, props.room.toString())
             setseekLock(true)
-            setTimeout(() => setseekLock(false), 50)
+            if (!videoRef.current.player.seeking()) {
+                setTimeout(() => setseekLock(false), 1000)
+            }
         }
     }
 
