@@ -64,6 +64,11 @@
         .buttonContainer {
             display: flex;
 
+            img {
+                filter: brightness(100) invert(1);
+                height: 50%;
+            }
+
             > *:hover {
                 cursor: pointer;
                 transform: scale(1.05);
@@ -79,6 +84,9 @@
                 color: white;
                 border-radius: 1rem;
                 transition: all 0.2s ease;
+                height: 1.5rem;
+                display: flex;
+                align-items: center;
 
                 @media screen and (max-width: 575px) {
                     right: 12rem;

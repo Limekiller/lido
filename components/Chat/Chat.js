@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComment, faCopy, faCheck } from '@fortawesome/free-solid-svg-icons'
-
 import styles from './Chat.module.scss'
 
 function Chat(props) {
-    const [copyIcon, setcopyIcon] = useState(faCopy)
+    const [copyIcon, setcopyIcon] = useState("copy.svg")
     const [open, setOpen] = useState(false)
     const [unread, setunread] = useState(false)
 
@@ -26,12 +22,12 @@ function Chat(props) {
 
     const copyLink = (e) => {
         navigator.clipboard.writeText(e.target.dataset.link)
-        setcopyIcon(faCheck)
+        setcopyIcon("check.svg")
 
         e.target.style.transform = 'scale(1)'
         setTimeout(() => e.target.style.transform = '', 200)
 
-        setTimeout(() => setcopyIcon(faCopy), 2000)
+        setTimeout(() => setcopyIcon("copy.svg"), 2000)
     }
 
     return (
@@ -45,17 +41,14 @@ function Chat(props) {
                 <div className={styles.buttonContainer}>
                     <div className={styles.toggle} onClick={() => {setOpen(!open); setunread(false)}}>
                         <div className={`${styles.unreadNotif} ${unread ? styles.active : ''}`} />
-                        <FontAwesomeIcon icon={faComment}/>
+                        <img src="/images/icons/chat.svg" />
                     </div>
                     <div 
                         className={styles.roomLink}
                         data-link={`${props.URL}/party?room=${props.room}`}
                         onClick={(e) => copyLink(e)}
                     >
-                        <FontAwesomeIcon
-                            icon={copyIcon}
-                            style={{marginRight: "0.75rem"}}
-                        />
+                        <img src={`/images/icons/${copyIcon}`} style={{marginRight: "0.5rem", height: "65%"}} />
                         Copy room link
                     </div>
                 </div>
