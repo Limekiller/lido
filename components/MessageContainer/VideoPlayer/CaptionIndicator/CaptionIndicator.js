@@ -27,8 +27,8 @@ function CaptionIndicator(props) {
 
     return (
         <div className={styles.CaptionIndicator}>
-            <span class={styles.text}><FontAwesomeIcon icon={faClosedCaptioning} /></span>
-            <div class={styles.indicator} style={{color: statusColor}} >
+            <span className={styles.text}><FontAwesomeIcon icon={faClosedCaptioning} /></span>
+            <div className={styles.indicator} style={{color: statusColor}} >
                 {loadingHTML}
             </div>
         </div>

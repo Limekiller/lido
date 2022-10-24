@@ -21,7 +21,6 @@ function party(props) {
         await fetch(`/api/party`)
         socket = io()
 
-        socket.emit("join", props.room.toString())
         socket.on("pause", () => {
             videoRef.current.pauseVideo()
         })
@@ -32,7 +31,11 @@ function party(props) {
             videoRef.current.seekVideo(time)
         })
         socket.on("message", (username, message) => {
-            setmessages(messages => [{username, message}, ...messages])
+            setmessages(messages => [{username, message, type: "user"}, ...messages])
+        })
+        socket.on("sysmessage", (message) => {
+            console.log([{username: username, message, type: "system"}, ...messages])
+            setmessages(messages => [{username: username, message, type: "system"}, ...messages])
         })
 
         const URLtoReplace = `${window.location.protocol}//${window.location.host}${window.location.pathname}?room=${props.room}`   
@@ -42,9 +45,11 @@ function party(props) {
             <Message>
                 <h1>Enter a username</h1>
                 <input id="usernameBox" className="usernameBox" type="text" />
-                <button onClick={() => {
+                <button onClick={async () => {
                     if (document.querySelector("#usernameBox").value) { 
-                        setusername(document.querySelector("#usernameBox").value)
+                        const newUsername = document.querySelector("#usernameBox").value
+                        setusername(newUsername)
+                        await socket.emit("join", newUsername, props.room.toString())
                         context.globalFunctions.closeMessage()
                     }}}>OK
                 </button>
@@ -81,8 +86,13 @@ function party(props) {
         }
     }
 
-    const sendMessage = async (message) => {
-        socket.emit("message", username, message, props.room.toString())
+    const sendMessage = async (message, type="user") => {
+        if (type == "system") {
+            console.log('hello')
+            socket.emit("sysmessage", message, props.room.toString())
+        } else {
+            socket.emit("message", username, message, props.room.toString())
+        }
     }
 
     const getPathFromRoomId = () => {

@@ -17,11 +17,20 @@ export default function SocketHandler(req, res) {
   const io = new Server(res.socket.server)
   res.socket.server.io = io
 
+  let users = {}
+
   const onConnection = (socket) => {
-    socket.on("join", room => {
+    socket.on("join", (username, room) => {
       console.log(`joining ${room}`)
+      users[socket.id] = {username: username, room: room}
       socket.join(room)
+      io.sockets.in(room).emit("sysmessage", `"${username}" has joined the room!`)
     })
+    socket.on("disconnect", room => {
+      io.sockets.in(users[socket.id]["room"]).emit("sysmessage", `"${users[socket.id]["username"]}" has left the room.`)
+      delete users[socket.id]
+    })
+
     socket.on("play", room => {
       socket.in(room).emit("play")
     })
@@ -31,8 +40,12 @@ export default function SocketHandler(req, res) {
     socket.on("seek", (time, room) => {
       socket.in(room).emit("seek", time)
     })
+
     socket.on("message", (username, message, room) => {
       io.sockets.in(room).emit("message", username, message)
+    })
+    socket.on("sysmessage", (message, room) => {
+      io.sockets.in(room).emit("sysmessage", message)
     })
   }
 

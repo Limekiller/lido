@@ -17,7 +17,7 @@
         padding: 0rem 1rem 1rem 1rem;
         position: relative;
         box-shadow: inset 15px 0px 25px #242424;
-        transition: left 0.2s ease;
+        transition: left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         box-sizing: border-box;
         pointer-events: all;
         display: flex;
@@ -32,6 +32,7 @@
             width: 100%;
             border-radius: 0.5rem;
             border: none;
+            margin-top: 1.5rem;
         }
 
         .messageContainer {
@@ -43,9 +44,17 @@
             .message {
                 background:#464646;
                 padding: 0.5rem;
-                margin-bottom: 2.25rem;
                 border-radius: 0.5rem 0.5rem 0.5rem 0;
                 position: relative;
+                margin-top: 2.5rem;
+
+                &.grouped {
+                    margin-top: 0.5rem;
+
+                    .nameLabel {
+                        display: none;
+                    }
+                }
                 
                 &.self {
                     background: #6c6c6c;
@@ -57,6 +66,19 @@
                     top: -1.35rem;
                     left: 0;
                     font-size: 0.9rem;
+                }
+
+                &.system {
+                    background: transparent;
+                    font-style: italic;
+                    opacity: 0.75;
+                    margin-top: 1.5rem;
+                    padding: 0;
+                    text-align: center;
+
+                    .nameLabel {
+                        display: none;
+                    }
                 }
             }
         }

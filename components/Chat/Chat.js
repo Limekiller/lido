@@ -55,7 +55,15 @@ function Chat(props) {
 
                 <div className={styles.messageContainer}>
                     {props.messages.map((messageObj, index) => {
-                        return <div className={`${styles.message} ${props.username == messageObj.username ? styles.self : ''}`} key={index}>
+                        return <div 
+                            className={`
+                                ${styles.message} 
+                                ${props.username == messageObj.username ? styles.self : ''}
+                                ${styles[messageObj.type]}
+                                ${messageObj.username == props.messages[Math.min(index+1, props.messages.length-1)].username ? styles.grouped : ''}
+                            `} 
+                            key={index}
+                        >
                             <span className={styles.nameLabel}>{messageObj.username}</span>
                             {messageObj.message}
                         </div>
