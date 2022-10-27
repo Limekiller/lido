@@ -24,15 +24,15 @@ export default async (req, res) => {
         .filter(dirent => dirent.isFile())
 
     // Get movie data for files
-    files = await Promise.all(files.map(async file => {
+    let allFiles = [];
+    for (let file of files) {
       let data = await fetch(req.headers.origin + '/api/getMovieData?title=' + encodeURI(file.name))
-      return { name: file.name, data: await data.json()}
-    }))
-    // files = files.map(file => {return {name: file.name, data: {}}})
+      allFiles.push({name: file.name, data: await data.json()})
+    }
 
     const data = {
         folders: folders,
-        files: files
+        files: allFiles
     }
 
     res.statusCode = 200;

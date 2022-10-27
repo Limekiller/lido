@@ -422,10 +422,10 @@ class VideoPlayer extends Component {
                                     onKeyDown={e => {if (e.key === 'Enter') { this.downloadMovie() }}}
                                 />
                                 <Link href={`/party?path=${this.props.path}`}>
-                                    <FontAwesomeIcon
+                                    <a><FontAwesomeIcon
                                         icon={faUsers}
                                         className='selectable'
-                                    />
+                                    /></a>
                                 </Link>
                             </>
                             }     

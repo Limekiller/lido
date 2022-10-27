@@ -38,7 +38,6 @@ function party(props) {
             setmessages(messages => [{username, message, type: "user"}, ...messages])
         })
         socket.on("sysmessage", (message) => {
-            console.log([{username: username, message, type: "system"}, ...messages])
             setmessages(messages => [{username: username, message, type: "system"}, ...messages])
         })
 
@@ -92,7 +91,6 @@ function party(props) {
 
     const sendMessage = async (message, type="user") => {
         if (type == "system") {
-            console.log('hello')
             socket.emit("sysmessage", message, props.room.toString())
         } else {
             socket.emit("message", username, message, props.room.toString())
@@ -137,7 +135,7 @@ export async function getServerSideProps(context) {
     if (!session && (!context.query.room || context.query.path)) {
         context.res.writeHead(302, { Location: "/api/auth/signin" });
         context.res.end();
-        return
+        return {props: {}}
     }
 
     if (!context.query.room) {
@@ -152,7 +150,7 @@ export async function getServerSideProps(context) {
         if (roomCheckResp.status == 401) {
             context.res.writeHead(302, { Location: "/api/auth/signin" });
             context.res.end();
-            return
+            return {props: {}}
         }
     }
 

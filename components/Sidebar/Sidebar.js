@@ -29,7 +29,7 @@ function Sidebar() {
                         <Link href='/downloads'>
                             <a><FontAwesomeIcon icon={faDownload} /></a>
                         </Link>
-                        <a href='javascript:void(0);' >
+                        <a href='#' onKeyDown={(e) => {if (e.key === "Enter") {signOut()}}}>
                             <FontAwesomeIcon icon={faSignOutAlt} onClick={signOut} />
                         </a>
                     </div>
