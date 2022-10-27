@@ -30,7 +30,7 @@ class MyApp extends App {
   }
 
   componentDidUpdate() {
-    if (Keyboard) {
+    if (Keyboard && typeof Keyboard.bindButtons === "function") {
       Keyboard.bindButtons();
       SpatialNavigation.makeFocusable('mainNav');
       SpatialNavigation.makeFocusable('add');

@@ -28,7 +28,11 @@ function party(props) {
             videoRef.current.playVideo()
         })
         socket.on("seek", time => {
-            videoRef.current.seekVideo(time)
+            if (!seekLock) {
+                videoRef.current.seekVideo(time)
+                setseekLock(true)
+                setTimeout(() => setseekLock(false), 2000)
+            }
         })
         socket.on("message", (username, message) => {
             setmessages(messages => [{username, message, type: "user"}, ...messages])
