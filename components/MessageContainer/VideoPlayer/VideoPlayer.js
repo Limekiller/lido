@@ -360,7 +360,8 @@ class VideoPlayer extends Component {
                     ${styles.videoPlayer}
                     ${!this.state.showOverlay ? '' : 'overlay'}
                     ${this.state.captions ? 'captions' : ''}
-                    ${this.props.partyMode === 2 ? styles.partyLoggedIn : ''}
+                    ${this.props.partyMode === 2 || this.props.partyMode === 4 ? styles.partyLoggedIn : ''}
+                    ${this.props.partyMode > 2 ? styles.chatOpen : ''}
                 `}
             >
                 <div data-vjs-player>

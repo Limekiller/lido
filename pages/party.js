@@ -14,8 +14,10 @@ function party(props) {
     const [seekLock, setseekLock] = useState(false)
     const [messages, setmessages] = useState([])
     const [username, setusername] = useState("Anonymous")
-    const videoRef = useRef()
+    const [chatOpen, setchatOpen] = useState(0)
+
     const context = useContext(AppContext)
+    const videoRef = useRef()
 
     useEffect(async () => {
         await fetch(`/api/party`)
@@ -106,7 +108,7 @@ function party(props) {
             <VideoPlayer 
                 ref={videoRef}
                 path={props.path ? props.path : getPathFromRoomId()}
-                partyMode={props.partyMode}
+                partyMode={props.partyMode + chatOpen}
                 partyListeners={{
                     play: play,
                     pause: pause,
@@ -119,6 +121,7 @@ function party(props) {
                 URL={props.URL}
                 room={props.room}
                 username={username}
+                onChatOpen={(chatState) => chatState ? setchatOpen(2) : setchatOpen(0)}
             />
         </>
     )
@@ -129,6 +132,11 @@ export async function getServerSideProps(context) {
     let path = context.query.path ? context.query.path : null
     const session = await getSession(context)
 
+    // A word on "partyMode": this gets passed to the Video Player component. 0 = no party mode, 1 = non-logged-in party mode, 2 = logged-in party mode
+    // When party mode is on, all video options except for the play button is hidden. If logged in, the sidebar will be on the left, so padding
+    // is added to the player to account for this. The player page also maintains a "chat open" state affected by the chat component;
+    // this gets added on to the partyMode variable allowing the partyMode to also be 3 (not logged in, chat open) or 4 (logged in, chat open).
+    // This is so we can adjust the size of the video on the page, and again: the values differ for logged-in and non-logged-in users.
     let partyMode = session ? 2 : 1
 
     // If they're not logged in, they MUST pass a room parameter, and MUST NOT pass a path param

@@ -39,7 +39,7 @@ function Chat(props) {
                 `}
             >
                 <div className={styles.buttonContainer}>
-                    <div className={styles.toggle} onClick={() => {setOpen(!open); setunread(false)}}>
+                    <div className={styles.toggle} onClick={() => {props.onChatOpen(!open); setOpen(!open); setunread(false)}}>
                         <div className={`${styles.unreadNotif} ${unread ? styles.active : ''}`} />
                         <img src="/images/icons/chat.svg" />
                     </div>
