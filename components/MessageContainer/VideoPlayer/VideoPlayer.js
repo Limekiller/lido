@@ -362,6 +362,7 @@ class VideoPlayer extends Component {
                     ${this.state.captions ? 'captions' : ''}
                     ${this.props.partyMode === 2 || this.props.partyMode === 4 ? styles.partyLoggedIn : ''}
                     ${this.props.partyMode > 2 ? styles.chatOpen : ''}
+                    ${this.props.partyMode ? 'partyMode' : ''}
                 `}
             >
                 <div data-vjs-player>

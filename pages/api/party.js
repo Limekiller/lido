@@ -25,10 +25,13 @@ export default function SocketHandler(req, res) {
       users[socket.id] = {username: username, room: room}
       socket.join(room)
       io.sockets.in(room).emit("sysmessage", `"${username}" has joined the room!`)
+      io.sockets.in(room).emit("setUsers", getUsersInRoom(users, room))
     })
-    socket.on("disconnect", room => {
-      io.sockets.in(users[socket.id]["room"]).emit("sysmessage", `"${users[socket.id]["username"]}" has left the room.`)
+    socket.on("disconnect", () => {
+      const roomId = users[socket.id]["room"]
+      io.sockets.in(roomId).emit("sysmessage", `"${users[socket.id]["username"]}" has left the room.`)
       delete users[socket.id]
+      io.sockets.in(roomId).emit("setUsers", getUsersInRoom(users, roomId))
     })
 
     socket.on("play", room => {
@@ -54,4 +57,14 @@ export default function SocketHandler(req, res) {
 
   console.log("Setting up socket")
   res.end();
+}
+
+const getUsersInRoom = (users, room) => {
+  let userList = []
+  for (const user in users) {
+    if (users[user].room === room) {
+      userList.push(users[user].username)
+    }
+  }
+  return userList
 }

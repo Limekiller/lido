@@ -147,6 +147,10 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
   color: gold !important;
 }
 
+.partyMode .video-js.vjs-playing .vjs-tech {
+  pointer-events: none;
+}
+
 
 .logo {
   margin: 0 auto;

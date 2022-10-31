@@ -38,6 +38,12 @@ function Chat(props) {
                     ${open ? styles.open : ''}
                 `}
             >
+                <div className={styles.userList}>
+                    {props.users.map((user) => {
+                        return <span key={user}>{user}</span>
+                    })}
+                </div>
+
                 <div className={styles.buttonContainer}>
                     <div className={styles.toggle} onClick={() => {props.onChatOpen(!open); setOpen(!open); setunread(false)}}>
                         <div className={`${styles.unreadNotif} ${unread ? styles.active : ''}`} />

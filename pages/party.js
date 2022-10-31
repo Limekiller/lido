@@ -15,6 +15,7 @@ function party(props) {
     const [messages, setmessages] = useState([])
     const [username, setusername] = useState("Anonymous")
     const [chatOpen, setchatOpen] = useState(0)
+    const [users, setusers] = useState([])
 
     const context = useContext(AppContext)
     const videoRef = useRef()
@@ -41,6 +42,9 @@ function party(props) {
         })
         socket.on("sysmessage", (message) => {
             setmessages(messages => [{username: username, message, type: "system"}, ...messages])
+        })
+        socket.on("setUsers", (users) => {
+            setusers(users)
         })
 
         const URLtoReplace = `${window.location.protocol}//${window.location.host}${window.location.pathname}?room=${props.room}`   
@@ -118,6 +122,7 @@ function party(props) {
             <Chat 
                 messageFunction={sendMessage} 
                 messages={messages}
+                users={users}
                 URL={props.URL}
                 room={props.room}
                 username={username}
