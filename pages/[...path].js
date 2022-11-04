@@ -27,7 +27,8 @@ class FolderView extends Component {
             contents: {
                 folders: [],
                 files: []
-            }
+            },
+            listView: props.router.asPath.slice(0, 3) == '/TV' ? true : false
         };
         this.fetchContents = this.fetchContents.bind(this);
     }
@@ -38,6 +39,11 @@ class FolderView extends Component {
         }
         this.fetchContents();
         Router.events.on("routeChangeComplete", this.fetchContents);
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.router.asPath !== this.props.router.asPath) {
+            this.setState({listView: this.props.router.asPath.slice(0, 3) == '/TV' ? true : false})
+        }
     }
     componentWillUnmount() {
         Router.events.off("routeChangeComplete", this.fetchContents);
@@ -63,15 +69,15 @@ class FolderView extends Component {
             if (JSON.stringify(this.state.contents) != JSON.stringify(data)) {
                 this.setState({contents: data})
                 // Uncomment to fetch media info for each file asynchronously
-                // this.state.contents.files.forEach(async (file, index) => {
-                //     let data = fetch('/api/getMovieData?title=' + file.name)
-                //     .then(response => response.json())
-                //     .then(data => {
-                //         const tempFiles = this.state.contents.files
-                //         tempFiles[index]['data'] = data
-                //         this.setState({contents: {...this.state.contents, files: tempFiles}})
-                //     })
-                // })
+                this.state.contents.files.forEach(async (file, index) => {
+                    let data = fetch('/api/getMovieData?title=' + file.name)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tempFiles = this.state.contents.files
+                        tempFiles[index]['data'] = data
+                        this.setState({contents: {...this.state.contents, files: tempFiles}})
+                    })
+                })
             }
         })
         .catch(error => {
@@ -110,6 +116,7 @@ class FolderView extends Component {
      * @param {event} e 
      */
     checkDropZone = (e) => {
+        e.preventDefault()
         if (document.querySelector('.dragging')) {
             //const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').innerText)
             const fileName = encodeURIComponent(document.querySelector('.react-draggable-dragging').dataset.filename)
@@ -176,7 +183,7 @@ class FolderView extends Component {
     }
 
     toggleList = () => {
-        document.querySelector('.files').classList.toggle('listView')
+        this.setState({listView: !this.state.listView})
     }
 
     /**
@@ -186,6 +193,10 @@ class FolderView extends Component {
      * @returns {JSX}
      */
     generateHTML(data) {
+        // if () {
+        //     this.setState({listView: true})
+        // }
+
         return (
             <>
                 {data.folders.length === 0 && data.files.length === 0 ?
@@ -234,7 +245,7 @@ class FolderView extends Component {
                 <div 
                     className={`
                         files
-                        ${this.props.router.asPath.slice(0, 3) == '/TV' ? 'listView' : ''}
+                        ${this.state.listView ? 'listView' : ''}
                     `}
                 >
                     {Object.keys(data.files).map((_key, index) => {
@@ -250,15 +261,20 @@ class FolderView extends Component {
                         }
                         const innerHTML = <div
                                 className='file'
-                                onClick={() => this.context.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
+                                onClick={(e) => this.context.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
                                 onKeyDown={e => {if (e.key === 'Enter') { e.target.click() }}}
-                                style={{
-                                    backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
-                                    color: hasPoster && data.files[_key].data.Type === 'movie' ? 'rgba(0,0,0,0)' : 'white'
-                                }}
+                                style={{color: hasPoster && data.files[_key].data.Type === 'movie' ? 'rgba(0,0,0,0)' : 'white'}}
                                 tabIndex='0'
                                 data-filename={decodeURIComponent(data.files[_key].name)}
                             >
+                            <div 
+                                className='filePoster' 
+                                style={{
+                                    backgroundImage: hasPoster ? 'url("' + data.files[_key].data.Poster + '")' : 'linear-gradient(#6c6c6c, #464646)',
+                                    opacity: hasPoster && !seriesTitle && !this.state.listView ? '1' : '0',
+                                    transform: hasPoster ? 'scale(1)' : 'scale(0.98)'
+                                }}
+                            />
                             <span className='title'>{
                                 data.files[_key].data.Title ??
                                 decodeURIComponent(data.files[_key].name)

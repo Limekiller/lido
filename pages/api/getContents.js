@@ -26,8 +26,10 @@ export default async (req, res) => {
     // Get movie data for files
     let allFiles = [];
     for (let file of files) {
-      let data = await fetch(req.headers.origin + '/api/getMovieData?title=' + encodeURI(file.name))
-      allFiles.push({name: file.name, data: await data.json()})
+      // Uncomment to get all media info first (non-deferred-rendering)
+      // let data = await fetch(req.headers.origin + '/api/getMovieData?title=' + encodeURI(file.name))
+      // allFiles.push({name: file.name, data: await data.json()})
+      allFiles.push({name: file.name, data: {}})
     }
 
     const data = {

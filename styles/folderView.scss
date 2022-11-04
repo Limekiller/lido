@@ -82,13 +82,28 @@
     .file {
         width: 225px;
         height: 350px;
-        background-size: cover;
         color: white;
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0px 0px 10px #00000063;
         opacity: 0;
         animation: fadeIn 0.2s ease forwards;
+        background: linear-gradient($fg-color-light, $fg-color-dark);
+        position: relative;
+
+        .filePoster {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            opacity: 0;
+            transition: all 0.2s ease;
+            transform: scale(0.98);
+            pointer-events: none;
+            border-radius: 5px;
+        }
 
         .seriesTitle {
             display: block;
@@ -113,6 +128,10 @@
             color: white !important;
             box-shadow: none;
 
+            .filePoster {
+                transition: none;
+            }
+
             &:hover, &:focus {
                 outline: none;
                 padding: 22px;
@@ -130,7 +149,7 @@
 }
 
 .folderContainer, .file {
-    transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease, padding 0.4s ease, margin 0.4s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease, padding 0.4s ease, margin 0.4s ease;
     word-wrap: anywhere;
 
     &:hover, &:focus {
@@ -143,12 +162,12 @@
     }
 
     &.dragging {
-        transition: opacity 0.4s ease, padding 0.4s ease;
+        transition: filter 0.4s ease, padding 0.4s ease;
         pointer-events: none;
         z-index: 9;
     }
     &.droppable {
-        opacity: 0.5;
+        filter: opacity(0.5);
         padding: 10px;
     }
 
