@@ -68,15 +68,23 @@ class FolderView extends Component {
             this.setState({ hasLoaded: true })
             if (JSON.stringify(this.state.contents) != JSON.stringify(data)) {
                 this.setState({contents: data})
-                // Uncomment to fetch media info for each file asynchronously
+                // Fetch each item separately and cache in localstorage
                 this.state.contents.files.forEach(async (file, index) => {
-                    let data = fetch('/api/getMovieData?title=' + file.name)
-                    .then(response => response.json())
-                    .then(data => {
+                    const encodedTitle = btoa(file.name)
+                    if (localStorage.getItem(encodedTitle) === null) {
+                        let data = fetch('/api/getMovieData?title=' + file.name)
+                        .then(response => response.json())
+                        .then(data => {
+                            const tempFiles = this.state.contents.files
+                            tempFiles[index]['data'] = data
+                            this.setState({contents: {...this.state.contents, files: tempFiles}})
+                            localStorage.setItem(encodedTitle, JSON.stringify(data))
+                        })
+                    } else {
                         const tempFiles = this.state.contents.files
-                        tempFiles[index]['data'] = data
+                        tempFiles[index]['data'] = JSON.parse(localStorage.getItem(encodedTitle))
                         this.setState({contents: {...this.state.contents, files: tempFiles}})
-                    })
+                    }
                 })
             }
         })
