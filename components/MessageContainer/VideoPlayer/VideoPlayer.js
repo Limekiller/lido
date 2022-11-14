@@ -234,9 +234,17 @@ class VideoPlayer extends Component {
      * Helper function to get the OMDB movie data, and update the component state
      */
     getMovieData = async () => {
-        let data = await fetch('/api/getMovieData?title=' + this.state.title)
-        data = await data.json()
-        this.setState({ data: data })
+        const encodedTitle = btoa(this.state.title)
+        let data
+        if (localStorage.getItem(encodedTitle) === null) {
+            data = await fetch('/api/getMovieData?title=' + this.state.title)
+            data = await data.json()
+            this.setState({ data: data })
+        } else {
+            data = JSON.parse(localStorage.getItem(encodedTitle))
+            this.setState({ data: data })
+        }
+
         if (data.imdbID) {
             this.getSubtitles(parseInt(data.imdbID.slice(2), 10))
         }
