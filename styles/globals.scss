@@ -105,7 +105,9 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
   height: 50px;
   padding-top: 10px;
   border-radius: 20px;
-  background: $fg-color-dark;
+  backdrop-filter: blur(10px);
+  transform: scale(1);
+  transition: all 0.2s ease;
 }
 .video-js .vjs-control-bar .vjs-progress-holder {
   margin-top: -10px;
@@ -113,10 +115,17 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
 .video-js .vjs-control {
   box-shadow: none;
 }
+.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
+  transition: all 0.2s ease;
+}
+.video-js.vjs-user-inactive .vjs-control-bar {
+  transform: scale(0.95);
+}
 
 /* For TV control */
 .vjs-control-bar.tv-control {
   background: transparent;
+  backdrop-filter: none;
 }
 .vjs-control-bar.tv-control .vjs-progress-holder {
   height: 1.3em;

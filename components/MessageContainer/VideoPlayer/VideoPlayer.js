@@ -338,7 +338,9 @@ class VideoPlayer extends Component {
     showOverlay = () => {
         // We don't want to pause the video every time we show the overlay, 
         // because we call this method when the video first loads -- we want the overlay to show, but with the video playin in the background
-        this.setState({ showOverlay: true })
+        setTimeout(() => this.setState({ showOverlay: true }), 50)
+        document.querySelector(`.${styles.overlay}`).style.display = 'unset'
+        
         // Every time we show the overlay, we should move focus to the play button
         setTimeout(() => SpatialNavigation.focus(document.querySelector('.mainPlayButton')), 50)
     }
@@ -349,7 +351,10 @@ class VideoPlayer extends Component {
         if (this.props.partyListeners) {
             this.props.partyListeners.play()
         }
+
         this.setState({ showOverlay: false })
+        setTimeout(() => document.querySelector(`.${styles.overlay}`).style.display = 'none', 200)
+
         this.player.play()
     }
 
@@ -396,7 +401,7 @@ class VideoPlayer extends Component {
 
                         <div className={styles.videoOptions}>
                             <button 
-                                className='link mainPlayButton'
+                                className={`link mainPlayButton ${styles.mainPlayButton}`}
                                 onKeyDown={e => {if (e.code === 'Enter') {this.hideOverlay()}}}
                             >
                                 <img src='/images/icons/playButton.svg' onClick={() => this.hideOverlay()}/>
