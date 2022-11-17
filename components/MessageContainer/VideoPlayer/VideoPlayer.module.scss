@@ -39,7 +39,7 @@
 
     .overlay {
         position: absolute;
-        width: 75vw;
+        width: 100vw;
         height: 100vh;
         z-index: 9;
         padding: 50px;
@@ -61,7 +61,7 @@
 
         .overlayBg {
             position: absolute;
-            width: 110%;
+            width: 75%;
             height: 110%;
             left: -5%;
             top: -5%;
