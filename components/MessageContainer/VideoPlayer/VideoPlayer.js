@@ -53,6 +53,10 @@ class VideoPlayer extends Component {
 
     async componentDidMount() {
         if (!this.props.partyMode) {
+            // duplicate the page on the history stack so if the user hits the back button, they stay on the same page
+            const url = new URL(window.location);
+            window.history.pushState({}, '', url)
+            
             Router.events.on('routeChangeStart', this.context.globalFunctions.closeAllMessages)
         }
         this.getMovieData()
