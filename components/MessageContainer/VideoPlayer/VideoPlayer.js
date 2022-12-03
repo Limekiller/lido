@@ -61,6 +61,8 @@ class VideoPlayer extends Component {
         }
         this.getMovieData()
 
+        window.addEventListener('popstate', this.onBackEvent)
+
         // instantiate Video.js
         this.player = videojs(this.videoNode, this.props);
         this.player.on('pause', () => {
@@ -106,8 +108,11 @@ class VideoPlayer extends Component {
     componentWillUnmount() {
         Router.events.off('routeChangeStart', this.context.globalFunctions.closeAllMessages)
         SpatialNavigation.enable('add');
+
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('keydown', this.onKey);
+        document.removeEventListener('popstate', this.onBackEvent);
+
         if (this.player) {
             this.player.dispose()
             if (this.state.hash) {
@@ -177,6 +182,10 @@ class VideoPlayer extends Component {
 
     onMouseMove = e => {
         document.querySelector('.vjs-control-bar').classList.remove('tv-control')
+    }
+    onBackEvent = e => {
+        e.preventDefault()
+        this.context.globalFunctions.closeMessage() 
     }
 
     /**

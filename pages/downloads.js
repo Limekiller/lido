@@ -102,15 +102,17 @@ export default class downloads extends Component {
                                     </div>
                                     <div className='endActions'>
                                         <span className='percentage'>{isNaN(percentage) ? 'Fetching metadata...' : percentage + '%'}</span>
-                                        <FontAwesomeIcon 
-                                            icon={faTimesCircle} 
+                                        <button
+                                            className='link'
                                             onClick={(e) => this.cancelDownload(
                                                 file.gid,
                                                 file.path,
                                                 file.name,
                                                 e
                                             )}
-                                        />
+                                        >
+                                            <FontAwesomeIcon icon={faTimesCircle} />
+                                        </button>
                                     </div>
                                 </div>
                             )

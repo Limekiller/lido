@@ -28,15 +28,32 @@
             display: flex;
             align-items: center;
 
-            svg {
-                width: 25px;
-                height: 100%;
-                margin-left: 20px;
+
+            button {
+                border: none;
+                background: none;
+                color: unset;
+
+                svg {
+                    width: 25px;
+                    height: 100%;
+                    margin-left: 20px;
+                }
 
                 &:hover {
                     cursor: pointer;
                 }
+
+                &:focus {
+                    outline: none;
+                    transform: scale(1.1);
+
+                    svg {
+                        color: red;
+                    }
+                }
             }
+
         }
 
         .name {
