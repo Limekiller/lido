@@ -3,17 +3,61 @@ import jsdom from 'jsdom'
 export default async (req, res) => {
 
     const searchQuery = req.query.search;
-    const source = 'PirateBay'
+    const source = 'torrentgalaxy'
     let results
 
     switch (source) {
         case 'PirateBay':
             results = await scrapePirateBay(searchQuery)
             break;
+        case 'torrentgalaxy':
+            results = await torrentgalaxy(searchQuery)
+            break;
     }
 
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(results))
+}
+
+const torrentgalaxy = query => {
+    query = query.toLowerCase().replace(/["']/g, '').replace(/ /g, '+')
+    return fetch(`https://torrentgalaxy.to/torrents.php?search=${query}&lang=0&nox=1&sort=seeders&order=desc`)
+    .then(response => {return response.text()})
+    .then(html => {
+        let dom = new jsdom.JSDOM(html)
+
+        let results = [];
+        dom.window.document.querySelectorAll('.tgxtablerow').forEach(async (row, index) => {
+            if (index == dom.window.document.querySelectorAll('.tgxtablerow').length - 1) {
+                return
+            }
+
+            const title = row.querySelector('#click a').title
+            const link = row.querySelector('a[role="button"]').href
+            const seeders = row.querySelector('font[color="green"]').textContent
+            const leechers = row.querySelector('font[color="#ff0000"]').textContent
+
+            let type;
+            const category = row.querySelector('div').textContent 
+            if (category.includes('Movie')) {
+                type = 'Movie'
+            } else if (category.includes('TV')) {
+                type = 'TV'
+            } else {
+                return
+            }
+
+            results.push({
+                name: title,
+                link: link,
+                seeders: seeders,
+                leechers: leechers,
+                type: type
+            })
+        })
+
+        return results
+    })
 }
 
 const scrapePirateBay = (query) => {
