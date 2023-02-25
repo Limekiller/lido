@@ -3,22 +3,23 @@ import jsdom from 'jsdom'
 export default async (req, res) => {
 
     const searchQuery = req.query.search;
-    const source = 'PirateBay'
-    let results
+    const sources = [
+        scrapePirateBay,
+        scrapeTorrentGalaxy,
+        scrapeExtraTorrent,
+        scrapeGloTorrent,
+    ]
 
-    switch (source) {
-        case 'PirateBay':
-            results = await scrapePirateBay(searchQuery)
-            break;
-        case 'TorrentGalaxy':
-            results = await scrapeTorrentGalaxy(searchQuery)
-            break;
-        case 'ExtraTorrent':
-            results = await scrapeExtraTorrent(searchQuery)
-            break;
-        case 'GloTorrent':
-            results = await scrapeGloTorrent(searchQuery)
-            break;
+    let results
+    for (let source of sources) {
+        console.log(source)
+        results = await source(searchQuery)
+
+        // TODO: Consider edge case where if results are returned, but none of them have a positive seeder - leecher ratio,
+        // no results are displayed and other torrent sources are not used
+        if (results && results.length > 0) {
+            break
+        }
     }
 
     res.setHeader('Content-Type', 'application/json')
@@ -65,7 +66,6 @@ const scrapeGloTorrent = query => {
         return results
     })
 }
-
 const scrapeExtraTorrent = query => {
     const formdata = new URLSearchParams()
     formdata.append("sorter", "seed")
@@ -112,7 +112,6 @@ const scrapeExtraTorrent = query => {
         return results
     })
 }
-
 const scrapeTorrentGalaxy = query => {
     query = query.toLowerCase().replace(/["']/g, '').replace(/ /g, '+')
     return fetch(`https://torrentgalaxy.to/torrents.php?search=${query}&lang=0&nox=1&sort=seeders&order=desc`)
@@ -153,7 +152,6 @@ const scrapeTorrentGalaxy = query => {
         return results
     })
 }
-
 const scrapePirateBay = (query) => {
     //query = query.toLowerCase().split(" ").join("+").replace(/["']/g, '')
     query = query.toLowerCase().replace(/["']/g, '')
