@@ -3,7 +3,7 @@ import jsdom from 'jsdom'
 export default async (req, res) => {
 
     const searchQuery = req.query.search;
-    const source = 'ExtraTorrent'
+    const source = 'TorrentGalaxy'
     let results
 
     switch (source) {
@@ -16,10 +16,54 @@ export default async (req, res) => {
         case 'ExtraTorrent':
             results = await scrapeExtraTorrent(searchQuery)
             break;
+        case 'GloTorrent':
+            results = await scrapeGloTorrent(searchQuery)
+            break;
     }
 
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(results))
+}
+
+const scrapeGloTorrent = query => {
+    query = query.toLowerCase().replace(/["']/g, '').replace(/ /g, '+')
+    return fetch(`https://glodls.to/search_results.php?search=${query}&cat=1,41&sort=seeders&order=desc`)
+    .then(response => {return response.text()})
+    .then(html => {
+        let dom = new jsdom.JSDOM(html)
+
+        let results = [];
+        dom.window.document.querySelectorAll('.t-row').forEach(async (row, index) => {
+            if (index == dom.window.document.querySelectorAll('.t-row').length - 1 || !row.querySelector('td:nth-child(2)')) {
+                return
+            }
+
+            const title = row.querySelector('td:nth-child(2)').textContent.trim() 
+            const link = row.querySelector('td:nth-child(4) a').href
+            const seeders = row.querySelector('td:nth-child(6)').textContent 
+            const leechers = row.querySelector('td:nth-child(7)').textContent 
+
+            let type;
+            const category = row.querySelector('td:nth-child(1) a').href.split('?cat=')[1]
+            if (category == 1) {
+                type = 'Movie'
+            } else if (category == 41) {
+                type = 'TV'
+            } else {
+                return
+            }
+
+            results.push({
+                name: title,
+                link: link,
+                seeders: seeders,
+                leechers: leechers,
+                type: type
+            })
+        })
+
+        return results
+    })
 }
 
 const scrapeExtraTorrent = query => {
