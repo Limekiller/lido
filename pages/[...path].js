@@ -75,10 +75,12 @@ class FolderView extends Component {
                         let data = fetch('/api/getMovieData?title=' + file.name)
                         .then(response => response.json())
                         .then(data => {
-                            const tempFiles = this.state.contents.files
-                            tempFiles[index]['data'] = data
-                            this.setState({contents: {...this.state.contents, files: tempFiles}})
-                            localStorage.setItem(encodedTitle, JSON.stringify(data))
+                            if (data.Response === "True") {
+                                const tempFiles = this.state.contents.files
+                                tempFiles[index]['data'] = data
+                                this.setState({contents: {...this.state.contents, files: tempFiles}})
+                                localStorage.setItem(encodedTitle, JSON.stringify(data))
+                            }
                         })
                     } else {
                         const tempFiles = this.state.contents.files
