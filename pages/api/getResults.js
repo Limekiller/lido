@@ -3,7 +3,7 @@ import jsdom from 'jsdom'
 export default async (req, res) => {
 
     const searchQuery = req.query.search;
-    const source = 'TorrentGalaxy'
+    const source = 'PirateBay'
     let results
 
     switch (source) {
@@ -157,23 +157,7 @@ const scrapeTorrentGalaxy = query => {
 const scrapePirateBay = (query) => {
     //query = query.toLowerCase().split(" ").join("+").replace(/["']/g, '')
     query = query.toLowerCase().replace(/["']/g, '')
-    return fetch(`https://thepiratebay10.org/search/${query}/1/7/0`, {
-        headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Referer": "https://thepiratebay10.org/",
-            "DNT": "1",
-            "Connection": "keep-alive",
-            "Upgrade-Insecure-Requests": "1",
-            "Sec-Fetch-Dest": "document",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-Fetch-User": "?1",
-            "TE": "trailers"
-        }
-    })
+    return fetch(`https://thepiratebay10.org/search/${query}/1/7/0`)
     .then(response => {return response.text()})
     .then(html => {
         let dom = new jsdom.JSDOM(html)
@@ -185,7 +169,7 @@ const scrapePirateBay = (query) => {
             }
 
             const title = row.querySelector('.detName').textContent.trim()
-            const link = row.querySelector('.detName').nextElementSibling.href
+            const link = row.querySelector('.detName').nextElementSibling.href.split('tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&').join() // strip out arenabg trackers
             const seeders = row.childNodes[row.childNodes.length - 4].textContent
             const leechers = row.childNodes[row.childNodes.length - 2].textContent
 
