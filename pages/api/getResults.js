@@ -3,15 +3,18 @@ import jsdom from 'jsdom'
 export default async (req, res) => {
 
     const searchQuery = req.query.search;
-    const source = 'torrentgalaxy'
+    const source = 'ExtraTorrent'
     let results
 
     switch (source) {
         case 'PirateBay':
             results = await scrapePirateBay(searchQuery)
             break;
-        case 'torrentgalaxy':
-            results = await torrentgalaxy(searchQuery)
+        case 'TorrentGalaxy':
+            results = await scrapeTorrentGalaxy(searchQuery)
+            break;
+        case 'ExtraTorrent':
+            results = await scrapeExtraTorrent(searchQuery)
             break;
     }
 
@@ -19,7 +22,54 @@ export default async (req, res) => {
     res.end(JSON.stringify(results))
 }
 
-const torrentgalaxy = query => {
+const scrapeExtraTorrent = query => {
+    const formdata = new URLSearchParams()
+    formdata.append("sorter", "seed")
+    formdata.append("q", query)
+    query = query.toLowerCase().replace(/["']/g, '').replace(/ /g, '+')
+    return fetch(`https://extratorrent.cyou/find`, {
+        method: 'POST',
+        body: formdata
+    })
+    .then(response => {return response.text()})
+    .then(html => {
+        let dom = new jsdom.JSDOM(html)
+
+        let results = [];
+        dom.window.document.querySelectorAll('tbody tr').forEach(async (row, index) => {
+            if (index == dom.window.document.querySelectorAll('tbody tr').length - 1) {
+                return
+            }
+
+            const title = row.querySelector('.btntitle').textContent.trim()
+            const link = row.querySelector('img').parentElement.href
+            const seeders = row.querySelector('td:nth-child(6)').textContent
+            const leechers = row.querySelector('td:nth-child(7)').textContent
+
+            let type;
+            const category = row.querySelector('td').textContent.trim() 
+            if (category.includes('Movies')) {
+                type = 'Movie'
+            } else if (category.includes('TV')) {
+                type = 'TV'
+            } else {
+                return
+            }
+
+            results.push({
+                name: title,
+                link: link,
+                seeders: seeders,
+                leechers: leechers,
+                type: type
+            })
+        })
+
+        return results
+    })
+}
+
+const scrapeTorrentGalaxy = query => {
     query = query.toLowerCase().replace(/["']/g, '').replace(/ /g, '+')
     return fetch(`https://torrentgalaxy.to/torrents.php?search=${query}&lang=0&nox=1&sort=seeders&order=desc`)
     .then(response => {return response.text()})
