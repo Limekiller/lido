@@ -36,7 +36,7 @@ export default class downloads extends Component {
      * @param {event} e 
      */
     cancelDownload = (gid, path, name, e) => {
-        e.target.parentElement.parentElement.classList.add('inactive')
+        this.setState({ downloads: {...this.state.downloads, [gid]: {...this.state.downloads.gid, canceled: 1}}})
         fetch('/api/download?gid=' + gid + '&path=' + path + '&name=' + name, {
             method: 'DELETE',
         })
@@ -52,16 +52,17 @@ export default class downloads extends Component {
      * @param {obj} data The data returned from /api/download
      */
     parseDownloads = (data) => {
-        let downloads = [];
-        data.forEach((item, index) => {
-            downloads.push({ 
+        let downloads = {};
+        data.forEach(item => {
+            downloads[item.gid] = { 
                 name: item.bittorrent.info ? item.bittorrent.info.name : item.files[0].path.split('[METADATA]')[1],
                 totalLength: item.totalLength,
                 completedLength: item.completedLength,
                 gid: item.gid,
                 path: item.dir,
-                finalPath: item.path
-            })
+                finalPath: item.path,
+                canceled: this.state.downloads[item.gid] ? this.state.downloads[item.gid].canceled : 0
+            }
         })
         this.setState({ downloads: downloads })
     }
@@ -83,18 +84,18 @@ export default class downloads extends Component {
                 <Search />
                 <h1 className='pageTitle dlPageTitle'>Downloads</h1>
                 <div className='downloadContainer'>
-                    {this.state.downloads.length === 0 ? 
+                    {Object.entries(this.state.downloads).length === 0 ? 
                         <div className='emptyIcon'>
                             <img src='/images/icons/empty.svg' />
                             <h3>No downloads in progress</h3>
                         </div>
                     : 
-                        this.state.downloads.map(file => {
+                        Object.entries(this.state.downloads).map(([gid, file]) => {
                             const percentage = ((file.completedLength / file.totalLength) * 100).toFixed(2);
                             return (
                                 <div 
-                                    className='download' 
-                                    key={file.gid} 
+                                    className={`download ${file.canceled ? 'inactive' : ''}`}
+                                    key={gid} 
                                 >
                                     <div className='name'>
                                         {file.name}<br />
@@ -105,7 +106,7 @@ export default class downloads extends Component {
                                         <button
                                             className='link'
                                             onClick={(e) => this.cancelDownload(
-                                                file.gid,
+                                                gid,
                                                 file.path,
                                                 file.name,
                                                 e
