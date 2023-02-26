@@ -4,7 +4,7 @@ import App from 'next/app'
 import Sidebar from '@/components/Sidebar/Sidebar.js'
 import MessageContainer from '@/components/MessageContainer/MessageContainer.js'
 import ToastContainer from '@/components/ToastContainer/ToastContainer.js'
-import { Provider } from 'next-auth/client'
+import { SessionProvider } from 'next-auth/react'
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator.js'
 import Router from "next/router";
 import AppContext from '@/components/AppContext.js'
@@ -177,7 +177,7 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps } = this.props
-    
+        
     return (
       <>
         <Head>
@@ -191,13 +191,13 @@ class MyApp extends App {
 
 
         <AppContext.Provider value={{ globalFunctions: this.globalFunctions }}>
-          <Provider session={pageProps.session}>
+          <SessionProvider session={pageProps.session}>
             <div className='pageContainer'>
                 <LoadingIndicator visible={this.state.loadingVisible} />
                 <Component {...pageProps}/>
             </div>
             <Sidebar />
-          </Provider>
+          </SessionProvider>
 
           <MessageContainer messages={this.state.messages} />
           <ToastContainer toasts={this.state.toasts} />

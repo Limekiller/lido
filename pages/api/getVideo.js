@@ -24,6 +24,8 @@ export default (req, res) => {
             res.end(err);
         });
 
+    } else if (req.query.stream) {
+        
     } else {
 
         let range = req.headers.range;

@@ -1,4 +1,5 @@
-import { csrfToken, getSession } from 'next-auth/client'
+import { getCsrfToken } from 'next-auth/react'
+import { getServerSession } from 'next-auth/next'
 import PosterBg from '@/components/PosterBg/PosterBg.js'
 import Head from 'next/head'
 
@@ -31,7 +32,7 @@ export default function SignIn({ csrfToken }) {
 }
 
 SignIn.getInitialProps = async (context) => {
-  const session = await getSession(context)
+  const session = await getServerSession(context.req, context.res)
 
   if (session) {
     context.res.writeHead(302, { Location: "/" });
@@ -40,6 +41,6 @@ SignIn.getInitialProps = async (context) => {
   }
 
   return {
-    csrfToken: await csrfToken(context)
+    csrfToken: await getCsrfToken(context)
   }
 }

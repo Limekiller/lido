@@ -1,5 +1,5 @@
 import util from 'util'
-import { getSession } from "next-auth/client"
+import { getSession } from "next-auth/react"
 const exec = util.promisify(require('child_process').exec);
 
 /**

@@ -1,25 +1,25 @@
 import NextAuth from 'next-auth'
-import Providers from 'next-auth/providers'
+import CredentialsProvider from "next-auth/providers/credentials";
 
-const options = {
+export const authOptions = {
   // Configure one or more authentication providers
   providers: [
-    Providers.Credentials({
+    CredentialsProvider({
         name: 'Credentials',
 
         credentials: {
             password: {  label: "Password", type: "password" }
         },
-        authorize: async (credentials) => {
+        async authorize (credentials, req) {
             let user = null
             if (credentials.password == process.env.APP_PASSWORD) {
                 user = {fuck: 'off'}
             }
             
             if (user) {
-                return Promise.resolve(user)
+                return user
             } else {
-                return Promise.resolve(null)
+                return null
             }
         }
     })
@@ -27,7 +27,6 @@ const options = {
   pages: {
       signIn: '/login'
   }
-
 }
 
-export default (req, res) => NextAuth(req, res, options)
+export default NextAuth(authOptions)

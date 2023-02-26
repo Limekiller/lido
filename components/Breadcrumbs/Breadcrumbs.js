@@ -18,17 +18,15 @@ const Breadcrumbs = () => {
         <div id='breadcrumbs' className={styles.breadcrumbs}>
             {pathArray.map((path, index) => {
                 return (
-                    <Link href={buildLink(index, pathArray)} key={index}>
-                        <a
-                            className={`
-                                ${styles.breadcrumb}
-                                breadcrumb
-                            `}
-                            id={'crumb' + index}
-                            key={index}
-                        >
-                            {decodeURIComponent(path)}
-                        </a>
+                    <Link 
+                        href={buildLink(index, pathArray)} 
+                        key={index}
+                        className={`
+                            ${styles.breadcrumb}
+                            breadcrumb
+                        `}
+                        id={'crumb' + index}>
+                        {decodeURIComponent(path)}
                     </Link>
                 )
             })}

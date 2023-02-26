@@ -2,7 +2,7 @@ import { Component } from 'react'
 
 import Link from 'next/link'
 import Router from "next/router";
-import { getSession } from 'next-auth/client'
+import { getServerSession } from 'next-auth/next'
 import { withRouter } from 'next/router'
 
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs.js'
@@ -34,9 +34,6 @@ class FolderView extends Component {
     }
 
     componentDidMount() {
-        if (!this.props.session) {
-            window.location.href = '/login'
-        }
         this.fetchContents();
         Router.events.on("routeChangeComplete", this.fetchContents);
     }
@@ -67,26 +64,27 @@ class FolderView extends Component {
         .then(data => {
             this.setState({ hasLoaded: true })
             if (JSON.stringify(this.state.contents) != JSON.stringify(data)) {
-                this.setState({contents: data})
-                // Fetch each item separately and cache in localstorage
-                this.state.contents.files.forEach(async (file, index) => {
-                    const encodedTitle = btoa(file.name)
-                    if (localStorage.getItem(encodedTitle) === null) {
-                        let data = fetch('/api/getMovieData?title=' + file.name)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.Response === "True") {
-                                const tempFiles = this.state.contents.files
-                                tempFiles[index]['data'] = data
-                                this.setState({contents: {...this.state.contents, files: tempFiles}})
-                                localStorage.setItem(encodedTitle, JSON.stringify(data))
-                            }
-                        })
-                    } else {
-                        const tempFiles = this.state.contents.files
-                        tempFiles[index]['data'] = JSON.parse(localStorage.getItem(encodedTitle))
-                        this.setState({contents: {...this.state.contents, files: tempFiles}})
-                    }
+                this.setState({contents: data}, () => {
+                    // Fetch each item separately and cache in localstorage
+                    this.state.contents.files.forEach(async (file, index) => {
+                        const encodedTitle = btoa(file.name)
+                        if (localStorage.getItem(encodedTitle) === null) {
+                            let data = fetch('/api/getMovieData?title=' + file.name)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.Response === "True") {
+                                    const tempFiles = this.state.contents.files
+                                    tempFiles[index]['data'] = data
+                                    this.setState({contents: {...this.state.contents, files: tempFiles}})
+                                    localStorage.setItem(encodedTitle, JSON.stringify(data))
+                                }
+                            })
+                        } else {
+                            const tempFiles = this.state.contents.files
+                            tempFiles[index]['data'] = JSON.parse(localStorage.getItem(encodedTitle))
+                            this.setState({contents: {...this.state.contents, files: tempFiles}})
+                        }
+                    })
                 })
             }
         })
@@ -225,10 +223,8 @@ class FolderView extends Component {
                             onKeyDown={e => {if (e.key === 'Enter') { e.target.querySelector('.folder').click() }}}
                             data-filename={decodeURIComponent(folder)}
                         >
-                            <Link href={window.location.pathname + '/' + folder}>
-                                <div className='folder'>
-                                    <span>{decodeURIComponent(folder)}</span>
-                                </div>
+                            <Link className='folder' href={window.location.pathname + '/' + folder}>
+                                <span>{decodeURIComponent(folder)}</span>
                             </Link>
                             <FontAwesomeIcon
                                 className='trash'
@@ -333,7 +329,7 @@ class FolderView extends Component {
 }
 
 export async function getServerSideProps(context) {
-    const session = await getSession(context)
+    const session = await getServerSession(context.req, context.res)
 
     if (typeof window === "undefined" && context.res.writeHead) {
         if (!session) {
@@ -343,7 +339,7 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: { session }
+        props: {}
     }
 }
 

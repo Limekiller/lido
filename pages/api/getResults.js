@@ -12,7 +12,6 @@ export default async (req, res) => {
 
     let results
     for (let source of sources) {
-        console.log(source)
         results = await source(searchQuery)
 
         // TODO: Consider edge case where if results are returned, but none of them have a positive seeder - leecher ratio,

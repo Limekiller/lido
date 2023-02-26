@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getSession } from 'next-auth/client'
+import { getServerSession } from 'next-auth/next'
 import AppContext from '@/components/AppContext.js'
 import Search from '@/components/Search/Search.js'
 
@@ -126,7 +126,7 @@ export default class downloads extends Component {
 }
 
 export async function getServerSideProps(context) {
-    const session = await getSession(context)
+    const session = await getServerSession(context.req, context.res)
 
     if (typeof window === "undefined" && context.res.writeHead) {
         if (!session) {
@@ -136,6 +136,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: { session }
+        props: {}
     }
 }

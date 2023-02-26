@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { io } from "socket.io-client"
-import { getSession } from 'next-auth/client'
+import { getSession } from 'next-auth/react'
 
 import VideoPlayer from "@/components/MessageContainer/VideoPlayer/VideoPlayer"
 import Chat from "@/components/Chat/Chat"
@@ -20,61 +20,63 @@ function party(props) {
     const context = useContext(AppContext)
     const videoRef = useRef()
 
-    useEffect(async () => {
-        await fetch(`/api/party`)
-        socket = io()
+    useEffect(() => {
+        (async () => {
+            await fetch(`/api/party`)
+            socket = io()
 
-        socket.on("pause", () => {
-            videoRef.current.pauseVideo()
-        })
-        socket.on("play", () => {
-            videoRef.current.playVideo()
-        })
-        socket.on("seek", time => {
-            if (!seekLock) {
-                videoRef.current.seekVideo(time)
-                setseekLock(true)
-                setTimeout(() => setseekLock(false), 2000)
-            }
-        })
-        socket.on("message", (username, message) => {
-            setmessages(messages => [{username, message, type: "user"}, ...messages])
-        })
-        socket.on("sysmessage", (message) => {
-            setmessages(messages => [{username: username, message, type: "system"}, ...messages])
-        })
-        socket.on("setUsers", (users) => {
-            setusers(users)
-        })
+            socket.on("pause", () => {
+                videoRef.current.pauseVideo()
+            })
+            socket.on("play", () => {
+                videoRef.current.playVideo()
+            })
+            socket.on("seek", time => {
+                if (!seekLock) {
+                    videoRef.current.seekVideo(time)
+                    setseekLock(true)
+                    setTimeout(() => setseekLock(false), 2000)
+                }
+            })
+            socket.on("message", (username, message) => {
+                setmessages(messages => [{username, message, type: "user"}, ...messages])
+            })
+            socket.on("sysmessage", (message) => {
+                setmessages(messages => [{username: username, message, type: "system"}, ...messages])
+            })
+            socket.on("setUsers", (users) => {
+                setusers(users)
+            })
 
-        const URLtoReplace = `${window.location.protocol}//${window.location.host}${window.location.pathname}?room=${props.room}`   
-		window.history.pushState({ path: URLtoReplace }, '', URLtoReplace);
+            const URLtoReplace = `${window.location.protocol}//${window.location.host}${window.location.pathname}?room=${props.room}`   
+            window.history.pushState({ path: URLtoReplace }, '', URLtoReplace);
 
-        context.globalFunctions.createMessage(
-            <Message>
-                <h1>Enter a username</h1>
-                <input id="usernameBox" className="usernameBox" type="text" />
-                <button onClick={async () => {
-                    if (document.querySelector("#usernameBox").value) { 
-                        const newUsername = document.querySelector("#usernameBox").value
-                        setusername(newUsername)
-                        await socket.emit("join", newUsername, props.room.toString())
-                        context.globalFunctions.closeMessage()
-                    }}}>OK
-                </button>
-                <style jsx>{`
-                    .usernameBox {
-                        border: none;
-                        width: 80%;
-                    }
-                    button {
-                        width: 20%;
-                        margin-right: 0;
-                        margin-top: 0;
-                    }
-                `}</style>
-            </Message>
-        )
+            context.globalFunctions.createMessage(
+                <Message>
+                    <h1>Enter a username</h1>
+                    <input id="usernameBox" className="usernameBox" type="text" />
+                    <button onClick={async () => {
+                        if (document.querySelector("#usernameBox").value) { 
+                            const newUsername = document.querySelector("#usernameBox").value
+                            setusername(newUsername)
+                            await socket.emit("join", newUsername, props.room.toString())
+                            context.globalFunctions.closeMessage()
+                        }}}>OK
+                    </button>
+                    <style jsx>{`
+                        .usernameBox {
+                            border: none;
+                            width: 80%;
+                        }
+                        button {
+                            width: 20%;
+                            margin-right: 0;
+                            margin-top: 0;
+                        }
+                    `}</style>
+                </Message>
+            )
+        })()
     }, [])
 
     const play = async () => {

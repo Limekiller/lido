@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/client'
+import { getServerSession } from 'next-auth/next'
 import { useEffect } from 'react'
 import Search from '@/components/Search/Search.js'
 import SpaceUsage from '@/components/home/SpaceUsage/SpaceUsage.js'
@@ -6,11 +6,11 @@ import VPN from '@/components/home/VPN/VPN.js'
 
 export default function Home(props) {
 
-  useEffect(() => {
-    if (!props.session) {
-      window.location.href = '/login'
-    }
-  })
+  // useEffect(() => {
+  //   if (!props.session) {
+  //     window.location.href = '/login'
+  //   }
+  // })
 
   return (
     <>
@@ -27,7 +27,7 @@ export default function Home(props) {
 }
 
 export async function getServerSideProps(context) {
-    const session = await getSession(context)
+    const session = await getServerSession(context.req, context.res)
 
     if (typeof window === "undefined" && context.res.writeHead) {
         if (!session) {
@@ -38,6 +38,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: { session }
+        props: {}
     }
 }

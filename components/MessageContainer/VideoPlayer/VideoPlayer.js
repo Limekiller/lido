@@ -450,10 +450,10 @@ class VideoPlayer extends Component {
                                     onKeyDown={e => {if (e.key === 'Enter') { this.downloadMovie() }}}
                                 />
                                 <Link href={`/party?path=${this.props.path}`}>
-                                    <a><FontAwesomeIcon
+                                    <FontAwesomeIcon
                                         icon={faUsers}
                                         className='selectable'
-                                    /></a>
+                                    />
                                 </Link>
                             </>
                             }     
@@ -478,7 +478,7 @@ class VideoPlayer extends Component {
                         ref={ node => this.videoNode = node }
                         crossOrigin="anonymous"
                     >
-                        <source src={'/api/getVideo?range=0&path=' + encodeURIComponent(this.props.path)} type="video/mp4" />
+                        <source src={'/api/getVideo?range=0&path=' + encodeURIComponent(this.props.path)} />
                     </video>
                 </div>
             </div>

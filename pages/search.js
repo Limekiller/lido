@@ -2,7 +2,7 @@ import path from 'path'
 import { Component } from 'react'
 import VideoPlayer from '@/components/MessageContainer/VideoPlayer/VideoPlayer.js'
 import { withRouter } from 'next/router'
-import { getSession } from 'next-auth/client'
+import { getServerSession } from 'next-auth/next'
 import Router from "next/router";
 import AppContext from '@/components/AppContext.js'
 import Search from '@/components/Search/Search.js'
@@ -81,7 +81,7 @@ class FolderView extends Component {
 }
 
 export async function getServerSideProps(context) {
-    const session = await getSession(context)
+    const session = await getServerSession(context.req, context.res)
 
     if (typeof window === "undefined" && context.res.writeHead) {
         if (!session) {
@@ -91,7 +91,7 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: { session }
+        props: {}
     }
 }
 
