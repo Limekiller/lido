@@ -1,7 +1,9 @@
 @import './variables.scss';
-@import './folderView.scss';
+@import './path.scss';
 @import './downloads.scss';
 @import './login.scss';
+@import './explore.scss';
+@import './imdbID.scss';
 
 html,
 body {
@@ -33,7 +35,7 @@ input.keyboard-focus {
   box-shadow: 0px 0px 5px orange;
   transform: scale(1.01);
 }
-button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled) {
   background: linear-gradient(orange, gold);
   border: none;
   padding: 10px 20px 10px 20px;
@@ -41,6 +43,19 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
   font-weight: bold;
   box-shadow: 0px 0px 10px #0000004d;
   font-family: halyard-text, sans-serif;
+}
+button.unstyled {
+  background: none;
+  border: none;
+}
+.highlight {
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+.highlight:hover, .highlight:focus {
+  transform: scale(1.01);
+  box-shadow: 0px 0px 5px orange;
+  cursor: pointer;
+  outline: none;
 }
 
 .pageContainer {
@@ -55,7 +70,8 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result) {
   color: white;
   font-size: 90px;
   margin: 0;
-  margin-top: -40px;
+  margin-top: -20px;
+  line-height: 5rem;
 }
 .loading {
   width: 50px;

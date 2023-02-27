@@ -16,7 +16,7 @@ export default class DownloadMedia extends Component {
 
     getResults = (query) => {
         this.setState({ loading: true })
-        fetch('/api/getResults?search=' + query, {
+        fetch('/api/search/torrents?search=' + query, {
             method: 'GET',
         })
         .then(response => response.json())

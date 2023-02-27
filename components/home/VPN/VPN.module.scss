@@ -1,8 +1,8 @@
 @import '/styles/variables.scss';
 
 .VPN {
-    height: 150px;
-    width: 150px;
+    height: 60px;
+    width: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,12 +12,12 @@
     justify-content: flex-end;
     padding-bottom: 5px;
     box-sizing: border-box;
-    font-size: 15px;
+    font-size: 0.75rem;
 
     .status {
         font-size: 50px;
-        width: 50px;
-        height: 50px;
+        width: 10px;
+        height: 10px;
         filter: invert(1);
     }
 }

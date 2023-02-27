@@ -80,8 +80,8 @@
     grid-template-columns: repeat(auto-fit, minmax(min-content, 260px));
 
     .file {
-        width: 225px;
-        height: 350px;
+        width: 230px;
+        height: 367px;
         color: white;
         padding: 20px;
         border-radius: 5px;
@@ -90,6 +90,7 @@
         animation: fadeIn 0.2s ease forwards;
         background: linear-gradient($fg-color-light, $fg-color-dark);
         position: relative;
+        display: block;
 
         .filePoster {
             width: 100%;

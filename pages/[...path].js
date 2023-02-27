@@ -51,7 +51,7 @@ class FolderView extends Component {
      */
     fetchContents() {
         this.setState({ hasLoaded: false })
-        fetch('/api/getContents', {
+        fetch('/api/path/contents', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ class FolderView extends Component {
                     this.state.contents.files.forEach(async (file, index) => {
                         const encodedTitle = btoa(file.name)
                         if (localStorage.getItem(encodedTitle) === null) {
-                            let data = fetch('/api/getMovieData?title=' + file.name)
+                            let data = fetch('/api/moviedata/data?title=' + file.name)
                             .then(response => response.json())
                             .then(data => {
                                 if (data.Response === "True") {
@@ -100,7 +100,7 @@ class FolderView extends Component {
      * @param {string} folderName The path to the folder
      */
     deleteItem(folderName) {
-        fetch('/api/folder', {
+        fetch('/api/path/resource', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ class FolderView extends Component {
      * @param {string} destPath The path to the new location
      */
     moveItem = (fileName, destPath) => {
-        fetch('/api/folder', {
+        fetch('/api/path/resource', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

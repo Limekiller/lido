@@ -1,6 +1,9 @@
 import fs from 'fs-extra'
 import path from 'path'
 
+/**
+ * Get a random image from public/images/posters
+ */
 export default async (req, res) => {
     const posters = fs.readdirSync(path.join(process.cwd(), '/public/images/posters'))
     

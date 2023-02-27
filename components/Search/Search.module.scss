@@ -42,6 +42,45 @@
 
     }
 
+    button:hover, button:focus {
+        outline: none;
+            
+        .toggleIndicator {
+            background-color: white;
+        }
+    }
+
+    .searchToggle {
+        width: 3.5rem;
+        height: 2rem;
+        background-color: $fg-color-dark;
+        border-radius: 50rem;
+        margin-left: 0.5rem;
+        position: relative;
+
+        .toggleIndicator {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50rem;
+            background-color: $fg-color-light;
+            position: absolute;
+            transition: left 0.2s ease;
+            left: 0.33rem;
+            top: 0.33rem;
+
+            &.right {
+                left: 1.85rem;
+            }
+        }
+    }
+
+    .searchLabel {
+        padding-left: 0.5rem;
+        color: $fg-color-light;
+        line-height: 1rem;
+        margin-top: -0.2rem;
+    }
+
     @media (max-width: 1000px) {
         left: 0;
         width: 100%;

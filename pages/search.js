@@ -23,7 +23,7 @@ class FolderView extends Component {
     }
 
     getData = () => {
-        fetch('/api/search?query=' + Router.query.query)
+        fetch('/api/search/local?query=' + Router.query.query)
         .then(results => results.json())
         .then(data => {
             this.setState({ files: data, hasLoaded: true })

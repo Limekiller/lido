@@ -36,10 +36,10 @@ class VideoPlayer extends Component {
         super(props);
 
         this.state = ({
-            data: {},
-            title: this.getTitle()[0],
-            strippedTitle: this.getTitle()[1],
-            showOverlay: true,
+            data: this.props.data ? this.props.data : {},
+            title: this.props.title ? this.props.title : this.getTitle()[0],
+            strippedTitle: this.props.title ? this.props.title : this.getTitle()[1],
+            showOverlay: this.props.stream ? false : true,
             overlayLock: false,
 
             captions: false,
@@ -59,12 +59,13 @@ class VideoPlayer extends Component {
             
             Router.events.on('routeChangeStart', this.context.globalFunctions.closeAllMessages)
         }
-        this.getMovieData()
 
         window.addEventListener('popstate', this.onBackEvent)
 
         // instantiate Video.js
-        this.player = videojs(this.videoNode, this.props);
+        this.player = videojs(this.videoNode, {
+            // errorDisplay: this.props.stream ? false : true
+        });
         this.player.on('pause', () => {
             if (!this.player.seeking()) {
                 if (this.props.partyListeners) {
@@ -87,17 +88,29 @@ class VideoPlayer extends Component {
             <button onClick={() => {this.createStream(); this.context.globalFunctions.closeMessage()}}>OK</button>
             <button onClick={this.context.globalFunctions.closeMessage}>Cancel</button>
         </Message>
+        // Alternatively, if we're trying to stream a torrent and get an error, we just inform the user that this ain't gonna work
+        const invalidMessage =
+        <Message>
+            <h1>Invalid media format</h1>
+            <p>Unfortunately, your browser can't play the type of video in this torrent. You can try a different torrent, use a different browser, or save the movie or episode to the server to watch later.</p>
+            <button onClick={this.context.globalFunctions.closeAllMessages}>OK</button>
+        </Message>
         const errorHandler = this.player.on('error', () => {
-            if (!this.state.hasShownConvertMessage && !this.props.partyMode) {
+            if (!this.props.stream && !this.state.hasShownConvertMessage && !this.props.partyMode) {
                 this.context.globalFunctions.createMessage(convertMessage)
                 this.setState({hasShownConvertMessage: true})
+            } else if (this.props.stream) {
+                this.context.globalFunctions.createMessage(invalidMessage)
             }
         })
-        // const codecs = await this.getCodecs()
-        // if ((!this.state.hasShownConvertMessage && !this.props.partyMode && (!supportedCodecs.video.includes(codecs.video)) || (!this.state.hasShownConvertMessage && !supportedCodecs.audio.includes(codecs.audio)))) {
-        //     this.context.globalFunctions.createMessage(convertMessage)
-        //     this.setState({hasShownConvertMessage: true})
-        // }
+
+
+        if (Object.entries(this.state.data).length === 0) {
+            this.getMovieData()
+        } else {
+            this.getSubtitles(parseInt(this.state.data.imdbID.slice(2), 10))
+            this.player.play()
+        }
         
         SpatialNavigation.disable('add');
         document.addEventListener('keydown', this.onKey);
@@ -250,7 +263,7 @@ class VideoPlayer extends Component {
         const encodedTitle = btoa(this.state.title)
         let data
         if (localStorage.getItem(encodedTitle) === null) {
-            data = await fetch('/api/getMovieData?title=' + this.state.title)
+            data = await fetch('/api/moviedata/data?title=' + this.state.title)
             data = await data.json()
             this.setState({ data: data })
         } else {
@@ -293,14 +306,14 @@ class VideoPlayer extends Component {
      * Helper function to trigger a browser download of the file
      */
     downloadMovie = () => {
-        window.location.href = '/api/getVideo?download=true&path=' + encodeURIComponent(this.props.path)
+        window.location.href = '/api/video?download=true&path=' + encodeURIComponent(this.props.path)
     }
 
     /**
      * Helper function to delete the file
      */
     deleteFile = () => {
-        fetch('/api/folder', {
+        fetch('/api/path/resource', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -328,7 +341,7 @@ class VideoPlayer extends Component {
             this.context.globalFunctions.createToast('alert', 'Filename cannot be empty!')
             return
         }
-        fetch('/api/folder', {
+        fetch('/api/path/resource', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -406,11 +419,14 @@ class VideoPlayer extends Component {
                         </h1>
                         <h3>{this.state.data.Year}</h3>
                         <p>{this.state.data.Plot}</p>
-                        <p className={styles.note}>
-                            Film information and subtitles are retrieved based on the filename.<br />
-                            If this information is not correct, try renaming the file.<br />
-                            ({this.state.title})
-                        </p>
+
+                        {!this.props.stream ? 
+                            <p className={styles.note}>
+                                Film information and subtitles are retrieved based on the filename.<br />
+                                If this information is not correct, try renaming the file.<br />
+                                ({this.state.title})
+                            </p>
+                        : '' }
 
                         <div className={styles.videoOptions}>
                             <button 
@@ -419,6 +435,7 @@ class VideoPlayer extends Component {
                             >
                                 <img src='/images/icons/playButton.svg' onClick={() => this.hideOverlay()}/>
                             </button>
+                            
                             {this.props.partyMode ? "" :
                             <>
                                 <FontAwesomeIcon
@@ -431,6 +448,11 @@ class VideoPlayer extends Component {
                                     onClick={() => this.context.globalFunctions.closeMessage()}
                                     onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.closeMessage() }}}
                                 />
+                            </>
+                            }
+
+                            {this.props.partyMode || this.props.stream ? "" :
+                            <>
                                 <FontAwesomeIcon
                                     icon={faFont}
                                     className='selectable'
@@ -478,7 +500,12 @@ class VideoPlayer extends Component {
                         ref={ node => this.videoNode = node }
                         crossOrigin="anonymous"
                     >
-                        <source src={'/api/getVideo?range=0&path=' + encodeURIComponent(this.props.path)} />
+                        <source 
+                            src={this.props.stream ? `/api/video?range=0&stream=1&magnet=${this.props.magnet}` 
+                                : '/api/video?range=0&path=' + encodeURIComponent(this.props.path)
+                            } 
+                            type='video/mp4'
+                        />
                     </video>
                 </div>
             </div>

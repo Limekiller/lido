@@ -1,5 +1,8 @@
 import jsdom from 'jsdom'
 
+/**
+ * Search (scrape) multiple sites for torrents
+ */
 export default async (req, res) => {
 
     const searchQuery = req.query.search;

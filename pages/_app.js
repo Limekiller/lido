@@ -121,6 +121,7 @@ class MyApp extends App {
       'mainNav', {
         selector: 
           `.sidebar a, 
+          .sidebar button,
           .pageContainer a, 
           .pageContainer input, 
           .pageContainer button, 

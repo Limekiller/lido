@@ -6,7 +6,7 @@ function VPN() {
     const [IPs, setIPs] = useState({})
 
     useEffect(() => {
-        fetch('/api/dashboard?module=vpn')
+        fetch('/api/widget/vpn')
         .then(response => response.json())
         .then(data => setIPs(data))
     }, [])
