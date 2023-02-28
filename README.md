@@ -1,9 +1,5 @@
 ## Lido Media Server
 
-
-https://user-images.githubusercontent.com/33644013/160195642-b3e0b369-4005-44fa-a57d-073375df50ae.mp4
-
-
 A media server/webapp for downloading and consuming media hassle-free. Intended to be run on a LAN, but can be served over the web too.
 A lido is a waterfront resort: a luxurious and fancy place where people go to relax and be entertained--just like this server!
 
