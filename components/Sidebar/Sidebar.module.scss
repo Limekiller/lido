@@ -13,32 +13,44 @@
     flex-direction: column;
     justify-content: space-between;
 
-    .topOptions {
-        svg {
-            margin-bottom: 20px;
-        }
+    .divider {
+        height: 1px;
+        width: 100%;
+        background-color: $fg-color-light;
     }
-    .bottomOptions {
+
+    .topOptions, .bottomOptions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: min-content;
+    }
+
+    a, button {
+        width: min-content;
+
         svg {
-            margin-top: 20px;
+            color: $fg-color-light;
+            width: 60px !important;
+            font-size: 60px;
+    
+            &:hover {
+                color: white;
+                cursor: pointer;
+            }
         }
     }
 
-    svg {
-        color: $fg-color-light;
-        width: 60px !important;
-        font-size: 60px;
-
-        &:hover {
-            color: white;
-            cursor: pointer;
-        }
-    }
-    a:focus {
+    a:focus, button:focus {
         outline: none;
         svg {
             color: white;
         }
+    }
+
+    .serverInfo {
+        flex-direction: column;
+        gap: 1rem;
     }
 
     @media (max-width: 1000px) {
@@ -48,27 +60,43 @@
         bottom: 0px;
         top: unset;
 
+        .divider {
+            display: none;
+        }
+
         div {
             display: flex;
             align-items: center;
         }
 
-        .topOptions {
+        .topOptions, .bottomOptions {
+            flex-direction: row;
+
             svg {
-                margin-bottom: 0px;
-                margin-right: 20px;
-            }
-        }
-        .bottomOptions {
-            svg {
-                margin-top: 0px;
-                margin-left: 20px;
+                width: 3rem !important;
+                font-size: 3rem;
             }
         }
 
-        svg {
-            width: 40px !important;
-            font-size: 40px;
+        .serverInfo {
+            background: $menu-color;
+            padding: 1rem;
+            position: absolute;
+            border-radius: 1rem;
+            top: -11rem;
+            right: 1rem;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+        .topOptions, .bottomOptions {
+            gap: 1rem;
+
+            svg {
+                width: 2rem !important;
+                font-size: 2rem;
+            }
         }
     }
 }

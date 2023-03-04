@@ -1,0 +1,85 @@
+h1.exPageTitle {
+    margin-top: -7rem;
+    margin-bottom: 3rem;
+    display: block;
+}
+.exploreTopContainer {
+    margin-top: -6rem;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    
+    img {
+        height: 3rem;
+        width: auto;
+    }
+
+    .searchContainer {
+        width: 100%;
+
+        .exploreSearch {
+            width: 100%;
+            border-radius: 1rem;
+            border: none;
+            padding: 0.75rem;
+            padding-left: 4.5rem;
+            background: $fg-color-dark;
+            display: block;
+            color: white;
+            font-size: 2rem;
+        }
+        .searchIcon {
+            position: absolute;
+            font-size: 2.25rem;
+            margin-top: -3.3rem;
+            margin-left: 1rem;
+            color: $fg-color-light;
+        }
+    }
+}
+
+.exploreResult {
+    color: white;
+    opacity: 0;
+
+    h3 {
+        margin: 0.5rem 0 0.5rem 0;
+        line-height: 1.5rem;
+    }
+
+    .resultYear {
+        margin-top: -0.4rem;
+        display: block;
+    }
+}
+
+@media (max-width: 1000px) {
+    .exploreTopContainer {
+        flex-direction: column;
+        margin-top: -3rem;
+        align-items: start;
+        gap: 1rem;
+
+        img {
+            width: 5rem;
+        }
+
+        .searchContainer {
+            .exploreSearch {
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+                padding-left: 2.5rem;
+                font-size: 1rem;
+            }
+
+            .searchIcon {
+                font-size: 1.5rem;
+                margin-top: -2rem;
+                margin-left: 0.5rem;
+                color: $fg-color-light;
+            }
+        }
+    }
+}

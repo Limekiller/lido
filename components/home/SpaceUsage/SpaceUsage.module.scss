@@ -1,15 +1,15 @@
 @import '/styles/variables.scss';
 
 .spaceUsage {
-    height: 150px;
-    width: 150px;
+    height: 60px;
+    width: 60px;
     background: $fg-color-light;
-    border-radius: 150px;
+    border-radius: 60px;
     position: relative;
 
     .inner {
-        width: 120px;
-        height: 120px;
+        width: 45px;
+        height: 45px;
         position: absolute;
         left: 50%;
         top: 50%;
@@ -26,7 +26,7 @@
         }
 
         .percent {
-            font-size: 30px;
+            font-size: 1rem;
             font-weight: bold;
         }
 

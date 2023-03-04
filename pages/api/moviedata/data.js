@@ -1,4 +1,8 @@
 
+/**
+ * Get the full OMDB data for some media
+ * This is expected to be a file path, but it doesn't have to be
+ */
 export default async (req, res) => {
 
     // Get filename if path is absolute

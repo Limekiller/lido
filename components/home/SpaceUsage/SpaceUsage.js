@@ -6,7 +6,7 @@ const SpaceUsage = () => {
     const [storageData, setStorageData] = useState([])
 
     useEffect(() => {
-        fetch('/api/dashboard?module=space')
+        fetch('/api/widget/storage')
         .then(response => response.json())
         .then(data => {
             if (JSON.stringify(data) != JSON.stringify(storageData)) {
@@ -30,7 +30,7 @@ const SpaceUsage = () => {
 
                 <div className={styles.inner}>
                     <span className={styles.percent}>{storageData[4]}</span>
-                    <span className={styles.details}>({storageData[2]}/{storageData[1]})</span>
+                    {/* <span className={styles.details}>({storageData[2]}/{storageData[1]})</span> */}
                 </div>
                 
                 <style jsx>{`

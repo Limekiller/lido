@@ -11,7 +11,7 @@ export class Menu extends Component {
     static contextType = AppContext
 
     createFolder = folderName => {
-        fetch('/api/folder', {
+        fetch('/api/path/resource', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,5 +1,8 @@
 import { Server } from "socket.io";
 
+/**
+ * Socket handler for party mode
+ */
 export default function SocketHandler(req, res) {
   // If the room param is passed, return a 401 if the room doesn't exist. Otherwise continue
   if (req.query.room) {

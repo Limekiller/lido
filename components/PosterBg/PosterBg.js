@@ -23,7 +23,7 @@ class PosterBg extends Component {
 
         setTimeout(() => {
             const numPosters = document.querySelectorAll('.' + styles.poster).length;
-            fetch('/api/getRandomPoster?number=' + numPosters)
+            fetch('/api/moviedata/poster?number=' + numPosters)
             .then(response => response.json())
             .then(data => {
                 document.querySelectorAll('.' + styles.poster).forEach((poster, i) => {

@@ -2,15 +2,18 @@ import g from 'glob'
 import path from 'path'
 import { promisify } from "util";
 import FileType from 'file-type'
-
+import { getSession } from "next-auth/react"
 
 /**
- * Api for fetching search results
- * GET: Get search results
- * @param string query The query to search for
- * @return JSON A list of matching files
+ * Search local files in media directory and returns video files
  */
 export default async (req, res) => {
+
+    const session = await getSession({ req })
+    if (!session) {
+        res.status(401)
+        res.end()
+    }
     
     const glob = promisify(g)
 
@@ -49,7 +52,7 @@ export default async (req, res) => {
     });
 
     const files = await Promise.all(sortedResults.map(async file => {
-        let data = await fetch(process.env.NEXTAUTH_URL + '/api/getMovieData?title=' + file.path)
+        let data = await fetch(process.env.NEXTAUTH_URL + '/api/moviedata/data?title=' + file.path)
         return { 
             name: file.path.split('/media').slice(-1).join(), 
             data: await data.json()
