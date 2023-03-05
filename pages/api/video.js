@@ -30,6 +30,9 @@ export default (req, res) => {
                 res.end(err);
             });
             readStream.on('end', resolve)
+            readStream.on('close', () => {
+                readStream.destroy()
+            })
         })
 
     } else if (req.query.stream) {
@@ -72,6 +75,12 @@ export default (req, res) => {
                     const stream = file.createReadStream({start: start, end: end})
                     stream.pipe(res)
                     stream.on("end", resolve)
+
+                    res.on('close', () => {
+                        engine.remove()
+                        engine.destroy()
+                        stream.destroy()
+                    })
                 });
     
                 if (!foundSupportedFile) {
@@ -114,6 +123,10 @@ export default (req, res) => {
 
         // Stream the video chunk to the client
         videoStream.pipe(res);
+
+        res.on('close', () => {
+            videoStream.destroy()
+        })
 
         // res.statusCode = 206;
         // res.end();
