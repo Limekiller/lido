@@ -77,9 +77,11 @@ export default (req, res) => {
                     stream.on("end", resolve)
 
                     res.on('close', () => {
-                        engine.remove()
-                        engine.destroy()
-                        stream.destroy()
+                        engine.remove(() => {
+                            engine.destroy(() => {
+                                stream.destroy()
+                            })
+                        })
                     })
                 });
     
