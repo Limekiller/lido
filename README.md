@@ -1,37 +1,49 @@
 ## Lido Media Server
 
-A media server/webapp for managing media hassle-free. Intended to be run on a LAN, but can be served over the web too.
-A lido is a waterfront resort: a luxurious and fancy place where people go to relax and be entertained--just like this server!
+Lido is an out-of-the box webapp for downloading, streaming, and sharing media. It
+A lido is a waterfront resort: a luxurious and fancy place where people go to relax and be entertained—just like this!
+
+#### Features
+- Download media: Easily search for media and download it where you want it
+- Stream media: Don't want to wait for a download? Browse for the media you want and watch it right away
+- File management: Create folders to keep your files organized
+- Stream incompatible files: A file you downloaded can't play in your browser? Lido will convert it on-the-fly and create a livestream for you to watch
+- Watch with your friends: Watch any file on the server with your friends by creating a party room and sharing the link with anyone—Lido will keep everyone synced up and provide a chat room for discussion.
 
 #### Installation
 
-Clone this repository and install and update Node to the latest version >=15.3.0 and NPM >=7.0.14.
+Clone this repository and install and update Node and NPM to the latest versions
 
-You need a few dependencies:
-- aria2c >=1.33.1
-- ffmpeg >=3.4.8
-
-You need to add a few directories:
-- /media/Movies
-- /media/TV
-- /media/temp/streams
-
-You need to create a .env.local file in the install directory with the following values:
+- Install ffmpeg: `apt install ffmpeg`
+- Set up Transmission:
+  - First, install the required packages: `apt install transmission-cli transmission-daemon`
+  - Transmission will need to run a script after completing a download; this allows it to move the downloaded movie files to the right locations. You will need to prepare Transmission to run under the same user that you run the server with (ie, the user should be able to use `npm` commands). The easiest way to do this is as follows:
+    - As the desired user, run Transmission once with `transmission-daemon -f`.
+    - Stop Transmission with CTRL+C. This populates the config file for the user.
+    - Edit `/home/{user}/.config/transmission-daemon/settings.json`
+      - Change `rpc-authentication-required` to `false`
+      - Change `script-torrent-done-enabled` to `true`
+      - Change `script-torrent-done-filename` to `/{path}/{to}/{install}/{folder}/media/temp/onDownloadComplete.sh`
+      - Adjust any other settings as desired
+- Create the following directories:
+  - `/media/Movies`
+  - `/media/TV`
+  - `/media/temp/streams`
+- Create a .env.local file in the install directory with the following values:
 ```
 OMDB_API_KEY={your_omdb_api_key (http://www.omdbapi.com/) -- this is needed to fetch metadata + subtitles}
 OPENSUBTITLES_API_KEY={your_opensubs_api_key (https://www.opensubtitles.com) -- this is needed to fetch subtitles}
 APP_PASSWORD={whatever_the_password_should_be}
+NEXTAUTH_SECRET={some_made_up_secret_string}
 NEXTAUTH_URL=http(s)://{the_domain}
+EGRESS_IP={the_egress_ip_of_your_server} (optional)
 ```
-
-And then finish her off
-- `cd /path/to/install`
-- `npm install`
-- `npm run build`
-- `npm run start`
-- `aria2c --enable-rpc --rpc-listen-all=true --rpc-allow-origin-all --seed-time=0 --on-bt-download-complete=/PATH/TO/INSTALL/DIRECTORY/media/temp/onDownloadComplete.sh`
-
-You need to edit the above command to point to your own install!
+- Finish the install
+  - `cd /path/to/install`
+  - `npm install`
+  - `npm run build`
+  - `npm run start`
+- Run the Transmission daemon with the desired user: `transmission-daemon -f`
 
 #### Streaming
 
