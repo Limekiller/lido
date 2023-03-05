@@ -51,6 +51,14 @@
                 border-radius: 5rem;
                 padding: 0.5rem 0.75rem;
                 align-items: center;
+
+                svg {
+                    width: 1.5rem;
+                }
+
+                h3 {
+                    white-space: nowrap;
+                }
             }
 
             .rating {
