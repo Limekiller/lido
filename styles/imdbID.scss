@@ -148,6 +148,7 @@
         .episodeList {
             width: available;
             width: -moz-available;
+            width: -webkit-fill-available;
             
             .season {
                 display: flex;
