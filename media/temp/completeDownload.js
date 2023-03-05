@@ -33,18 +33,6 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
 }
 
 
-// Usually, the last argument is the file name.
-// If the file name has spaces, it will result in multiple args
-// starting at index 4. Here we construct them back into one var
-const constructFilename = () => {
-  let fileName = ''
-  for (let i=4; i<process.argv.length; i++) {
-    fileName += process.argv[i] + ' '
-  }
-  return fileName
-}
-
-
 // Search through temp folder for video files over 5 min
 // and move them to the final location
 const filterFiles = async (downloadPath, mediaPath, finalPath) => {
@@ -65,7 +53,7 @@ const filterFiles = async (downloadPath, mediaPath, finalPath) => {
 
 const main = async () => {
   // Get media path and JSON from file location
-  const fileName = constructFilename()
+  const fileName = `${process.argv[2]}/${process.argv[3]}`
   const mediaPath = process.argv[1].split('/').slice(0, -2).join('/')
   const JSONString = fs.readFileSync(mediaPath + '/temp/downloads.json', 'utf8')
   let JSONObject = JSON.parse(JSONString)

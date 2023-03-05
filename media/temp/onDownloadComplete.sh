@@ -8,4 +8,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # so we have the all the right libraries installed
 # no matter where we're running from
 cd $DIR
-npm run completeDownload $1 $2 $3
+npm run completeDownload $TR_TORRENT_DIR $TR_TORRENT_NAME
+
+transmission-remote -t $TR_TORRENT_ID --remove-and-delete

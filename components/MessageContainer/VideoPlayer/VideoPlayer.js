@@ -110,6 +110,8 @@ class VideoPlayer extends Component {
         } else {
             this.getSubtitles(parseInt(this.state.data.imdbID.slice(2), 10))
             this.player.play()
+            setTimeout(() => document.querySelector('.vjs-big-play-button').click(), 250)
+            
         }
         
         SpatialNavigation.disable('add');

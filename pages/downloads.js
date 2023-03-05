@@ -40,9 +40,10 @@ export default class downloads extends Component {
         fetch('/api/download?gid=' + gid + '&path=' + path + '&name=' + name, {
             method: 'DELETE',
         })
-        .then(response => response.json())
-        .then(data => {
-            this.context.globalFunctions.createToast('notify', 'Download canceled!')
+        .then(response => {
+            if (response.status === 200) {
+                this.context.globalFunctions.createToast('notify', 'Download canceled!')
+            }
         })
     }
 
@@ -54,14 +55,15 @@ export default class downloads extends Component {
     parseDownloads = (data) => {
         let downloads = {};
         data.forEach(item => {
-            downloads[item.gid] = { 
-                name: item.bittorrent.info ? item.bittorrent.info.name : item.files[0].path.split('[METADATA]')[1],
-                totalLength: item.totalLength,
-                completedLength: item.completedLength,
-                gid: item.gid,
-                path: item.dir,
+            downloads[item.id] = { 
+                name: item.name,
+                totalLength: item.totalSize,
+                completedLength: item.totalDownloaded,
+                id: item.id,
+                path: item.savePath,
                 finalPath: item.path,
-                canceled: this.state.downloads[item.gid] ? this.state.downloads[item.gid].canceled : 0
+                progress: item.progress,
+                canceled: this.state.downloads[item.id] ? this.state.downloads[item.id].canceled : 0
             }
         })
         this.setState({ downloads: downloads })
@@ -91,7 +93,8 @@ export default class downloads extends Component {
                         </div>
                     : 
                         Object.entries(this.state.downloads).map(([gid, file]) => {
-                            const percentage = ((file.completedLength / file.totalLength) * 100).toFixed(2);
+                            //const percentage = ((file.completedLength / file.totalLength) * 100).toFixed(2);
+                            const percentage = (file.progress * 100).toFixed(2)
                             return (
                                 <div 
                                     className={`download ${file.canceled ? 'inactive' : ''}`}

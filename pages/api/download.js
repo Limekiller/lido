@@ -1,10 +1,13 @@
 import path from 'path'
 import fs from 'fs-extra'
-import Aria2 from 'aria2'
+import { Transmission } from '@ctrl/transmission'
 import { getSession } from "next-auth/react"
 
-const aria2 = new Aria2()
 const mediaPath = path.join(process.cwd(), '/media/')
+const client = new Transmission({
+  baseUrl: 'http://localhost:9091/',
+  password: '',
+})
 
 let generateID = () => {
   return Math.floor((1 + Math.random()) * 0x10000)
@@ -47,20 +50,21 @@ export default async (req, res) => {
       const downloadID = generateID()
       fs.mkdirSync(mediaPath + 'temp/' + downloadID)
 
-      await aria2
-        .open()
-        .catch(err => console.log("error", err));
-      const [guid] = await aria2.call(
-          "addUri", 
-          [req.body.magnet], 
-          { 
-              dir: mediaPath + 'temp/' + downloadID
-          }
-      )
+      // await client
+      //   .open()
+      //   .catch(err => console.log("error", err));
+      // const [guid] = await client.call(
+      //     "addUri", 
+      //     [req.body.magnet], 
+      //     { 
+      //         dir: mediaPath + 'temp/' + downloadID
+      //     }
+      // )
+      await client.addMagnet(req.body.magnet, {'download-dir': mediaPath + 'temp/' + downloadID})
       saveJSON(downloadID, req.body.dir)
-      await aria2
-        .close()
-        .catch(err => console.log("error", err));
+      // await client
+      //   .close()
+      //   .catch(err => console.log("error", err));
 
       res.statusCode = 200;
       res.end()
@@ -68,45 +72,40 @@ export default async (req, res) => {
     }
     
     case 'GET': {
-      await aria2
-        .open()
-        .catch(err => console.log("error", err));
-      await aria2.call('purgeDownloadResult')
-      const status = await aria2.call("tellActive")
-      await aria2
-        .close()
-        .catch(err => console.log("error", err));
+      // await client
+      //   .open()
+      //   .catch(err => console.log("error", err));
+      // await client.call('purgeDownloadResult')
+      // const status = await client.call("tellActive")
+      // await client
+      //   .close()
+      //   .catch(err => console.log("error", err));
+      const status = await client.getAllData()
 
       // For each download in progress, grab the final path from the JSON file so we can display it
-      status.forEach(download => {
-        const JSONFilePath = download.dir.split('/').slice(0, -1).join('/') + '/downloads.json'
+      status.torrents.forEach(torrent => {
+        const JSONFilePath = torrent.savePath.split('/').slice(0, -1).join('/') + '/downloads.json'
         const data = fs.readFileSync(JSONFilePath, 'utf8')
         let JSONData = JSON.parse(data)
-        const downloadID = download.dir.split('/').slice(-1)[0]
-        download['path'] = JSONData[downloadID]
+        const downloadID = torrent.savePath.split('/').slice(-1)[0]
+        torrent['path'] = JSONData[downloadID]
       })
 
       res.statusCode = 200
-      res.end(JSON.stringify(status))
+      res.end(JSON.stringify(status.torrents))
       break
     }
 
     case 'DELETE': {
-      await aria2
-        .open()
-        .catch(err => console.log("error", err));
+      // await client
+      //   .open()
+      //   .catch(err => console.log("error", err));
 
-      await aria2.call('remove', req.query.gid)
+      // await client.call('remove', req.query.gid)
+      await client.removeTorrent(req.query.gid, true)
       fs.removeSync(req.query.path)
-      const status = await aria2.call("tellActive")
-      removeJSON(req.query.path.split('/').slice(-1))
-
-      await aria2
-        .close()
-        .catch(err => console.log("error", err));
-
       res.statusCode = 200;
-      res.end(JSON.stringify(status))
+      res.end()
       break
     }
   }

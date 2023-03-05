@@ -9,6 +9,7 @@
     "completeDownload": "node media/temp/completeDownload.js"
   },
   "dependencies": {
+    "@ctrl/transmission": "^4.3.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",

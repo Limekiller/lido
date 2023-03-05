@@ -169,7 +169,7 @@ const scrapePirateBay = (query) => {
             }
 
             const title = row.querySelector('.detName').textContent.trim()
-            const link = row.querySelector('.detName').nextElementSibling.href.split('tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&').join() // strip out arenabg trackers
+            const link = row.querySelector('.detName').nextElementSibling.href
             const seeders = row.childNodes[row.childNodes.length - 4].textContent
             const leechers = row.childNodes[row.childNodes.length - 2].textContent
 
