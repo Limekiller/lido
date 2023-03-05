@@ -9,26 +9,11 @@ const client = new Transmission({
   password: '',
 })
 
-let generateID = () => {
-  return Math.floor((1 + Math.random()) * 0x10000)
+let generateID = (saveDir) => {
+  const randomInt =  Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1);
-}
-
-// Lido has no database, but in-progress downloads are tracked via a JSON file
-// Contains a unique key for each download and a path the download will be saved to
-let saveJSON = (id, path) => {
-  const data = fs.readFileSync(mediaPath + 'temp/downloads.json', 'utf8')
-  let JSONData = JSON.parse(data)
-  JSONData[id] = path
-  fs.writeFileSync( mediaPath + 'temp/downloads.json', JSON.stringify(JSONData))
-}
-
-let removeJSON = (id) => {
-  const data = fs.readFileSync(mediaPath + 'temp/downloads.json', 'utf8')
-  let JSONData = JSON.parse(data)
-  delete JSONData[id]
-  fs.writeFileSync( mediaPath + 'temp/downloads.json', JSON.stringify(JSONData))
+  return Buffer.from(saveDir + randomInt).toString('base64')
 }
 
 /**
@@ -47,7 +32,7 @@ export default async (req, res) => {
 
   switch (req.method) {
     case 'POST': {
-      const downloadID = generateID()
+      const downloadID = generateID(req.body.dir)
       fs.mkdirSync(mediaPath + 'temp/' + downloadID)
 
       // await client
@@ -61,7 +46,6 @@ export default async (req, res) => {
       //     }
       // )
       await client.addMagnet(req.body.magnet, {'download-dir': mediaPath + 'temp/' + downloadID})
-      saveJSON(downloadID, req.body.dir)
       // await client
       //   .close()
       //   .catch(err => console.log("error", err));
@@ -82,13 +66,9 @@ export default async (req, res) => {
       //   .catch(err => console.log("error", err));
       const status = await client.getAllData()
 
-      // For each download in progress, grab the final path from the JSON file so we can display it
       status.torrents.forEach(torrent => {
-        const JSONFilePath = torrent.savePath.split('/').slice(0, -1).join('/') + '/downloads.json'
-        const data = fs.readFileSync(JSONFilePath, 'utf8')
-        let JSONData = JSON.parse(data)
         const downloadID = torrent.savePath.split('/').slice(-1)[0]
-        torrent['path'] = JSONData[downloadID]
+        torrent['path'] = Buffer.from(downloadID, 'base64').toString('ascii').slice(0, -4)
       })
 
       res.statusCode = 200

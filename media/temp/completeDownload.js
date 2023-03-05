@@ -52,25 +52,16 @@ const filterFiles = async (downloadPath, mediaPath, finalPath) => {
 
 
 const main = async () => {
-  // Get media path and JSON from file location
   const fileName = `${process.argv[2]}/${process.argv[3]}`
   const mediaPath = process.argv[1].split('/').slice(0, -2).join('/')
-  const JSONString = fs.readFileSync(mediaPath + '/temp/downloads.json', 'utf8')
-  let JSONObject = JSON.parse(JSONString)
 
-  // Get temp folder and download ID from arg 4, passed by aria2
-  // Then get the final location by referencing the ID in the JSON
   const downloadID = fileName.split('/media/temp')[1].split('/')[1]
   const downloadPath = fileName.split('/media/temp')[0] + '/media/temp/' + downloadID
-  const finalPath = JSONObject[downloadID];
+  const finalPath = Buffer.from(downloadID, 'base64').toString('ascii').slice(0, -4)
 
   await filterFiles(downloadPath, mediaPath, finalPath)
 
   fs.removeSync(downloadPath)
-  delete JSONObject[downloadID]
-
-  const JSONToWrite = JSON.stringify(JSONObject)
-  fs.writeFileSync(mediaPath + '/temp/downloads.json', JSONToWrite)
 }
 
 
