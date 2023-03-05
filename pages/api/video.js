@@ -61,17 +61,16 @@ export default (req, res) => {
                     const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
     
                     // Create headers
-                    const contentLength = end - start + 1;
-                    const headers = {
-                        "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-                        "Accept-Ranges": "bytes",
-                        "Content-Length": contentLength,
-                        "Content-Type": "video/mp4",
-                    };
+                    // const contentLength = end - start + 1;
+                    // const headers = {
+                    //     "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+                    //     "Accept-Ranges": "bytes",
+                    //     "Content-Length": contentLength,
+                    //     "Content-Type": "video/mp4",
+                    // };
     
-                    res.writeHead(206, headers);
+                    // res.writeHead(206, headers);
     
-                    // const stream = file.createReadStream({start: start, end: end})
                     const stream = file.createReadStream({start: start, end: end})
                     stream.pipe(res)
                     stream.on("end", resolve)
