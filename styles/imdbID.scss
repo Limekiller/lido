@@ -17,12 +17,19 @@
         filter: blur(15px) brightness(0.5);
         mask-image: linear-gradient(to right, black 50%, transparent);
         z-index: -1;
+        background-position-y: -100vh;
     }
 
     .layout {
         display: flex;
         grid-template-columns: 300px auto;
         gap: 2rem;
+
+        .col2 {
+            width: available;
+            width: -webkit-fill-available;
+            width: -moz-available;
+        }
 
         .poster {
             border-radius: 0.5rem;
@@ -155,8 +162,8 @@
 
         .episodeList {
             width: available;
-            width: -moz-available;
             width: -webkit-fill-available;
+            width: -moz-available;
             
             .season {
                 display: flex;
@@ -205,12 +212,6 @@
             
             .col1 {
                 display: none;
-            }
-
-            .col2 {
-                width: available;
-                width: -moz-available;
-                width: -webkit-fill-available;
             }
 
             .yearAndGenre {
