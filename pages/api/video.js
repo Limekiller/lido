@@ -41,12 +41,14 @@ export default (req, res) => {
             engine.on('ready', function() {
                 let foundSupportedFile = false
                 engine.files.forEach(async (file) => {
+                    // Only proceed if the file is the right type,
+                    // and we haven't already found a matching video file
                     const extension = file.name.split('.').pop()
-                    if (extension != 'mp4' && extension != 'mkv') {
+                    if ((extension != 'mp4' && extension != 'mkv') || foundSupportedFile) {
                         return
                     }
                     foundSupportedFile = true
-    
+
                     const videoSize = file.length
                     let range = req.headers.range;
                     if (!range) {
@@ -61,15 +63,15 @@ export default (req, res) => {
                     const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
     
                     // Create headers
-                    // const contentLength = end - start + 1;
-                    // const headers = {
-                    //     "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-                    //     "Accept-Ranges": "bytes",
-                    //     "Content-Length": contentLength,
-                    //     "Content-Type": "video/mp4",
-                    // };
+                    const contentLength = end - start + 1;
+                    const headers = {
+                        "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+                        "Accept-Ranges": "bytes",
+                        "Content-Length": contentLength,
+                        "Content-Type": "video/mp4",
+                    };
     
-                    // res.writeHead(206, headers);
+                    res.writeHead(206, headers);
     
                     const stream = file.createReadStream({start: start, end: end})
                     stream.pipe(res)
