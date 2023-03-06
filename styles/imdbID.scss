@@ -207,6 +207,12 @@
                 display: none;
             }
 
+            .col2 {
+                width: available;
+                width: -moz-available;
+                width: -webkit-fill-available;
+            }
+
             .yearAndGenre {
                 flex-direction: column;
                 align-items: start;
