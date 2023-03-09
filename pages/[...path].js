@@ -223,7 +223,7 @@ class FolderView extends Component {
                             onKeyDown={e => {if (e.key === 'Enter') { e.target.querySelector('.folder').click() }}}
                             data-filename={decodeURIComponent(folder)}
                         >
-                            <Link className='folder' href={window.location.pathname + '/' + folder}>
+                            <Link draggable="false" className='folder' href={window.location.pathname + '/' + folder}>
                                 <span>{decodeURIComponent(folder)}</span>
                             </Link>
                             <FontAwesomeIcon
