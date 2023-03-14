@@ -20,6 +20,11 @@ const ExploreCard = (props) => {
      * Gets a list of torrents for this media
      */
     const getTorrents = async () => {
+        if (props.data.Type === 'series') {
+            settorrents([])
+            return
+        }
+
         const title = props.data.Type == 'episode' ? props.data.showTitle : props.data.Title
 
         let torrentAPIURL = `/api/search/torrents?search=${title}`
@@ -126,6 +131,7 @@ const ExploreCard = (props) => {
                             className='unstyled' 
                             onClick={(e) => { console.log(`#${e.target}`); document.querySelector(`#${e.target.dataset.season}`).scrollIntoView({behavior: 'smooth'}) }}
                             data-season={`season${season[0]}`} 
+                            key={season[0]}
                         >
                             <h1 
                                 style={{pointerEvents: 'none'}}
@@ -139,12 +145,13 @@ const ExploreCard = (props) => {
 
                 <div className='episodeList'>
                     {Object.entries(episodes).map(season => {
-                        return <div className='season' id={`season${season[0]}`}>
+                        return <div className='season' id={`season${season[0]}`} key={`episode${season[0]}`}>
                             <h3 className='seasonLabel'>Season {season[0]}</h3>
                             {season[1].map(episode => {
                                 return <Link
                                         href={`/stream/${episode.imdbID}?show=${props.data.Title}`}
                                         className='episode torrent highlight'
+                                        key={episode.Title}
                                     >
                                         <b>{episode.Episode}</b><span style={{padding: "0 0.25rem"}}> • </span>{episode.Title}
                                     </Link>
