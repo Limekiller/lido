@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/react"
+import { getServerSession } from "next-auth"
 import jsdom from 'jsdom'
 
 /**
@@ -6,7 +6,7 @@ import jsdom from 'jsdom'
  */
 export default async (req, res) => {
 
-    const session = await getSession({ req })
+    const session = await getServerSession(req, res)
 
     if (!session) {
         res.status(401)
@@ -18,7 +18,7 @@ export default async (req, res) => {
     let dom = new jsdom.JSDOM(html)
 
     let movieResults = [];
-    const movies = dom.window.document.querySelectorAll('.titleColumn a')
+    const movies = dom.window.document.querySelectorAll('a.ipc-title-link-wrapper')
     for (let i = 0; i < 6; i++) {
         const imdbID = movies[i].href.split('/')[2]
         let fullData = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${imdbID}`)
@@ -36,7 +36,7 @@ export default async (req, res) => {
     dom = new jsdom.JSDOM(html)
 
     let tvResults = [];
-    const shows = dom.window.document.querySelectorAll('.titleColumn a')
+    const shows = dom.window.document.querySelectorAll('a.ipc-title-link-wrapper')
     for (let i = 0; i < 6; i++) {
         const imdbID = shows[i].href.split('/')[2]
         let fullData = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${imdbID}`)
