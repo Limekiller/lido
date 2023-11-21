@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { Transmission } from '@ctrl/transmission'
-import { getSession } from "next-auth/react"
+import { getServerSession } from 'next-auth'
 
 const mediaPath = path.join(process.cwd(), '/media/')
 const client = new Transmission({
@@ -24,7 +24,7 @@ let generateID = (saveDir) => {
  */
 export default async (req, res) => {
 
-  const session = await getSession({ req })
+  const session = await getServerSession(req, res)
   if (!session) {
       res.status(401)
       res.end()

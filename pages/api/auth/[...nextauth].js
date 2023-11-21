@@ -13,14 +13,10 @@ export const authOptions = {
         async authorize (credentials, req) {
             let user = null
             if (credentials.password == process.env.APP_PASSWORD) {
-                user = {fuck: 'off'}
+                return {user: true}
             }
-            
-            if (user) {
-                return user
-            } else {
-                return null
-            }
+
+            return null
         }
     })
   ],

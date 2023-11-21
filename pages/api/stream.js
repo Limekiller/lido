@@ -1,5 +1,5 @@
 import util from 'util'
-import { getSession } from "next-auth/react"
+import { getServerSession } from 'next-auth'
 
 const execAwait = util.promisify(require('child_process').exec);
 const exec = require('child_process').exec
@@ -23,7 +23,7 @@ const getFileHash = async (source) => {
  */
 export default async (req, res) => {
 
-    const session = await getSession({ req })
+    const session = await getServerSession(req, res)
     if (!session) {
         res.status(401)
         res.end()

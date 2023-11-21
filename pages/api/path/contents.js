@@ -1,13 +1,13 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { getSession } from "next-auth/react"
+import { getServerSession } from 'next-auth'
 
 /**
  * Get the contents of a path
  */
 export default async (req, res) => {
 
-    const session = await getSession({ req })
+    const session = await getServerSession(req, res)
     if (!session) {
         res.status(401)
         res.end()

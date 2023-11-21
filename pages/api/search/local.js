@@ -2,14 +2,14 @@ import g from 'glob'
 import path from 'path'
 import { promisify } from "util";
 import FileType from 'file-type'
-import { getSession } from "next-auth/react"
+import { getServerSession } from 'next-auth'
 
 /**
  * Search local files in media directory and returns video files
  */
 export default async (req, res) => {
 
-    const session = await getSession({ req })
+    const session = await getServerSession(req, res)
     if (!session) {
         res.status(401)
         res.end()
