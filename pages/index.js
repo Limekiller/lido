@@ -45,7 +45,7 @@ const explore = (props) => {
         return <div 
             className="exploreResult"                 
             key={imdbid}
-            style={{animation: `fadeIn 0.75s ${index * 0.025}s ease forwards`}}
+            style={{animation: `fadeIn 0.75s ${index * 0.025}s ease forwards`, width: 'min-content'}}
         >
             <Link 
                 href = {{
@@ -87,6 +87,18 @@ const explore = (props) => {
             search(props.query)
         }
     }, [])
+
+    useEffect(() => {
+        document.querySelectorAll('.files').forEach(filesItem => {
+            const width = filesItem.clientWidth
+            filesItem.style.cssText = `
+                display: flex;
+                transform-origin: left top;
+                transform: scale(${width / 1700});
+            `
+        })
+    }, [trendingResults])
+    
     
 
     return (

@@ -116,6 +116,11 @@
             text-transform: capitalize;
             line-height: 90px;
 
+            .episodeTitle {
+                display: block;
+                font-size: 2rem;
+            }
+
             @media (max-width: 1000px) {
                 font-size: 60px;
                 line-height: 60px;
@@ -137,6 +142,77 @@
         @media (max-width: 1000px) {
             width: 100vw;
             padding: 20px;
+        }
+    }
+
+    .nextVideoButton {
+        position: absolute;
+        right: 3rem;
+        font-size: 0.9rem;
+        z-index: 2;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        top: 3rem;
+        color: white;
+        box-shadow: 0px 0px 20px #0000001f;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        backdrop-filter: blur(10px);
+        background-color: rgba(43, 51, 63, 0.7);
+        animation: timerFadeIn 0.4s ease forwards;
+
+        .timer {
+            width: 1.5rem;
+            height: 1.5rem;
+            position: relative;
+            border-radius: 99rem;
+            display: inline-block;
+            border: 2px solid white; 
+            background-color: $bg-color;
+          }
+          
+          .timer::before,
+          .timer::after {
+            content: "";
+            width: 50%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            border-radius: 99rem 0 0 99rem;
+            transform-origin: center right;
+            animation-iteration-count: 1;
+            animation-duration: 10s;
+            animation-fill-mode: forwards;
+          }
+          
+          .timer::before {
+            z-index: 1;
+            background-color: $bg-color;
+            animation-name: mask;
+            animation-timing-function: steps(1);
+          }
+          
+          .timer::after {
+            background-color: white;
+            animation-name: rotate;
+            animation-timing-function: linear;
+          }
+          
+          @keyframes rotate {
+            to { transform: rotate(1turn); }
+          }
+          
+          @keyframes mask {
+            50%, 100% {
+              background-color: white;
+              transform: rotate(0.5turn);
+            }
+          }
+
+        @keyframes timerFadeIn {
+            from {opacity: 0; transform: translateY(10px)}
+            to {opacity: 1; transform: translateY(0px);}
         }
     }
 

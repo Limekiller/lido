@@ -29,10 +29,10 @@ const MessageContainer = (props) => {
 
     return (
         <>
-            {props.messages.map((message, index) => {
+            {props.messages.map((message) => {
                 return (
                     <div 
-                        key={index}
+                        key={message.id}
                         className={`
                             ${styles.messageContainer}
                             message

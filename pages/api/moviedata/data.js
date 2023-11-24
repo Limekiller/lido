@@ -42,6 +42,13 @@ export default async (req, res) => {
         data = {}
     } else {
         data = await data.json()
+
+        // If it's an episode, let's also get data for the series it belongs to
+        if (data.Type == 'episode') {
+            let seriesData = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${data.seriesID}`)
+            seriesData = await seriesData.json()
+            data.seriesData = seriesData
+        }
     }
 
     res.setHeader('Content-Type', 'application/json')

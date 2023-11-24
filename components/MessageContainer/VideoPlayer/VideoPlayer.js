@@ -36,15 +36,23 @@ class VideoPlayer extends Component {
         super(props);
 
         this.state = ({
-            data: this.props.data ? this.props.data : {},
-            title: this.props.title ? this.props.title : this.getTitle()[0],
-            strippedTitle: this.props.title ? this.props.title : this.getTitle()[1],
+            data: this.props.data || {},
+            title: this.props.title || this.getTitle()[0],
+            strippedTitle: this.props.title || this.getTitle()[1],
             showOverlay: this.props.stream ? false : true,
             overlayLock: false,
 
+            // info related to "next video" feature
+            parentFiles: this.props.files || [],
+            nextVideoTriggered: false,
+            nextVideoData: null,
+            nextVideoTimeout: null,
+
+            // caption information
             captions: false,
             captionState: 'error',
 
+            // conversion information
             hasShownConvertMessage: false,
             hash: null,
             hasConverted: false,
@@ -52,20 +60,25 @@ class VideoPlayer extends Component {
     }
 
     async componentDidMount() {
-        if (!this.props.partyMode) {
-            // duplicate the page on the history stack so if the user hits the back button, they stay on the same page
-            const url = new URL(window.location);
-            window.history.pushState({}, '', url)
-            
-            Router.events.on('routeChangeStart', this.context.globalFunctions.closeAllMessages)
+        for (let i in this.props.files) {
+            if (this.props.files[i].name == this.state.title && this.props.files[parseInt(i) + 1]) {
+                let _nextVideoData = this.props.files[parseInt(i) + 1].data
+                _nextVideoData['name'] = this.props.files[parseInt(i) + 1].name
+                this.setState({nextVideoData: _nextVideoData})
+                break
+            }
         }
 
+        // duplicate the page on the history stack so if the user hits the back button, they stay on the same page
+        if (!this.props.partyMode) {
+            const url = new URL(window.location);
+            window.history.pushState({}, '', url)
+            Router.events.on('routeChangeStart', this.context.globalFunctions.closeAllMessages)
+        }
         window.addEventListener('popstate', this.onBackEvent)
 
         // instantiate Video.js
-        this.player = videojs(this.videoNode, {
-            // errorDisplay: this.props.stream ? false : true
-        });
+        this.player = videojs(this.videoNode)
         this.player.on('pause', () => {
             if (!this.player.seeking()) {
                 if (this.props.partyListeners) {
@@ -78,6 +91,9 @@ class VideoPlayer extends Component {
             if (this.props.partyListeners) {
                 this.props.partyListeners.seek(this.player.currentTime())
             }
+        })
+        this.player.on('timeupdate', () => {
+            this.checkNextVideoTrigger(this.player.duration() - this.player.currentTime())
         })
 
         // If we get a playback error or one of the codecs isn't supported, ask if we should convert the file
@@ -111,7 +127,6 @@ class VideoPlayer extends Component {
             this.getSubtitles(parseInt(this.state.data.imdbID.slice(2), 10))
             this.player.play()
             setTimeout(() => document.querySelector('.vjs-big-play-button').click(), 250)
-            
         }
         
         SpatialNavigation.disable('add');
@@ -164,6 +179,32 @@ class VideoPlayer extends Component {
     }
 
     /**
+     * If the given amount of time left in the video is less than some value,
+     * we find the next file in the current folder (by looking through the passed files prop)
+     * create a new VideoPlayer component message in front of the message stack, and then pop the last one (ie, this one)
+     * @param {float} timeLeft: The amount of time left in the video
+     */
+    checkNextVideoTrigger = (timeLeft) => {
+        if (timeLeft < 15 && this.state.nextVideoTriggered == false && this.state.nextVideoData.name) {
+            this.setState({nextVideoTriggered: true})
+            this.setState({nextVideoTimeout: setTimeout(() => {
+                this.context.globalFunctions.createMessage(
+                    <VideoPlayer 
+                        files={this.props.files} 
+                        path={window.location.pathname + '/' + this.state.nextVideoData.name}
+                    />,
+                    true
+                )
+                this.context.globalFunctions.closeMessage()
+            }, 10E3)})
+        }
+    }
+    cancelVideoTrigger = () => {
+        clearTimeout(this.state.nextVideoTimeout)
+        this.setState({nextVideoTimeout: null})
+    }
+
+    /**
      * Checks key presses and fires appropriate event
      * 
      * @param {event} e
@@ -174,6 +215,7 @@ class VideoPlayer extends Component {
             return
         }
 
+        this.cancelVideoTrigger()
         document.querySelector('.vjs-control-bar').classList.add('tv-control')
         if (!this.state.showOverlay) {
             if ((e.code == 'Enter' || e.code == 'Space') && !this.state.overlayLock) {
@@ -196,6 +238,7 @@ class VideoPlayer extends Component {
     }
 
     onMouseMove = e => {
+        this.cancelVideoTrigger()
         document.querySelector('.vjs-control-bar').classList.remove('tv-control')
     }
     onBackEvent = e => {
@@ -417,7 +460,14 @@ class VideoPlayer extends Component {
                         <h1 
                             style={{wordBreak: this.state.data.Title ? 'break-word' : 'break-all'}}
                         >
-                            {this.state.data.Title ? this.state.data.Title : this.state.strippedTitle}
+                            {this.state.data?.Type == 'episode' ? 
+                                <>
+                                    {this.state.data.seriesData.Title}
+                                    <span className={styles.episodeTitle}>S{this.state.data.Season}E{this.state.data.Episode} • {this.state.data.Title}</span>
+                                </> :
+                                this.state.data.Title || this.state.strippedTitle
+                            }
+
                         </h1>
                         <h3>{this.state.data.Year}</h3>
                         <p>{this.state.data.Plot}</p>
@@ -439,7 +489,18 @@ class VideoPlayer extends Component {
                             </button>
                             
                             {this.props.partyMode ? "" :
-                            <>
+                            <button 
+                                style={{
+                                    background: "#6c6c6c", 
+                                    color: 'white', 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '0.5rem', 
+                                    borderRadius: '0.5rem', 
+                                }}
+                                onClick={() => this.context.globalFunctions.closeMessage()}  
+                                onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.closeMessage() }}} 
+                            >
                                 <FontAwesomeIcon
                                     icon={faArrowLeft}
                                     className={`
@@ -447,10 +508,9 @@ class VideoPlayer extends Component {
                                         selectable
                                         ${styles.close}
                                     `}
-                                    onClick={() => this.context.globalFunctions.closeMessage()}
-                                    onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.closeMessage() }}}
                                 />
-                            </>
+                                Back
+                            </button>
                             }
 
                             {this.props.partyMode || this.props.stream ? "" :
@@ -493,6 +553,19 @@ class VideoPlayer extends Component {
                             }
                         `}</style>
                     </div>
+
+                    {this.state.nextVideoTriggered && this.state.nextVideoTimeout ? 
+                        <div className={styles.nextVideoButton}>
+                            <span><b>Up next:</b> {
+                                this.state.nextVideoData.Type == 'episode' ? 
+                                `S${this.state.nextVideoData.Season}E${this.state.nextVideoData.Episode} ${this.state.nextVideoData.Title}` :
+                                this.state.nextVideoData.Title || this.state.nextVideoData.name
+                            }
+                            </span>
+                            <div className={styles.timer}></div>
+                        </div> : ""
+                    }
+
                     <video
                         className='video-js '
                         preload="auto"

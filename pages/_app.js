@@ -74,7 +74,7 @@ class MyApp extends App {
    * 
    * @param {JSX} content The content that the message should contain
    */
-  createMessage = (content) => {
+  createMessage = (content, unshift = false) => {
     const messageID = Math.floor(Math.random()*90000) + 10000
     SpatialNavigation.add(
       `message${messageID}`,
@@ -85,7 +85,11 @@ class MyApp extends App {
     );
 
     let tempMessages = this.state.messages
-    tempMessages.push({ content: content, id: messageID })
+    if (unshift) {
+      tempMessages.unshift({ content: content, id: messageID })
+    } else {
+      tempMessages.push({ content: content, id: messageID })
+    }
     this.setState({
       messages: tempMessages
     })

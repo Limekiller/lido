@@ -261,15 +261,25 @@ class FolderView extends Component {
                         }
                         let seriesTitle = ''
                         if (data.files[_key].data.Type === 'episode') {
-                            let title = data.files[_key].name.split(/s[0-9]{2}e[0-9]{2}/i)[0].slice(0, -1)
-                            let episodeInfo = data.files[_key].name.split(title)[1].slice(1, 7)
-                            seriesTitle = `${title} • ${episodeInfo}`
+                            // let title = data.files[_key].name.split(/s[0-9]{2}e[0-9]{2}/i)[0].slice(0, -1)
+                            // let episodeInfo = data.files[_key].name.split(title)[1].slice(1, 7)
+                            let title = data.files[_key].data.seriesData.Title
+                            let season = data.files[_key].data.Season
+                            let episode = data.files[_key].data.Episode
+                            seriesTitle = `${title} • S${season}E${episode}`
                         }
                         const innerHTML = <div
                                 className='file'
-                                onClick={(e) => this.context.globalFunctions.createMessage(<VideoPlayer path={window.location.pathname + '/' + data.files[_key].name}/>)}
+                                onClick={(e) => this.context.globalFunctions.createMessage(
+                                    <VideoPlayer 
+                                        files={data.files} 
+                                        path={window.location.pathname + '/' + data.files[_key].name}
+                                    />
+                                )}
                                 onKeyDown={e => {if (e.key === 'Enter') { e.target.click() }}}
-                                style={{color: hasPoster && data.files[_key].data.Type === 'movie' ? 'rgba(0,0,0,0)' : 'white'}}
+                                style={{
+                                    color: hasPoster && data.files[_key].data.Type === 'movie' ? 'rgba(0,0,0,0)' : 'white',
+                                }}
                                 tabIndex='0'
                                 data-filename={decodeURIComponent(data.files[_key].name)}
                             >
