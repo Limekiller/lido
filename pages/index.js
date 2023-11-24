@@ -88,18 +88,16 @@ const explore = (props) => {
         }
     }, [])
 
-    useEffect(() => {
-        document.querySelectorAll('.files').forEach(filesItem => {
-            const width = filesItem.clientWidth
-            filesItem.style.cssText = `
-                display: flex;
-                transform-origin: left top;
-                transform: scale(${width / 1700});
-            `
-        })
-    }, [trendingResults])
-    
-    
+    // useEffect(() => {
+    //     document.querySelectorAll('.files').forEach(filesItem => {
+    //         const width = filesItem.clientWidth
+    //         filesItem.style.cssText = `
+    //             display: flex;
+    //             transform-origin: left top;
+    //             transform: scale(${width / 1700});
+    //         `
+    //     })
+    // }, [trendingResults])
 
     return (
         <>
@@ -129,7 +127,7 @@ const explore = (props) => {
 
             : <>
                 <h1>Trending Movies</h1>
-                {trendingResults.movies.length ? <div className='files'>
+                {trendingResults.movies.length ? <div className='files' style={{paddingBottom: '2rem'}}>
                     {trendingResults.movies.map((media, index) => {
                         return renderFile(media.title, media.imdbID, '', 'movie', media.poster, index)
                     })}
