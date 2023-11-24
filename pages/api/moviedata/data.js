@@ -45,7 +45,15 @@ export default async (req, res) => {
 
         // If it's an episode, let's also get data for the series it belongs to
         if (data.Type == 'episode') {
-            let seriesData = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${data.seriesID}`)
+            // apparently sometimes the series ID that the API returns only starts with one "t" instead of two "t"s
+            // and in this case, making a request for the series causes a server error!!! Fun!!!!!!
+            // So we check if this is the case and, if it is, prepend another "t" to the ID to fix this.
+            let seriesId = data.seriesID
+            if (seriesId.slice(0, 2) !== 'tt') {
+                seriesId = `t${seriesId}`
+            }
+            
+            let seriesData = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${seriesId}`)
             seriesData = await seriesData.json()
             data.seriesData = seriesData
         }
