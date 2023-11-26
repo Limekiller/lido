@@ -462,7 +462,7 @@ class VideoPlayer extends Component {
                         >
                             {this.state.data?.Type == 'episode' ? 
                                 <>
-                                    {this.state.data.seriesData.Title}
+                                    {this.state.data.seriesData?.Title || this.props.data.showTitle || this.state.data.Title}
                                     <span className={styles.episodeTitle}>S{this.state.data.Season}E{this.state.data.Episode} • {this.state.data.Title}</span>
                                 </> :
                                 this.state.data.Title || this.state.strippedTitle

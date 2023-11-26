@@ -32,7 +32,6 @@ export default async (req, res) => {
     }
 
     let OMDBLink = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${encodeURIComponent(title)}${year}`
-    console.log(OMDBLink)
     if (season && episode) {
         OMDBLink += `&season=${season}&episode=${episode}`
     }
