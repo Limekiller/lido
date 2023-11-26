@@ -308,7 +308,7 @@ class VideoPlayer extends Component {
         const encodedTitle = btoa(this.state.title)
         let data
         if (localStorage.getItem(encodedTitle) === null) {
-            data = await fetch('/api/moviedata/data?title=' + this.state.title)
+            data = await fetch('/api/moviedata/data?title=' + encodeURIComponent(this.state.title))
             data = await data.json()
             this.setState({ data: data })
         } else {

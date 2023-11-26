@@ -129,7 +129,7 @@ const ExploreCard = (props) => {
                     {Object.entries(episodes).map(season => {
                         return <button 
                             className='unstyled' 
-                            onClick={(e) => { console.log(`#${e.target}`); document.querySelector(`#${e.target.dataset.season}`).scrollIntoView({behavior: 'smooth'}) }}
+                            onClick={(e) => { document.querySelector(`#${e.target.dataset.season}`).scrollIntoView({behavior: 'smooth'}) }}
                             data-season={`season${season[0]}`} 
                             key={season[0]}
                         >

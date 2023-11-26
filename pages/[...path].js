@@ -69,7 +69,7 @@ class FolderView extends Component {
                     this.state.contents.files.forEach(async (file, index) => {
                         const encodedTitle = btoa(file.name)
                         if (localStorage.getItem(encodedTitle) === null) {
-                            let data = fetch('/api/moviedata/data?title=' + file.name)
+                            let data = fetch('/api/moviedata/data?title=' + encodeURIComponent(file.name))
                             .then(response => response.json())
                             .then(data => {
                                 if (data.Response === "True") {
@@ -112,8 +112,7 @@ class FolderView extends Component {
         })
         .then(response => response.text())
         .then(data => {
-            this.fetchContents();
-            this.context.globalFunctions.createToast('notify', 'Folder deleted!')
+            window.location.reload()
         })
     }
 

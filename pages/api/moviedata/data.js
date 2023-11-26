@@ -13,7 +13,7 @@ export default async (req, res) => {
     
     // Split at any four-digit numbers and get first part
     let title = strippedTitle.split(/[0-9]{4}/)[0]
-    let year = strippedTitle.split(title)[1].slice(0, 4)
+    let year = strippedTitle.split(title)[1]?.slice(0, 4)
 
     let season
     let episode
@@ -31,7 +31,8 @@ export default async (req, res) => {
         year = `&y=${year}`
     }
 
-    let OMDBLink = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${encodeURI(title)}${year}`
+    let OMDBLink = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${encodeURIComponent(title)}${year}`
+    console.log(OMDBLink)
     if (season && episode) {
         OMDBLink += `&season=${season}&episode=${episode}`
     }
