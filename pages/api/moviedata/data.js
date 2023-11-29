@@ -18,7 +18,7 @@ export default async (req, res) => {
     let season
     let episode
 
-    if (year == '') {
+    if (year == '' || year == '1080') {
         title = strippedTitle.split(/s[0-9]{2}e[0-9]{2}/i)[0]
         year = ''
 
