@@ -1,7 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
-const FileType = require('file-type');
-
+const FileType = require('file-type')
+const execSync = require('child_process').execSync
 
 // Get file size
 // Some torrents include random other videos like trailers and stuff
@@ -44,7 +44,8 @@ const filterFiles = async (downloadPath, mediaPath, finalPath) => {
       const isVideoFile = fileData.mime.substr(0, 5) == 'video'
       const isLargeEnough = getFileSize(file) > 125 ? true : false
       if (isVideoFile && isLargeEnough) {
-          fs.renameSync(file, mediaPath + finalPath + '/' + file.split('/').slice(-1)[0])
+	  execSync(`ffmpeg -i ${file} -acodec aac -vcodec copy ${mediaPath + finalPath}/${file.split('/').slice(-1)[0]}`)
+          //fs.renameSync(file, mediaPath + finalPath + '/' + file.split('/').slice(-1)[0])
       }
     }
   }))
