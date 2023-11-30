@@ -76,12 +76,14 @@
 
 .files {
     display: grid;
-    gap: 15px;
-    grid-template-columns: repeat(auto-fit, minmax(min-content, 260px));
+    gap: 1vw;
+    grid-template-columns: repeat(auto-fit, minmax(min-content, 13vw));
 
     .file {
-        width: 230px;
-        height: 367px;
+        // width: 230px;
+        // height: 367px;
+        width: 11vw;
+        height: 18vw;
         color: white;
         padding: 20px;
         border-radius: 5px;

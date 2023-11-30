@@ -3,7 +3,7 @@ import styles from './LoadingFilesIndicator.module.scss'
 const LoadingFilesIndicator = () => {
 
     let html = []
-    for (let i = 1; i > 0.01; i -= 0.2) {
+    for (let i = 1.2; i > 0.01; i -= 0.2) {
         html.push(
             <div className={`
                 ${styles.loadingFile}
