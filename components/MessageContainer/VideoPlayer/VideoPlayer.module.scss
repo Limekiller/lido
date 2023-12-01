@@ -83,7 +83,7 @@
             align-items: center;
 
             > * {
-                transition: transform 0.4s ease;
+                transition: transform 0.4s ease, filter 0.4s ease;
                 margin-right: 20px;
 
                 &:hover {
@@ -95,6 +95,12 @@
             svg {
                 width: 25px;
                 font-size: 25px;
+            }
+
+            button:focus-visible, img:focus-visible, svg:focus-visible {
+                outline: none;
+                transform: scale(1.2);
+                filter: drop-shadow(0px 0px 15px #ffbf00f5)
             }
 
             @media (max-width: 500px) {

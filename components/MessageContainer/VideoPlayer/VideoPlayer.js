@@ -497,18 +497,12 @@ class VideoPlayer extends Component {
                                     alignItems: 'center', 
                                     gap: '0.5rem', 
                                     borderRadius: '0.5rem', 
+                                    padding: '0.5rem 1rem'
                                 }}
                                 onClick={() => this.context.globalFunctions.closeMessage()}  
                                 onKeyDown={e => {if (e.key === 'Enter') { this.context.globalFunctions.closeMessage() }}} 
                             >
-                                <FontAwesomeIcon
-                                    icon={faArrowLeft}
-                                    className={`
-                                        video-close
-                                        selectable
-                                        ${styles.close}
-                                    `}
-                                />
+                                <span style={{transform: 'rotate(180deg)', fontSize: '1.75rem', marginTop: '0.5rem'}}>➜</span>
                                 Back
                             </button>
                             }
