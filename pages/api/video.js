@@ -75,10 +75,17 @@ export default (req, res) => {
     
                     const stream = file.createReadStream({start: start, end: end})
                     stream.pipe(res)
-                    stream.on("end", resolve)
+                    stream.on("end", () => {
+                        engine.remove(false, () => {
+                            engine.destroy(() => {
+                                stream.destroy()
+                                resolve()
+                            })
+                        }
+                    })
 
                     stream.on('close', () => {
-                        engine.remove(() => {
+                        engine.remove(false, () => {
                             engine.destroy(() => {
                                 stream.destroy()
                             })
@@ -87,7 +94,8 @@ export default (req, res) => {
                 });
     
                 if (!foundSupportedFile) {
-                    res.statusCode = 415;
+                    engine.destroy()
+                    res.statusCode = 415
                     res.end();
                 }
             });
