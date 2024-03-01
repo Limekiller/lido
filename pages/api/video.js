@@ -81,7 +81,7 @@ export default (req, res) => {
                                 stream.destroy()
                                 resolve()
                             })
-                        }
+                        })
                     })
 
                     stream.on('close', () => {
