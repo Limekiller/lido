@@ -77,7 +77,7 @@ export default (req, res) => {
                     stream.pipe(res)
                     stream.on("end", resolve)
 
-                    res.on('close', () => {
+                    stream.on('close', () => {
                         engine.remove(() => {
                             engine.destroy(() => {
                                 stream.destroy()
