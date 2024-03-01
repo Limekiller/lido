@@ -15,15 +15,19 @@ export default async (req, res) => {
 
     let results
     for (let source of sources) {
+        console.log(source)
         try {
             results = await source(searchQuery)
+            finalSource = source
+        } catch (error) {
+            console.log(error)
+        }
 
-            // TODO: Consider edge case where if results are returned, but none of them have a positive seeder - leecher ratio,
-            // no results are displayed and other torrent sources are not used
-            if (results && results.length > 0) {
-                break
-            }
-        } catch (error) {}
+        // TODO: Consider edge case where if results are returned, but none of them have a positive seeder - leecher ratio,
+        // no results are displayed and other torrent sources are not used
+        if (results && results.length > 0) {
+            break
+        }
     }
 
     res.setHeader('Content-Type', 'application/json')
@@ -75,7 +79,7 @@ const scrapeExtraTorrent = query => {
     formdata.append("sorter", "seed")
     formdata.append("q", query)
     query = query.toLowerCase().replace(/["']/g, '').replace(/ /g, '+')
-    return fetch(`https://extratorrent.cyou/find`, {
+    return fetch(`https://extratorrent.xyz/find`, {
         method: 'POST',
         body: formdata
     })
@@ -170,10 +174,10 @@ const scrapePirateBay = (query) => {
                 return
             }
 
-            const title = row.querySelector('.detName').textContent.trim()
-            const link = row.querySelector('.detName').nextElementSibling.href
-            const seeders = row.childNodes[row.childNodes.length - 4].textContent
-            const leechers = row.childNodes[row.childNodes.length - 2].textContent
+            const title = row.querySelector('a[title*="Details for"]').textContent.trim()
+            const link = row.querySelector('a[href*="magnet"]').href
+            const seeders = row.childNodes[row.childNodes.length - 6].textContent
+            const leechers = row.childNodes[row.childNodes.length - 4].textContent
 
             let type;
             if (row.querySelector('.vertTh').textContent.trim().includes('Movies') && !row.querySelector('.vertTh').textContent.trim().includes('Porn')) {
