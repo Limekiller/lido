@@ -101,7 +101,7 @@ class MyApp extends App {
   closeMessage = () => {
     let tempMessages = this.state.messages
     const lastMessage = tempMessages.pop()
-    SpatialNavigation.remove(`message${lastMessage.id}`);
+    SpatialNavigation.remove(`message${lastMessage?.id}`);
     this.setState({
       messages: tempMessages
     })

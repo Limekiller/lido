@@ -87,6 +87,14 @@ class VideoPlayer extends Component {
                 this.showOverlay()
             }
         })
+        this.player.on('play', () => {
+            if (!this.player.seeking()) {
+                if (this.props.partyListeners) {
+                    this.props.partyListeners.play()
+                }
+                this.hideOverlay()
+            }
+        })
         this.player.on('seeked', () => {
             if (this.props.partyListeners) {
                 this.props.partyListeners.seek(this.player.currentTime())
