@@ -8,7 +8,7 @@ export default async (req, res) => {
     // The server makes a request to OpenSubtitles to get the first search result for that movie
     // Then fetches the data for that result and sends it back to the client for validation.
     if (req.query.imdbid) {
-        let searchResults = await fetch(`https://api.opensubtitles.com/api/v1/subtitles?imdb_id=${req.query.imdbid}?languages=en`, {
+        let searchResults = await fetch(`https://api.opensubtitles.com/api/v1/subtitles?imdb_id=${req.query.imdbid}&languages=en&order_by=download_count`, {
             headers: {
                 'Api-Key': process.env.OPENSUBTITLES_API_KEY,
                 'Content-Type': 'application/json'
