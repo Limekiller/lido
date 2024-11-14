@@ -1,5 +1,7 @@
 ## Lido Media Server
 
+https://github.com/user-attachments/assets/8ec7ada1-ae88-4e65-81a8-7eb61977831e
+
 Lido is an out-of-the box webapp for downloading, streaming, and sharing media. It
 A lido is a waterfront resort: a luxurious and fancy place where people go to relax and be entertained—just like this!
 
