@@ -62,7 +62,7 @@ class FolderView extends Component {
         return (
             <>
                 <Search />
-                <h1 className='pageTitle searchTitle'>Search Results</h1>
+                <h1 className='pageTitle searchTitle' style={{paddingBottom: '2rem'}}>Search Results</h1>
                 {this.state.hasLoaded ? '' : <LoadingFilesIndicator />}
                 {this.generateHTML(this.state.files)}
                 <style jsx>{`

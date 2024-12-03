@@ -1,38 +1,47 @@
 
+const getLoginToken = () => {
+
+}
+
 /**
  * Api for retrieving subtitles
  */
 export default async (req, res) => {
-
     // On first request, the IMDB id is sent
     // The server makes a request to OpenSubtitles to get the first search result for that movie
     // Then fetches the data for that result and sends it back to the client for validation.
     if (req.query.imdbid) {
-        let searchResults = await fetch(`https://api.opensubtitles.com/api/v1/subtitles?imdb_id=${req.query.imdbid}&languages=en&order_by=download_count`, {
-            headers: {
-                'Api-Key': process.env.OPENSUBTITLES_API_KEY,
-                'Content-Type': 'application/json'
-            }
-        })
-        searchResults = await searchResults.json()
-    
-        let subtitleInfo = await fetch('https://api.opensubtitles.com/api/v1/download', {
-            method: 'POST',
-            headers: {
-                'Api-Key': process.env.OPENSUBTITLES_API_KEY,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                'file_id': searchResults.data[0].attributes.files[0].file_id,
-                'sub_format': 'webvtt'
+
+        // First try to get subtitles for this exact file
+        let searchResults = []
+
+        if (req.query.filesize !== '0' && req.query.moviehash !== '0') {
+            searchResults = await fetch(`
+                https://rest.opensubtitles.org/search/imdbid-${req.query.imdbid}/moviebytesize-${req.query.filesize}/moviehash-${req.query.moviehash}/sublanguageid-eng
+            `, {
+                headers: {
+                    'User-Agent': 'TemporaryUserAgent'
+                }
             })
-        })
+            searchResults = await searchResults.json()
+        }
+
+        // We didn't find any results? Let's just get the first result for this item
+        if (searchResults.length === 0) {
+            searchResults = await fetch(`
+                https://rest.opensubtitles.org/search/imdbid-${req.query.imdbid}/sublanguageid-eng
+            `, {
+                headers: {
+                    'User-Agent': 'TemporaryUserAgent'
+                }
+            })
+            searchResults = await searchResults.json()
+        }
 
         try {
-            subtitleInfo = await subtitleInfo.json()
             res.setHeader('Content-Type', 'application/json')
             res.statusCode = 200
-            res.end(JSON.stringify(subtitleInfo))
+            res.end(JSON.stringify({link: `https://dl.opensubtitles.org/en/download/file/${searchResults[0]['IDSubtitleFile']}`}))
         } catch (error) {
             res.setHeader('Content-Type', 'application/json')
             res.statusCode = 500

@@ -21,7 +21,7 @@
     "glob": "^7.1.6",
     "hasha": "^5.2.2",
     "jsdom": "^20.0.0",
-    "next": "^13.2.1",
+    "next": "^15.0.3",
     "next-auth": "^4.19.2",
     "on-screen-js-keyboard": "^1.2.3",
     "react": "^18.2.0",

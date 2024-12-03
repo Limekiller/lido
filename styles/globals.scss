@@ -1,13 +1,13 @@
-@import './variables.scss';
-@import './path.scss';
-@import './downloads.scss';
-@import './login.scss';
-@import './explore.scss';
-@import './imdbID.scss';
+@use 'variables.scss' as variables;
+@use 'path.scss';
+@use 'downloads.scss';
+@use 'login.scss';
+@use 'explore.scss';
+@use 'imdbID.scss';
 
 html,
 body {
-  background-color: $bg-color;
+  background-color: variables.$bg-color;
   padding: 0;
   margin: 0;
   font-family: halyard-display, sans-serif; 

@@ -1,6 +1,6 @@
-@import './options/createFolder.scss';
-@import './options/downloadMedia.scss';
-@import '/styles/variables.scss';
+@use './options/createFolder.scss' as *;
+@use './options/downloadMedia.scss' as *;
+@use '/styles/variables.scss' as *;
 
 .menu {
     width: 100vw;

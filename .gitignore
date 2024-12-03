@@ -36,3 +36,5 @@ yarn-error.log*
 # media
 /media/Movies
 /media/TV
+
+.env

@@ -34,7 +34,6 @@ Clone this repository and install and update Node and NPM to the latest versions
 - Create a .env.local file in the install directory with the following values:
 ```
 OMDB_API_KEY={your_omdb_api_key (http://www.omdbapi.com/) -- this is needed to fetch metadata + subtitles}
-OPENSUBTITLES_API_KEY={your_opensubs_api_key (https://www.opensubtitles.com) -- this is needed to fetch subtitles}
 APP_PASSWORD={whatever_the_password_should_be}
 NEXTAUTH_SECRET={some_made_up_secret_string}
 NEXTAUTH_URL=http(s)://{the_domain}

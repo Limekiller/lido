@@ -1,3 +1,5 @@
+@use "variables";
+
 .folders {
     display: grid;
     gap: 15px;
@@ -5,7 +7,7 @@
     margin-bottom: 30px;
 
     .folderContainer {
-        background: linear-gradient($fg-color-light, $fg-color-dark);
+        background: linear-gradient(variables.$fg-color-light, variables.$fg-color-dark);
         color: white;
         width: 150px;
         height: 150px;
@@ -90,7 +92,7 @@
         box-shadow: 0px 0px 10px #00000063;
         opacity: 0;
         animation: fadeIn 0.2s ease forwards;
-        background: linear-gradient($fg-color-light, $fg-color-dark);
+        background: linear-gradient(variables.$fg-color-light, variables.$fg-color-dark);
         position: relative;
         display: block;
 
@@ -101,6 +103,7 @@
             top: 0;
             left: 0;
             background-size: cover;
+            background-position: center;
             opacity: 0;
             transition: all 0.2s ease;
             transform: scale(0.98);
@@ -124,7 +127,7 @@
 
         .file {
             width: auto;
-            background: $fg-color-dark;
+            background: variables.$fg-color-dark;
             background-image: none;
             background-image: none !important;
             height: auto;

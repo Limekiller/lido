@@ -1,3 +1,5 @@
+@use "variables";
+
 h1.exPageTitle {
     margin-top: -7rem;
     margin-bottom: 3rem;
@@ -25,7 +27,7 @@ h1.exPageTitle {
             border: none;
             padding: 0.75rem;
             padding-left: 4.5rem;
-            background: $fg-color-dark;
+            background: variables.$fg-color-dark;
             display: block;
             color: white;
             font-size: 2rem;
@@ -35,7 +37,7 @@ h1.exPageTitle {
             font-size: 2.25rem;
             margin-top: -3.3rem;
             margin-left: 1rem;
-            color: $fg-color-light;
+            color: variables.$fg-color-light;
             width: 2.2rem;
         }
     }
@@ -80,7 +82,7 @@ h1.exPageTitle {
                 font-size: 1.5rem;
                 margin-top: -2rem;
                 margin-left: 0.5rem;
-                color: $fg-color-light;
+                color: variables.$fg-color-light;
                 width: 1.25rem;
             }
         }

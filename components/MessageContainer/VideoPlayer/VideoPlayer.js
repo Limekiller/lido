@@ -12,7 +12,6 @@ import CaptionIndicator from './CaptionIndicator/CaptionIndicator'
 
 import styles from './VideoPlayer.module.scss'
 
-
 const supportedCodecs = {
     video: [
         'h264',
@@ -51,6 +50,8 @@ class VideoPlayer extends Component {
             // caption information
             captions: false,
             captionState: 'error',
+            filesize: 0,
+            moviehash: 0,
 
             // conversion information
             hasShownConvertMessage: false,
@@ -60,6 +61,10 @@ class VideoPlayer extends Component {
     }
 
     async componentDidMount() {
+        let fsData = await fetch(`/api/moviedata/filesize?path=${this.props.path}`)
+        fsData = await fsData.json()
+        this.setState({...this.state, filesize: fsData.filesize, moviehash: fsData.moviehash})
+        
         for (let i in this.props.files) {
             if (this.props.files[i].name == this.state.title && this.props.files[parseInt(i) + 1]) {
                 let _nextVideoData = this.props.files[parseInt(i) + 1].data
@@ -127,7 +132,6 @@ class VideoPlayer extends Component {
                 this.context.globalFunctions.createMessage(invalidMessage)
             }
         })
-
 
         if (Object.entries(this.state.data).length === 0) {
             this.getMovieData()
@@ -333,8 +337,8 @@ class VideoPlayer extends Component {
      * Helper function to get .vtt file
      */
     getSubtitles = (imdbID) => {
-        this.setState({captionState: 'fetching'})  
-        fetch(`/api/subtitles?imdbid=${imdbID}`)
+        this.setState({captionState: 'fetching'})
+        fetch(`/api/subtitles?imdbid=${imdbID}&filesize=${this.state.filesize}&moviehash=${this.state.moviehash}`)
         .then(response => response.json())
         .then(data => {
             if (data) {

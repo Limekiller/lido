@@ -1,3 +1,5 @@
+@use "variables";
+
 .pageTitle.dlPageTitle {
     margin-top: -3.5rem;
 
@@ -10,7 +12,7 @@
     margin-top: 50px;
 
     .download {
-        background: $fg-color-dark;
+        background: variables.$fg-color-dark;
         color: white;
         display: flex;
         justify-content: space-between;
