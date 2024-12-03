@@ -7,13 +7,15 @@ export default async (req, res) => {
     // The server makes a request to OpenSubtitles to get the first search result for that movie
     // Then fetches the data for that result and sends it back to the client for validation.
     if (req.query.imdbid) {
+        const imdbid = req.query.imdbid.padStart(7, '0')
 
         // First try to get subtitles for this exact file
         let searchResults = []
+        console.log(req.query)
 
         if (req.query.filesize !== '0' && req.query.moviehash !== '0') {
             searchResults = await fetch(`
-                https://rest.opensubtitles.org/search/imdbid-${req.query.imdbid}/moviebytesize-${req.query.filesize}/moviehash-${req.query.moviehash}/sublanguageid-eng
+                https://rest.opensubtitles.org/search/imdbid-${imdbid}/moviebytesize-${req.query.filesize}/moviehash-${req.query.moviehash}/sublanguageid-eng
             `, {
                 headers: {
                     'User-Agent': 'TemporaryUserAgent'
@@ -25,7 +27,7 @@ export default async (req, res) => {
         // We didn't find any results? Let's just get the first result for this item
         if (searchResults.length === 0) {
             searchResults = await fetch(`
-                https://rest.opensubtitles.org/search/imdbid-${req.query.imdbid}/sublanguageid-eng
+                https://rest.opensubtitles.org/search/imdbid-${imdbid}/sublanguageid-eng
             `, {
                 headers: {
                     'User-Agent': 'TemporaryUserAgent'
