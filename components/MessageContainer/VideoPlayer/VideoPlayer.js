@@ -61,7 +61,7 @@ class VideoPlayer extends Component {
     }
 
     async componentDidMount() {
-        let fsData = await fetch(`/api/moviedata/filesize?path=${this.props.path}`)
+        let fsData = await fetch(`/api/moviedata/filesize?path=${encodeURIComponent(this.props.path)}`)
         fsData = await fsData.json()
         this.setState({...this.state, filesize: fsData.filesize, moviehash: fsData.moviehash})
         
