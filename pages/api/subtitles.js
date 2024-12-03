@@ -69,6 +69,7 @@ export default async (req, res) => {
     // The server makes a request to OpenSubtitles to get the first search result for that movie
     // Then fetches the data for that result and sends it back to the client for validation.
     if (req.query.imdbid) {
+        console.log(req.query)
         const imdbid = req.query.imdbid.padStart(7, '0')
 
         // First try to get subtitles for this exact file

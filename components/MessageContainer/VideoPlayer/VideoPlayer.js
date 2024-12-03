@@ -61,10 +61,6 @@ class VideoPlayer extends Component {
     }
 
     async componentDidMount() {
-        let fsData = await fetch(`/api/moviedata/filesize?path=${encodeURIComponent(this.props.path)}`)
-        fsData = await fsData.json()
-        this.setState({...this.state, filesize: fsData.filesize, moviehash: fsData.moviehash})
-        
         for (let i in this.props.files) {
             if (this.props.files[i].name == this.state.title && this.props.files[parseInt(i) + 1]) {
                 let _nextVideoData = this.props.files[parseInt(i) + 1].data
@@ -336,9 +332,15 @@ class VideoPlayer extends Component {
     /**
      * Helper function to get .vtt file
      */
-    getSubtitles = (imdbID) => {
+    getSubtitles = async imdbID => {
+        let fsData = {filesize: 0, moviehash: 0}
+        if (!this.props.stream) {
+            fsData = await fetch(`/api/moviedata/filesize?path=${encodeURIComponent(this.props.path)}`)
+            fsData = await fsData.json()
+        }
+
         this.setState({captionState: 'fetching'})
-        fetch(`/api/subtitles?imdbid=${imdbID}&filesize=${this.state.filesize}&moviehash=${this.state.moviehash}`)
+        fetch(`/api/subtitles?imdbid=${imdbID}&filesize=${fsData.filesize}&moviehash=${fsData.moviehash}`)
         .then(response => response.json())
         .then(data => {
             if (data) {
