@@ -1,8 +1,4 @@
 
-const getLoginToken = () => {
-
-}
-
 /**
  * Api for retrieving subtitles
  */
