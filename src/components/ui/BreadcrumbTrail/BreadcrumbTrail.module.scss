@@ -1,0 +1,19 @@
+.BreadcrumbTrail {
+    padding: 0.75rem 2rem;
+    background-color: #272728;
+    margin-left: -2.2rem;
+    width: calc(100vw - 9.8rem);
+    color: var(--fg-color-light);
+    display: flex;
+    gap: 0.5rem;
+
+    a:hover {
+        color: white;
+    }
+
+    .link{
+        a {
+            margin-right: 0.5rem;
+        }
+    }
+}

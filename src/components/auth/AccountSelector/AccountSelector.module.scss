@@ -1,0 +1,28 @@
+.accountSelector {
+
+    .accounts {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .activeAccount {
+        display: flex;
+        flex-direction: column;
+
+        .back {
+            background-color: var(--fg-color-light);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 99rem;
+            margin-top: 2rem;
+        }
+    }
+
+    .loginForm {
+        label {
+            display: block;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+    }
+}

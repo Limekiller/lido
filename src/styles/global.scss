@@ -1,0 +1,302 @@
+@use 'variables.scss';
+// @use 'path.scss';
+// @use 'downloads.scss';
+// @use 'login.scss';
+// @use 'explore.scss';
+// @use 'imdbID.scss';
+
+html,
+body {
+    background-color: var(--bg-color);
+    padding: 0;
+    margin: 0;
+    font-family: halyard-display, sans-serif;
+    font-size: 18px;
+    color: white;
+}
+
+h1,
+h2,
+h3 {
+    font-family: halyard-text, sans-serif;
+}
+
+h1 {
+    color: white;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+input {
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: halyard-text, sans-serif;
+    transition: all 0.4s ease;
+    border: none;
+    background-color: var(--fg-color-light);
+    color: white;
+    border-radius: 0.1rem;
+}
+
+input.keyboard-focus {
+    box-shadow: 0px 0px 5px orange;
+    transform: scale(1.01);
+}
+
+.messageParent input {
+    width: 100%;
+}
+
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled) {
+    background: linear-gradient(orange, gold);
+    border: none;
+    padding: 10px 20px 10px 20px;
+    color: white;
+    box-shadow: 0px 0px 10px #0000004d;
+    font-family: halyard-text, sans-serif;
+    text-shadow: 0px 0px 10px black;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 0.75rem;
+}
+
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled):not(.secondary):hover {
+    box-shadow: 0px 0px 20px orange;
+    transform: scale(0.95);
+}
+
+button.unstyled {
+    font-family: halyard-text, sans-serif;
+    color: white;
+    appearance: none;
+    background: none;
+    border: none;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button.secondary {
+    text-shadow: none;
+    background: var(--fg-color-light) !important;
+}
+
+button.secondary:hover {
+    transform: scale(0.95);
+}
+
+button {
+    font-size: 1rem;
+}
+
+.buttonHeading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .button,
+    button {
+        height: fit-content;
+    }
+}
+
+.highlight {
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.highlight:hover,
+.highlight:focus {
+    transform: scale(1.01);
+    box-shadow: 0px 0px 5px orange;
+    cursor: pointer;
+    outline: none;
+}
+
+.centeredContainer {
+    max-width: 40rem;
+    margin: 0 auto;
+    margin-top: 5rem;
+}
+
+.pageContainer {
+    padding: 0rem 5rem 5rem 8rem;
+}
+
+.body {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.title {
+    color: white;
+    font-size: 90px;
+    margin: 0;
+    margin-top: 1rem;
+    line-height: 5rem;
+}
+
+.emptyIcon {
+    width: min-content;
+    margin: 0 auto;
+    text-align: center;
+    opacity: 0.4;
+    line-height: 25px;
+    margin-top: 150px;
+
+    img {
+        max-width: 160px;
+    }
+}
+
+.video-js {
+    width: 100%;
+    height: 100%;
+}
+
+.overlay .video-js .vjs-control-bar,
+.display-none {
+    display: none;
+}
+
+#video.video-js .vjs-control-bar {
+    width: 80%;
+    bottom: 50px;
+    margin: 0 auto;
+    height: 50px;
+    padding: 0.5rem 1rem 0 1rem;
+    border-radius: 99rem;
+    backdrop-filter: blur(10px);
+    transform: scale(1.2);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);;
+}
+
+.controlbarHidden #video.video-js .vjs-control-bar {
+    opacity: 0;
+}
+
+#video.video-js .vjs-control-bar .vjs-progress-holder {
+    margin-top: -10px;
+}
+
+#video.video-js .vjs-control {
+    box-shadow: none;
+}
+
+.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
+    transition: all 0.2s ease;
+}
+
+#video.video-js.vjs-user-inactive .vjs-control-bar {
+    transform: scale(1.15);
+}
+
+/* For TV control */
+.vjs-control-bar.tv-control {
+    background: transparent;
+    backdrop-filter: none;
+}
+
+.vjs-control-bar.tv-control .vjs-progress-holder {
+    height: 1.3em;
+    border-radius: 50px;
+}
+
+.vjs-control-bar.tv-control .vjs-load-progress,
+.vjs-control-bar.tv-control .vjs-load-progress *,
+.vjs-control-bar.tv-control .vjs-play-progress {
+    border-radius: 50px;
+}
+
+.vjs-control-bar.tv-control .vjs-play-progress::before {
+    display: none;
+}
+
+.vjs-control-bar.tv-control button {
+    display: none;
+}
+
+.vjs-text-track-cue div {
+    background: transparent !important;
+    text-shadow: 0px 0px 10px black,
+        -2px 2px 0 black,
+        2px -2px 0 black,
+        -2px -2px 0 black;
+}
+
+.vjs-subs-caps-button .vjs-menu {
+    display: none !important;
+}
+
+.captions .vjs-subs-caps-button .vjs-icon-placeholder:before {
+    color: gold !important;
+}
+
+.partyMode .video-js.vjs-playing .vjs-tech {
+    pointer-events: none;
+}
+
+
+.logo {
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 100px;
+    width: 200px;
+}
+
+.home {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.dashboardModules {
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 175px));
+    grid-gap: 20px;
+}
+
+@media (max-width: 1000px) {
+    .pageContainer {
+        padding: 20px;
+        padding-top: 80px;
+    }
+
+    .title {
+        font-size: 60px;
+        margin-top: 40px;
+        line-height: 65px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboardModules {
+        justify-content: center;
+    }
+}
+
+@keyframes loading {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(364deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@import url("https://use.typekit.net/nne8qgd.css");
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');

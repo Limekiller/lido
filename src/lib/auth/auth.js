@@ -14,19 +14,37 @@ const authOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials, req) {
-                const user = await prisma.user.findUnique({
-                    where: { username: credentials.username }
-                })
-                const validPw = await bcrypt.compare(user.password, credentials.password)
+                let user, validPw
+                if (credentials.username === 'Admin') {
+                    user = { name: "Admin", id: -1, admin: true}
+                    validPw = process.env.ADMIN_PASSWORD === credentials.password
+                } else {
+                    user = await prisma.user.findUnique({
+                        where: { name: credentials.username }
+                    })
+                    validPw = await bcrypt.compare(credentials.password, user.password)
+                }
 
                 if (user && validPw) {
                     return user
                 } else {
                     return null
                 }
-            }
+            },
         })
-    ]
+    ],
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.admin = user.admin;
+            }
+            return token;
+        },
+        async session({ session, token, user }) {
+            session.user.admin = token.admin
+            return session
+        }
+    }
 }
 
 const getSession = () => getServerSession(authOptions)

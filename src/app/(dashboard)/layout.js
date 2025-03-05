@@ -2,15 +2,19 @@ import { getSession } from "@/lib/auth/auth"
 import Providers from "@/lib/auth/providers"
 import { redirect } from 'next/navigation'
 
+import Navbar from "@/components/Navbar/Navbar"
+
 const DashboardRootLayout = async ({ children }) => {
     const session = await getSession()
+    
     if (session) { 
         return <>
-            <p>Signed in as {session.user.email}</p>
             <Providers session={session}>
-                {children}
+                <Navbar />
+                <div className="pageContainer">
+                    {children}
+                </div>
             </Providers>
-            <button onClick={() => signOut()}>Sign out</button>      
         </> 
     }
     

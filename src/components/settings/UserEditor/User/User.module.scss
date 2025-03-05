@@ -1,0 +1,21 @@
+.User {
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0.5rem;
+
+    &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    &.odd {
+        background-color: var(--fg-color-dark);
+    }
+
+    .userInfo {
+        display: flex;
+        gap: 1rem;
+    }
+}

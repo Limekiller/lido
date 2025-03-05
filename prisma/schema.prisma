@@ -12,8 +12,39 @@ datasource db {
 
 model User {
     id       String  @id @default(cuid())
-    username String
+    name     String  @unique
     email    String
     password String
     admin    Boolean
+}
+
+model Category {
+    id       Int        @id @default(autoincrement())
+    name     String
+    parentId Int?
+    parent   Category?  @relation("ParentChild", fields: [parentId], references: [id])
+    children Category[] @relation("ParentChild")
+    file     File[]
+    Download Download[]
+}
+
+model Download {
+    id             String   @id @default(cuid())
+    name           String
+    state          String
+    transmissionId String?
+    category       Category @relation(fields: [categoryId], references: [id])
+    categoryId     Int      @default(0)
+    File           File[]
+}
+
+model File {
+    id         String   @id @default(cuid())
+    name       String
+    category   Category @relation(fields: [categoryId], references: [id])
+    categoryId Int      @default(0)
+    download   Download @relation(fields: [downloadId], references: [id], onDelete: Cascade)
+    downloadId String
+    metadata   String?  @default("{}")
+    mimetype   String?
 }

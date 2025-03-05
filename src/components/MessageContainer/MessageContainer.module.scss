@@ -1,0 +1,19 @@
+.MessageContainer {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.397);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+    top: 0;
+
+    &.enabled {
+        pointer-events: all;
+        opacity: 1;
+    }
+}
