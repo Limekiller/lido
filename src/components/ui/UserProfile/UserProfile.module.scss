@@ -2,6 +2,9 @@
     .mainEditForm {
         display: flex;
         gap: 2rem;
+        background-color: var(--fg-color-dark);
+        padding: 2rem;
+        border-radius: 1rem;
     
         > * {
             width: 50%;
@@ -29,6 +32,8 @@
         }
         
         .profileForm {
+            width: 100%;
+
             .error {
                 float: right;
                 color: rgb(201, 58, 58);
