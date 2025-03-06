@@ -1,4 +1,23 @@
 .accountSelector {
+    .adminAccountSelector {
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover {
+            .label {
+                opacity: 1;
+            }
+        }
+
+        .label {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+    }
 
     .accounts {
         display: flex;
@@ -15,6 +34,9 @@
             height: 3rem;
             border-radius: 99rem;
             margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
 
@@ -23,6 +45,10 @@
             display: block;
             color: white;
             margin-bottom: 0.5rem;
+        }
+
+        input {
+            margin-right: 0.5rem;
         }
     }
 }

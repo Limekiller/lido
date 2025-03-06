@@ -17,6 +17,10 @@
         width: 100%;
         background: linear-gradient(to right, orange, gold);
         animation: toast 5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+        &.alert {
+            background: linear-gradient(to right, rgb(102, 27, 27), rgb(128, 43, 43));
+        }
     }
 }
 

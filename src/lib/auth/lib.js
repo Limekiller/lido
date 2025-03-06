@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma"
 import { getSession } from "@/lib/auth/auth"
 
 export const verifyAdmin = handler => {
@@ -21,7 +22,19 @@ export const verifySession = handler => {
         const secret = process.env.NEXTAUTH_SECRET
         const session = await getSession()
 
-        if (!session && req.headers.get('authorization') !== `Bearer ${secret}`) {
+        let allowFileAccess = false
+        if (req?.url.split('/').slice(-2)[0] === 'file') {
+            const file = await prisma.file.findUnique({
+                where: {
+                    id: req.url.split('/').slice(-1)[0]
+                }
+            })
+            if (file.area === 'profile') {
+                allowFileAccess = true
+            }
+        }
+
+        if (!session && req.headers.get('authorization') !== `Bearer ${secret}` && !allowFileAccess) {
             return Response.json({
                 result: "error",
                 data: {

@@ -1,12 +1,12 @@
 "use client"
 
 import { useState, useContext } from 'react'
-import MessageContext from '@/lib/MessageContext'
+import MessageContext from '@/lib/contexts/MessageContext'
 
 import styles from './User.module.scss'
 
-const User = ({ 
-    data, 
+const User = ({
+    data,
     odd,
     reportUserDeleted
 }) => {
@@ -24,7 +24,7 @@ const User = ({
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({id: data.id})
+            body: JSON.stringify({ id: data.id })
         })
         response = await response.json()
 
@@ -39,19 +39,16 @@ const User = ({
     const updateUser = async () => {
         setIsInteractible(false)
 
-        const newUserData = {
-            id: data.id,
-            name: document.querySelector('#name').value,
-            email: document.querySelector('#email').value,
-            admin: document.querySelector('#admin').checked
-        }
+        let newFormData = new FormData()
+        newFormData.append('id', data.id)
+        newFormData.append('name', document.querySelector('#name').value)
+        newFormData.append('email', document.querySelector('#email').value)
+        newFormData.append('admin', document.querySelector('#admin').checked)
+        newFormData.append('profileImg', document.querySelector('#img').files[0])
 
         let response = await fetch(`/api/user/${data.id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newUserData)
+            method: "PUT",
+            body: newFormData
         })
         response = await response.json()
 
@@ -60,7 +57,8 @@ const User = ({
                 ...userData,
                 name: response.data.name,
                 email: response.data.email,
-                admin: response.data.admin
+                admin: response.data.admin,
+                image: response.data.image
             })
         }
 
@@ -68,35 +66,53 @@ const User = ({
         setIsInteractible(true)
     }
 
-    return <div 
+    return <div
         className={`
             ${styles.User}
             ${odd ? styles.odd : ''}
             ${isInteractible ? '' : styles.disabled}
         `}
     >
-        {!isEditing ? 
+        {!isEditing ?
             <div className={styles.userInfo}>
-                <span className='unstyled'>{userData.name}</span> • 
-                <span className='unstyled'>{userData.email}</span> 
-                {userData.admin ? <> • <span style={{color: "gold"}}>Admin</span></> : ""}
+                <img src={`/api/file/${userData.image}` || 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
+                <span className='unstyled'>{userData.name}</span> •
+                <span className='unstyled'>{userData.email}</span>
+                {userData.admin ? <> • <span style={{ color: "gold" }}>Admin</span></> : ""}
             </div>
-        : <div className={styles.userInfo}>
-            <input type='text' name='name' id='name' defaultValue={userData.name} />
-            <input type='text' name='email' id='email' defaultValue={userData.email} />
-            <input type='checkbox' name='admin' id='admin' defaultChecked={userData.admin} />
-        </div>}
+            : <div className={styles.userInfo}>
+                <button className='unstyled' onClick={() => document.querySelector('#img').click()}>
+                    <input 
+                        style={{ display: 'none' }} 
+                        type="file" 
+                        id='img' 
+                        name='img' 
+                        accept="image/png, image/jpeg"
+                        onChange={e => {
+                            console.log(e.target.files)
+                            const file = e.target.files[0]
+                            if (file) {
+                                e.target.parentElement.querySelector('img').src = URL.createObjectURL(file)
+                            }
+                        }}
+                    />
+                    <img src={`/api/file/${userData.image}` || 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
+                </button>
+                <input type='text' name='name' id='name' defaultValue={userData.name} />
+                <input type='text' name='email' id='email' defaultValue={userData.email} />
+                <input type='checkbox' name='admin' id='admin' defaultChecked={userData.admin} />
+            </div>}
 
         <div className={styles.userButtons}>
             {!isEditing ?
-                <>
-                    <button 
+                <div style={{ display: 'flex' }}>
+                    <button
                         className='unstyled'
                         onClick={() => setIsEditing(true)}
                     >
                         <span className="material-icons">edit</span>
                     </button>
-                    <button 
+                    <button
                         className='unstyled'
                         onClick={() => messageFunctions.addMessage({
                             title: "Are you sure?",
@@ -106,21 +122,21 @@ const User = ({
                     >
                         <span className="material-icons">delete</span>
                     </button>
-                </>
-            : <>
-                <button 
-                    className='unstyled'
-                    onClick={updateUser}
-                >
-                    <span className="material-icons">check</span>
-                </button>
-                <button 
-                    className='unstyled'
-                    onClick={() => setIsEditing(false)}
-                >
-                    <span className="material-icons">close</span>
-                </button>
-            </>}
+                </div>
+                : <div style={{ display: 'flex' }}>
+                    <button
+                        className='unstyled'
+                        onClick={updateUser}
+                    >
+                        <span className="material-icons">check</span>
+                    </button>
+                    <button
+                        className='unstyled'
+                        onClick={() => setIsEditing(false)}
+                    >
+                        <span className="material-icons">close</span>
+                    </button>
+                </div>}
         </div>
     </div>
 }

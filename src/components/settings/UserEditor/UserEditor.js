@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useContext } from 'react'
-import MessageContext from '@/lib/MessageContext'
+import MessageContext from '@/lib/contexts/MessageContext'
 
 import User from './User/User'
 import styles from './UserEditor.module.scss'
@@ -42,7 +42,7 @@ const UserEditor = ({ users }) => {
         <label htmlFor='email'>Email</label><br />
         <input id='createUserEmail' type='text' name='email' /><br /><br />
         <label htmlFor='admin'>Is admin?</label>
-        <input id='createUserAdmin'type='checkbox' name='admin' />
+        <input id='createUserAdmin' type='checkbox' name='admin' />
     </form>
 
     return <div className={styles.UserEditor}>
@@ -56,14 +56,17 @@ const UserEditor = ({ users }) => {
                 })}
             >Add user</button>
         </div>
-        {currentUsers.map((user, index) => {
-            return <User 
-                data={user} 
-                key={user.id} 
-                odd={index % 2 === 0}
-                reportUserDeleted={reportUserDeleted}
-            />
-        })}
+        {currentUsers.length > 0 ?
+            currentUsers.map((user, index) => {
+                return <User
+                    data={user}
+                    key={user.id}
+                    odd={index % 2 === 0}
+                    reportUserDeleted={reportUserDeleted}
+                />
+            })
+            : <span style={{textAlign: 'center', color: "var(--fg-color-light)"}}>No users found. Why not add some?</span>
+        }
     </div>
 }
 

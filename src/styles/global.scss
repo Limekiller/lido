@@ -30,6 +30,10 @@ a {
     text-decoration: none;
 }
 
+label {
+    margin-right: 0.5rem;
+}
+
 input {
     padding: 10px;
     box-sizing: border-box;
@@ -39,6 +43,7 @@ input {
     background-color: var(--fg-color-light);
     color: white;
     border-radius: 0.1rem;
+    margin-top: 0.25rem;
 }
 
 input.keyboard-focus {
@@ -46,7 +51,7 @@ input.keyboard-focus {
     transform: scale(1.01);
 }
 
-.messageParent input {
+.messageParent input:not([type="checkbox"]) {
     width: 100%;
 }
 

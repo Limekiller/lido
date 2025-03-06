@@ -11,4 +11,4 @@ cd $DIR
 echo $TR_TORRENT_DIR $TR_TORRENT_NAME
 npm run completeDownload $TR_TORRENT_DIR "$TR_TORRENT_NAME"
 
-# transmission-remote -t $TR_TORRENT_ID --remove-and-delete
+transmission-remote -t $TR_TORRENT_ID --remove-and-delete

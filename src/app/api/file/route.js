@@ -6,18 +6,15 @@ export const POST = verifySession(
     async req => {
         const data = await req.json()
 
-        // When we add a new file, attempt to get the metadata for it
-        let metadata = await getFileInfo(data.name)
-        metadata = JSON.stringify(metadata)
+        // When we add a new video file, attempt to get the metadata for it
+        if (data.area === 'video') {
+            let metadata = await getFileInfo(data.name)
+            metadata = JSON.stringify(metadata)
+            data.metadata = metadata
+        }
 
         const newFile = await prisma.file.create({
-            data: {
-                name: data.name,
-                categoryId: data.category,
-                downloadId: data.download,
-                metadata: metadata,
-                mimetype: data.mimetype
-            }
+            data: data
         })
 
         return Response.json({
@@ -30,12 +27,19 @@ export const POST = verifySession(
 export const GET = verifySession(
     async req => {
         const searchParams = req.nextUrl.searchParams
+        
+        let where = {}
         const catId = searchParams.get('category')
+        if (catId) {
+            where['categoryId'] = parseInt(catId)
+        }
+        const area = searchParams.get('area')
+        if (area) {
+            where['area'] = area
+        }
 
         const files = await prisma.file.findMany({
-            where: {
-                categoryId: catId
-            }
+            where: where
         })
 
         return Response.json({

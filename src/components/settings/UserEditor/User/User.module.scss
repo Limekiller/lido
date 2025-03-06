@@ -1,5 +1,5 @@
 .User {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -17,5 +17,18 @@
     .userInfo {
         display: flex;
         gap: 1rem;
+        align-items: center;
+
+        img {
+            width: 2rem;
+            height: 2rem;
+            object-fit: cover;
+            border-radius: 99rem;
+        }
     }
+
+    button {
+        display: flex;
+    }
+
 }

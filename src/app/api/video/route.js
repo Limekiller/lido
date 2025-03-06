@@ -1,7 +1,8 @@
-import { verifySession } from '@/lib/auth/lib'
-// import torrentStream from 'torrent-stream'
 import fs from 'fs-extra'
 import path from 'path'
+
+import libFunctions from '@/lib/lib'
+import { verifySession } from '@/lib/auth/lib'
 
 async function* nodeStreamToIterator(stream) {
     for await (const chunk of stream) {
@@ -22,31 +23,50 @@ const iteratorToStream = iterator => {
     })
 }
 
-const streamFile = path => {
-    const nodeStream = fs.createReadStream(path)
+const streamFile = (path, start, end) => {
+    const nodeStream = fs.createReadStream(path, {start, end})
     const data = iteratorToStream(nodeStreamToIterator(nodeStream))
     return data
 }
 
 export const GET = verifySession(
     async req => {
+        let range = req.headers.get('range')
+
         const searchParams = req.nextUrl.searchParams
         let fileId = searchParams.get('id')
         let mime = searchParams.get('mime')
+        let download = searchParams.get('download')
 
-        let filePath = path.join(process.cwd(), `/storage/${fileId}.${mime.split('/')[1]}`);
+        const fileExt = libFunctions.getFileExtFromMime(mime)
+
+        let filePath = path.join(process.env.STORAGE_PATH, `/video/${fileId}.${fileExt}`);
         const videoSize = fs.statSync(filePath).size;
 
-        const stream = streamFile(filePath)
+        if (download) {
+            const buffer = await fs.readFile(filePath)
+            const headers = new Headers()
+            headers.append("Content-Disposition", `attachment; filename="${fileId}"`)
+            headers.append("Content-Type", mime)
+
+            return new Response(buffer, {
+                headers,
+            })
+        }
+
+        const CHUNK_SIZE = 50 ** 6; // 5MB
+        const start = Number(range.replace(/\D/g, ""));
+        const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+        const contentLength = end - start + 1;
+
+        const stream = streamFile(filePath, start, end)
         return new Response(stream, {
-            status: 200,
+            status: 206,
             headers: new Headers({
-                "content-disposition":
-                    `attachment; filename=${path.basename(
-                        filePath
-                    )}`,
-                "content-type": mime,
-                "content-length": videoSize + "",
+                "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+                "Accept-Ranges": "bytes",
+                "Content-Length": contentLength,
+                "Content-Type": mime
             })
         })
     }

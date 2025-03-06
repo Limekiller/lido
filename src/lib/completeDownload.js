@@ -39,11 +39,15 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
 const filterFiles = async (downloadPath, mediaPath, finalPath) => {
     const allFiles = getAllFiles(downloadPath)
 
-    // Fetch data for this download
+    // Set this download to completed
     let download = await fetch(`${process.env.NEXTAUTH_URL}/api/download/${downloadPath.split('/').slice(-1)[0]}`, {
+        method: "PUT",
         headers: {
             'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
-        }
+        },
+        body: JSON.stringify({
+            state: "complete"
+        })
     })
     download = await download.json()
     download = download.data
@@ -58,6 +62,7 @@ const filterFiles = async (downloadPath, mediaPath, finalPath) => {
             const isLargeEnough = getFileSize(file) > 125 ? true : false
 
             // TODO: If no subtitle file was found, check if there's an embedded track, and store it in the db if there is
+            // If we STILL didn't find any, use the API to grab some and store them
 
             if (isVideoFile && isLargeEnough) {
                 let newFile = await fetch(`${process.env.NEXTAUTH_URL}/api/file`, {
@@ -67,16 +72,17 @@ const filterFiles = async (downloadPath, mediaPath, finalPath) => {
                     },
                     body: JSON.stringify({
                         name: file.split('/').slice(-1)[0],
-                        category: download.categoryId,
-                        download: download.id,
-                        mimetype: fileData.mime
+                        categoryId: download.categoryId,
+                        downloadId: download.id,
+                        mimetype: fileData.mime,
+                        area: "video"
                     })
                 })
                 newFile = await newFile.json()
 
                 // Actually, use ffmpeg to convert to aac audio so we don't get any mute videos
                 //execSync(`ffmpeg -i "${file}" -acodec aac -vcodec copy "${mediaPath + finalPath}.${file.split('.').slice(-1)[0]}"`)
-                fs.renameSync(file, mediaPath + newFile.data.id + '.' + file.split('.').slice(-1)[0])
+                fs.renameSync(file, `${mediaPath}/video/${newFile.data.id}.${file.split('.').slice(-1)[0]}`)
             }
         }
     }))
@@ -86,15 +92,15 @@ const filterFiles = async (downloadPath, mediaPath, finalPath) => {
 const main = async () => {
 
     const fileName = `${process.argv[2]}/${process.argv[3]}`
-    const mediaPath = `${fileName.split('/').slice(0, -3).join('/')}/`
+    const mediaPath = process.env.STORAGE_PATH
 
-    const downloadID = fileName.split('/storage/temp')[1].split('/')[1]
-    const downloadPath = fileName.split('/storage/temp')[0] + '/storage/temp/' + downloadID
+    const downloadID = fileName.split('/temp')[1].split('/')[1]
+    const downloadPath = fileName.split('/temp')[0] + '/temp/' + downloadID
     const finalPath = downloadID
 
     await filterFiles(downloadPath, mediaPath, finalPath)
 
-    // removeSync(downloadPath)
+    fs.removeSync(downloadPath)
 }
 
 main()

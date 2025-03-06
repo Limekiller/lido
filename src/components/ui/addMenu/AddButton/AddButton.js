@@ -2,7 +2,7 @@
 
 import { useState, useContext } from 'react'
 import { usePathname } from 'next/navigation'
-import MessageContext from '@/lib/MessageContext'
+import MessageContext from '@/lib/contexts/MessageContext'
 
 import styles from './AddButton.module.scss'
 import DownloadMedia from '../DownloadMedia/DownloadMedia'
@@ -17,6 +17,8 @@ const AddButton = () => {
         let parentId = pathname.split('/').slice(-1)[0]
         if (parentId === 'movies') {
             parentId = 0
+        } else if (parentId === 'tv') {
+            parentId = 1
         } else {
             parentId = parseInt(parentId)
         }

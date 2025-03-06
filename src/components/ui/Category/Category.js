@@ -3,8 +3,8 @@
 import { useContext } from 'react'
 import Link from 'next/link'
 
-import MessageContext from '@/lib/MessageContext'
-import ContextMenuContext from '@/lib/ContextMenuContext'
+import MessageContext from '@/lib/contexts/MessageContext'
+import ContextMenuContext from '@/lib/contexts/ContextMenuContext'
 import styles from './Category.module.scss'
 
 const Category = ({ link, name }) => {

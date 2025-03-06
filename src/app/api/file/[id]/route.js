@@ -2,11 +2,10 @@ import path from 'path'
 import fs from 'fs-extra'
 import { prisma } from "@/lib/prisma"
 
+import libFunctions from '@/lib/lib'
 import { DELETE as deleteDownload } from '../../download/[id]/route'
 import { verifySession } from '@/lib/auth/lib'
 import { getFileInfo } from '../../moviedata/metadata/route'
-
-const mediaPath = path.join(process.cwd(), '/storage/')
 
 export const deleteFile = async id => {
     const file = await prisma.file.findUnique({
@@ -17,29 +16,34 @@ export const deleteFile = async id => {
 
     // Check if there are any other files that belong to this download
     // If not, delete the download
-    const otherFiles = await prisma.file.findMany({
-        where: {
-            AND: [
-                { downloadId: file.downloadId },
-                { NOT: { id: id } }
-            ]
-        }
-    })
+    let otherFiles = []
+    if (file.downloadId) {
+        otherFiles = await prisma.file.findMany({
+            where: {
+                AND: [
+                    { downloadId: file.downloadId },
+                    { NOT: { id: id } }
+                ]
+            }
+        })
+    }
 
-    if (otherFiles.length === 0) {
+    if (otherFiles.length === 0 && file.downloadId) {
         await prisma.download.delete({
             where: {
                 id: file.downloadId
             }
         })
+    } else {
+        // Only explicitly delete this file if there ARE other existing files in this download,
+        // because deleting the download cascades to the files automatically
+        await prisma.file.delete({
+            where: { id: id }
+        })
     }
 
     // Remove file from disk
-    fs.removeSync(`${mediaPath}/${id}.${file.name.split('.').slice(-1)[0]}`)
-
-    await prisma.file.delete({
-        where: {id: id}
-    })
+    fs.removeSync(`${process.env.STORAGE_PATH}/${file.area}/${id}.${file.name.split('.').slice(-1)[0]}`)
 }
 
 export const DELETE = verifySession(
@@ -75,6 +79,25 @@ export const PUT = verifySession(
         return Response.json({
             result: "success",
             data: newFile
+        })
+    }
+)
+
+export const GET = verifySession(
+    async (req, { params }) => {
+        const id = (await params).id
+
+        const file = await prisma.file.findUnique({
+            where: { id: id },
+        })
+
+        const fileExt = libFunctions.getFileExtFromMime(file.mimetype)
+
+        const buffer = fs.readFileSync(`${process.env.STORAGE_PATH}/${file.area}/${file.id}.${fileExt}`)
+        return new Response(buffer, {
+            headers: {
+                'content-type': file.mimetype
+            }
         })
     }
 )

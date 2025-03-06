@@ -1,4 +1,3 @@
-import { Transmission } from '@ctrl/transmission'
 import { GET as getDownloads } from '@/app/api/download/route'
 
 import DownloadList from '@/components/ui/DownloadList/DownloadList';

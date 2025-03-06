@@ -1,9 +1,9 @@
-import path from 'path'
 import { Transmission } from '@ctrl/transmission'
 import { prisma } from "@/lib/prisma"
 import { verifySession } from '@/lib/auth/lib'
 
-const mediaPath = path.join(process.cwd(), '/storage/')
+import libFunctions from '@/lib/lib'
+
 const client = new Transmission({
     baseUrl: 'http://localhost:9091/',
     password: '',
@@ -16,14 +16,14 @@ export const POST = verifySession(
         const newDownload = await prisma.download.create({
             data: {
                 name: data.name,
-                categoryId: data.category,
+                categoryId: parseInt(data.category),
                 state: 'downloading'
             }
         })
 
         let newTransDownload
         try {
-            newTransDownload = await client.addMagnet(data.magnet, { 'download-dir': mediaPath + 'temp/' + newDownload.id })
+            newTransDownload = await client.addMagnet(data.magnet, { 'download-dir': `${process.env.STORAGE_PATH}/temp/${newDownload.id}` })
         } catch (error) {
             await prisma.download.delete({
                 where: {
@@ -33,10 +33,10 @@ export const POST = verifySession(
 
             return Response.json({
                 result: "error",
-                data: { 
+                data: {
                     message: "The transmission-daemon service is not running.",
                 }
-            }, {status: 502})
+            }, { status: 502 })
         }
 
         await prisma.download.update({
@@ -57,7 +57,18 @@ export const POST = verifySession(
 
 export const GET = verifySession(
     async req => {
-        const downloads = await prisma.download.findMany()
+        let downloads = await prisma.download.findMany({
+            include: {
+                File: true
+            }
+        })
+
+        for (const download of downloads) {
+            for (const file of download.File) {
+                const categoryTree = await libFunctions.getCategoryTree(file.categoryId)
+                file.categoryTree = categoryTree
+            }
+        }
 
         let torrents
         try {
@@ -65,12 +76,12 @@ export const GET = verifySession(
         } catch (error) {
             return Response.json({
                 result: "error",
-                data: { 
+                data: {
                     message: "The transmission-daemon service is not running.",
                     downloads: {},
                     torrents: {},
                 }
-            }, {status: 502})
+            }, { status: 502 })
         }
 
         torrents = Object.fromEntries(torrents.torrents.map(obj => [obj.id, obj]))

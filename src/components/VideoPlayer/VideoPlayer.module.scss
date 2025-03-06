@@ -23,6 +23,7 @@
         img {
             position: absolute;
             top: -5vh;
+            left: -5vw;
             height: 110vh;
             width: 100%;
             object-fit: cover;
@@ -47,7 +48,7 @@
 
             p {
                 font-size: 1.25rem;
-                line-height: 1.25rem;
+                line-height: 1.75rem;
             }
 
             .options {
@@ -76,6 +77,26 @@
                     height: 3rem;
                     width: 3rem;
                     border-radius: 99rem;
+                }
+
+                .option {
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+                    &:hover {
+                        transform: scale(0.9);
+                    }
+                }
+
+                div {
+                    margin-left: 1rem;
+                    
+                    > * {
+                        margin-right: 0.75rem;
+                        border: 1px solid var(--fg-color-light);
+                        padding: 0.5rem;
+                        border-radius: 99rem;
+                        backdrop-filter: blur(100px);
+                    }
                 }
             }
         }

@@ -1,11 +1,11 @@
 "use client"
 
 import { useContext } from 'react'
-import MessageContext from '@/lib/MessageContext'
-import ContextMenuContext from '@/lib/ContextMenuContext'
+import MessageContext from '@/lib/contexts/MessageContext'
+import ContextMenuContext from '@/lib/contexts/ContextMenuContext'
 
-import RenameFile from '@/components/RenameFile/RenameFile'
-import { renameFile as submitRename } from '@/components/RenameFile/RenameFile'
+import RenameFile from '@/components/ui/RenameFile/RenameFile'
+import { renameFile as submitRename } from '@/components/ui/RenameFile/RenameFile'
 
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer'
 import styles from './File.module.scss'

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import ContextMenuContext from "@/lib/ContextMenuContext"
+import ContextMenuContext from "@/lib/contexts/ContextMenuContext"
 
 import styles from './ContextMenuContainer.module.scss'
 

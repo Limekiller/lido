@@ -16,6 +16,7 @@ model User {
     email    String
     password String
     admin    Boolean
+    image    String?
 }
 
 model Category {
@@ -39,12 +40,13 @@ model Download {
 }
 
 model File {
-    id         String   @id @default(cuid())
+    id         String    @id @default(cuid())
     name       String
-    category   Category @relation(fields: [categoryId], references: [id])
-    categoryId Int      @default(0)
-    download   Download @relation(fields: [downloadId], references: [id], onDelete: Cascade)
-    downloadId String
-    metadata   String?  @default("{}")
+    category   Category? @relation(fields: [categoryId], references: [id])
+    categoryId Int?
+    download   Download? @relation(fields: [downloadId], references: [id], onDelete: Cascade)
+    downloadId String?
+    metadata   String?   @default("{}")
     mimetype   String?
+    area       String    @default("video")
 }

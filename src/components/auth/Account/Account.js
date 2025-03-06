@@ -5,7 +5,7 @@ import styles from './Account.module.scss'
 const Account = ({ 
     name, 
     id, 
-    profileImg, 
+    image, 
     clickable = true,
     setActiveAccount 
 }) => {
@@ -17,7 +17,7 @@ const Account = ({
         onClick={setActiveAccount}
         style={{pointerEvents: clickable ? 'initial' : 'none'}}
     >
-        <img src={profileImg || 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
+        <img src={image ? `/api/file/${image}` : 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
         <h2>{name}</h2>
     </button>
 }

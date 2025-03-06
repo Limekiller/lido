@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext, useEffect } from 'react'
-import MessageContext from '@/lib/MessageContext'
+import MessageContext from '@/lib/contexts/MessageContext'
 
 import styles from './Message.module.scss'
 

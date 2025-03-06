@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import ToastContext from "@/lib/ToastContext"
+import ToastContext from "@/lib/contexts/ToastContext"
 
 import styles from './ToastContainer.module.scss'
 
@@ -27,7 +27,13 @@ const ToastContainer = ({ children }) => {
             ${styles.ToastContainer}
         `}>
             {toasts.map(toast => {
-                return <div className={styles.toast} key={toast.id}>
+                return <div
+                    className={`
+                        ${styles.toast} 
+                        ${toast.type && toast.type === 'alert' ? styles.alert : ''}
+                    `}
+                    key={toast.id}
+                >
                     <span>{toast.message}</span>
                 </div>
             })}

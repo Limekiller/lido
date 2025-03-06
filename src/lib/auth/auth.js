@@ -34,14 +34,25 @@ const authOptions = {
         })
     ],
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
+            if (trigger === "update") {
+                token.name = session.name
+                token.email = session.email
+                token.image = session.image
+            }
             if (user) {
-                token.admin = user.admin;
+                token.id = user.id
+                token.admin = user.admin
+                token.image = user.image
             }
             return token;
         },
-        async session({ session, token, user }) {
+        async session({ session, token }) {
+            session.user.id = token.id
+            session.user.name = token.name
+            session.user.email = token.email
             session.user.admin = token.admin
+            session.user.image = token.image
             return session
         }
     }

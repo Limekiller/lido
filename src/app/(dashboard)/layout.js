@@ -2,7 +2,7 @@ import { getSession } from "@/lib/auth/auth"
 import Providers from "@/lib/auth/providers"
 import { redirect } from 'next/navigation'
 
-import Navbar from "@/components/Navbar/Navbar"
+import Navbar from "@/components/ui/Navbar/Navbar"
 
 const DashboardRootLayout = async ({ children }) => {
     const session = await getSession()

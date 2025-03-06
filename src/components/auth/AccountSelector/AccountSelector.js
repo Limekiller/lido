@@ -1,27 +1,50 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { signIn } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
+
+import ToastContext from '@/lib/contexts/ToastContext'
 import Account from '../Account/Account'
+
 import styles from './AccountSelector.module.scss'
 
 const AccountSelector = ({ accounts }) => {
+    const searchParams = useSearchParams()
+    const toastFunctions = useContext(ToastContext)
+
     const [activeAccount, setActiveAccount] = useState(null)
     const [password, setPassword] = useState('')
 
+    useEffect(() => {
+        if (searchParams.get('error') && searchParams.get('error') === 'CredentialsSignin') {
+            toastFunctions.createToast({message: "Invalid username or password", type: "alert"})
+        }
+    }, [])
+    
+
     return <div className={styles.accountSelector}>
+        <button 
+            className={`${styles.adminAccountSelector} unstyled`}
+            onClick={() => {setActiveAccount({name: 'Admin', id: -1})}}
+        >
+            <span className={styles.label}>Admin account</span>
+            <span className='material-icons'>settings</span>
+        </button>
+
         {!activeAccount ? 
             <div className={styles.accounts}>
-                <Account
+                {/* <Account
                     name='Admin'
                     id='-1'
                     setActiveAccount={() => setActiveAccount({name: 'Admin', id: -1})}
-                />
+                /> */}
                 {accounts.map(account => {
                     return <Account 
                         key={account.id} 
                         id={account.id}
                         name={account.name}
+                        image={account.image}
                         setActiveAccount={() => setActiveAccount(account)}
                     />
                 })}
@@ -38,29 +61,32 @@ const AccountSelector = ({ accounts }) => {
                 <Account
                     name={activeAccount.name}
                     id={activeAccount.id}
+                    image={activeAccount.image}
                     clickable={false}
                 />
-                <button className={`unstyled ${styles.back}`} onClick={() => setActiveAccount(null)}>
+                <button className={`secondary ${styles.back}`} onClick={() => setActiveAccount(null)}>
                     <span className="material-icons">arrow_back</span>
                 </button>
             </div>
 
 
-            <form className={styles.loginForm}>
+            <div className={styles.loginForm}>
                 <label htmlFor='password'>Password</label>
                 <input 
                     name="password" 
                     type="password" 
                     id='password' 
                     onChange={e => setPassword(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { document.querySelector('#loginSbmt').click() } }}
                 />
                 <button 
                     type="button"
+                    id='loginSbmt'
                     onClick={() => signIn("credentials", {username: activeAccount.name, password: password})}
                 >
                     Sign in
                 </button>
-            </form>
+            </div>
         </div>}
     </div>
 }

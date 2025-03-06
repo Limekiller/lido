@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import MessageContext from "@/lib/MessageContext"
+import MessageContext from "@/lib/contexts/MessageContext"
 import Message from "./Message/Message"
 
 import styles from './MessageContainer.module.scss'
