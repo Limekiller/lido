@@ -1,4 +1,6 @@
 import '@/styles/global.scss'
+import '@/styles/external/material-icons.css'
+import '@/styles/external/typekit.css'
 
 import MessageContainer from '@/components/contexts/MessageContainer/MessageContainer'
 import ToastContainer from '@/components/contexts/ToastContainer/ToastContainer'
