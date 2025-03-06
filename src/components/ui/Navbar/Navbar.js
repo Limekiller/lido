@@ -16,15 +16,18 @@ const Navbar = () => {
             <Link href='/tv'><span className="material-icons">tv</span></Link>
             <div className={styles.divider} />
             <Link href='/downloads'><span className="material-icons">cloud_download</span></Link>
-            {session.data.user.admin ? <Link href='/settings'><span className="material-icons">settings</span></Link> : "" }
+            {session.data.user.admin ? <Link href='/settings'><span className="material-icons">settings</span></Link> : ""}
             <a href='#' onKeyDown={(e) => { if (e.key === "Enter") { signOut() } }}>
                 <span className="material-icons" onClick={signOut}>logout</span>
             </a>
         </div>
         <div className={styles.bottomOptions}>
-            <Link href='/profile' className={styles.profile}>
-                <img src={session.data.user.image ? `/api/file/${session.data.user.image}` : 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
-            </Link>
+            {session.data.user.id !== -1 ?
+                <Link href='/profile' className={styles.profile}>
+                    <img src={session.data.user.image ? `/api/file/${session.data.user.image}` : 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
+                </Link>
+                : ""
+            }
         </div>
     </div>
 }

@@ -30,7 +30,7 @@ const FileEditor = ({ files }) => {
                     className={styles.file}
                     key={file.id}
                 >
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div style={{display: 'flex', justifyContent: 'space-between', gap: '1rem'}}>
                         <Link href={`api/file/${file.id}`} target='_blank'>
                             <span>{file.name}</span>
                         </Link>

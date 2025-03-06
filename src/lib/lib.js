@@ -3,7 +3,7 @@ import { prisma } from "./prisma"
 const getCategoryTree = async catId => {
     let lastCategory = await prisma.category.findUnique({
         where: {
-            id: catId
+            id: parseInt(catId)
         }
     })
     let categoryList = [{id: catId, name: lastCategory.name}]

@@ -4,13 +4,13 @@ import Category from '@/components/ui/Category/Category';
 import File from '@/components/ui/File/File';
 import styles from './category.module.scss'
 
-const category = async ({ params }) => {
+const category = async ({ params, list = false }) => {
     const { category } = await params
 
     if (!category) {
         return
     }
-    
+
     const currCategory = await prisma.category.findUnique({
         where: {
             id: parseInt(category.slice(-1)[0])
@@ -23,13 +23,14 @@ const category = async ({ params }) => {
         }
     })
 
-    const files = await prisma.file.findMany(
-        {
-            where: {
-                categoryId: parseInt(category.slice(-1)[0])
-            }
+    const files = await prisma.file.findMany({
+        where: {
+            categoryId: parseInt(category.slice(-1)[0])
+        },
+        orderBy: {
+            name: "asc"
         }
-    )
+    })
 
     const createPath = () => {
         let path = `/${params.topCat}/`
@@ -47,15 +48,17 @@ const category = async ({ params }) => {
                 <span>Nothing here!<br />Why not add some movies?</span>
             </div> :
             <>
-                <div className={styles.categories}>
-                    {categories.map(category => {
-                        return <Category
-                            key={category.id}
-                            name={category.name}
-                            link={`${createPath()}${category.id}`}
-                        />
-                    })}
-                </div>
+                {categories.length > 0 ?
+                    <div className={styles.categories}>
+                        {categories.map(category => {
+                            return <Category
+                                key={category.id}
+                                name={category.name}
+                                link={`${createPath()}${category.id}`}
+                            />
+                        })}
+                    </div>
+                    : ""}
 
                 <div className={styles.files}>
                     {files.map(file => {
@@ -63,6 +66,7 @@ const category = async ({ params }) => {
                             className={styles.file}
                             key={file.id}
                             data={file}
+                            list={list}
                         />
                     })}
                 </div>

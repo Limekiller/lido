@@ -105,7 +105,7 @@ const VideoPlayer = ({
                                 className={`unstyled ${styles.option}`}
                                 onClick={() => messageFunctions.addMessage({
                                     title: "Rename file",
-                                    body: <RenameFile id={fileId} />,
+                                    body: <RenameFile id={fileId} name={name} />,
                                     onSubmit: () => submitRename(fileId)
                                 })}
                             >

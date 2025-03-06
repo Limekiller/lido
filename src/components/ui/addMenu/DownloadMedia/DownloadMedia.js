@@ -16,7 +16,7 @@ const DownloadMedia = () => {
     let category = pathname.split('/').slice(-1)[0]
     if (category === 'movies') {
         category = 0
-    } else if (category === 'TV') {
+    } else if (category === 'tv') {
         category = 1
     }
 

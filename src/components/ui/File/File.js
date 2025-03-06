@@ -10,7 +10,7 @@ import { renameFile as submitRename } from '@/components/ui/RenameFile/RenameFil
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer'
 import styles from './File.module.scss'
 
-const File = ({ data }) => {
+const File = ({ data, list }) => {
     const contextMenuFunctions = useContext(ContextMenuContext)
     const messageFunctions = useContext(MessageContext)
     const metadata = JSON.parse(data.metadata)
@@ -24,41 +24,60 @@ const File = ({ data }) => {
         }
     }
 
-    return <button 
+    return <button
         className={`
             ${styles.File}
             ${styles.unstyled}
+            ${metadata.Poster ? styles.hasImg : ""}
+            ${list ? styles.list : ""}
             unstyled
         `}
         style={{
-            padding: metadata.Poster ? 0 : '1rem'
+            padding: metadata.Poster && !list ? 0 : '1rem'
         }}
         onContextMenu={e => {
             contextMenuFunctions.showMenu(e, [
-                {icon: "delete", label: "Delete", function: () => messageFunctions.addMessage({
-                    title: "Are you sure?",
-                    body: "Are you sure you want to delete this file?",
-                    onSubmit: deleteFile
-                })},
-                {icon: "border_color", label: "Rename", function: () => messageFunctions.addMessage({
-                    title: "Rename file",
-                    body: <RenameFile id={data.id} />,
-                    onSubmit: () => submitRename(data.id)
-                })}
+                {
+                    icon: "delete", label: "Delete", function: () => messageFunctions.addMessage({
+                        title: "Are you sure?",
+                        body: "Are you sure you want to delete this file?",
+                        onSubmit: deleteFile
+                    })
+                },
+                {
+                    icon: "border_color", label: "Rename", function: () => messageFunctions.addMessage({
+                        title: "Rename file",
+                        body: <RenameFile id={data.id} name={data.name} />,
+                        onSubmit: () => submitRename(data.id)
+                    })
+                }
             ])
         }}
-        onClick={() => {messageFunctions.addMessage({
-            title: data.name,
-            body: <VideoPlayer 
-                fileId={data.id}
-                name={data.name}
-                mimetype={data.mimetype}
-                metadata={metadata}
-            />,
-            hideBoilerplate: true
-        })}}
+        onClick={() => {
+            messageFunctions.addMessage({
+                title: data.name,
+                body: <VideoPlayer
+                    fileId={data.id}
+                    name={data.name}
+                    mimetype={data.mimetype}
+                    metadata={metadata}
+                />,
+                hideBoilerplate: true
+            })
+        }}
     >
-        {metadata.Poster ? <img src={metadata.Poster} /> : <span>{data.name}</span>}
+        <div>
+            <div>
+                <span className={styles.fileName}>{metadata.Title || data.name}</span>
+                {metadata.seriesData ? <span
+                    className={styles.seriesData}
+                >
+                    <br />{metadata.seriesData.Title} • S{metadata.Season.padStart(2, '0')}E{metadata.Episode.padStart(2, '0')}
+                </span> : ""
+                }
+            </div>
+            {metadata.Poster ? <img src={metadata.Poster} /> : ""}
+        </div>
     </button>
 }
 

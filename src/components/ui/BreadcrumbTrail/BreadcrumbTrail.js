@@ -38,7 +38,7 @@ const BreadcrumbTrail = () => {
                 <Link href={link} key={pathElem}>
                     <span>{categoryNames[pathElem] || ''}</span>
                 </Link>
-                {index < pathname.slice(1).split("/").length - 1 ? ">" : ''}
+                {index < pathname.slice(1).split("/").length - 1 ? "/" : ''}
             </div>
         })}
     </div>

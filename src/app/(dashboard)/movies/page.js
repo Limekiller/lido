@@ -6,7 +6,8 @@ import styles from './movies.module.scss'
 
 const movies = async ({
     title = "Movies",
-    categoryId = 0
+    categoryId = 0,
+    list = false
 }) => {
     const categories = await prisma.category.findMany(
         {
@@ -50,6 +51,7 @@ const movies = async ({
                             className={styles.file}
                             key={file.id}
                             data={file}
+                            list={list}
                         />
                     })}
                 </div>

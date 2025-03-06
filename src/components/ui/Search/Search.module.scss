@@ -1,0 +1,38 @@
+.Search {
+    position: fixed;
+    top: 0;
+    left: 5.8rem;
+    height: 3rem;
+    width: calc(100vw - 5.8rem);
+    background: var(--menu-color);
+    padding: 0.5rem 1.5rem;
+    box-sizing: border-box;
+    z-index: 1;
+
+    .searchContainer {
+        width: 25%;
+        height: 100%;
+
+        &:hover {
+            .searchIcon {
+                color: white;
+            }
+        }
+
+        .searchIcon {
+            position: absolute;
+            top: 0.9rem;
+            left: 2rem;
+            color: var(--menu-color);
+        }
+    
+        input {
+            margin: 0;
+            background-color: var(--fg-color-dark);
+            border-radius: 99rem;
+            height: 100%;
+            width: 100%;
+            padding-left: 2.25rem;
+        }
+    }
+}

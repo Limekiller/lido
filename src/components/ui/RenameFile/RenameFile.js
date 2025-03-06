@@ -3,14 +3,22 @@
 import styles from './RenameFile.module.scss'
 
 const RenameFile = ({
-    id
+    id,
+    name = null
 }) => {
     return <div className={styles.RenameFile}>
+        {name ? <span style={{ 
+            color: "var(--fg-color-light)",
+            display: 'block',
+            margin: '-1rem 0 1rem 0'
+        }}>
+            {name}
+        </span> : ""}
         <label htmlFor='fileRename'>Name</label><br />
-        <input 
-            type='text' 
-            name='fileRename' 
-            id='fileRename' 
+        <input
+            type='text'
+            name='fileRename'
+            id='fileRename'
             onKeyDown={e => {
                 if (e.code === "Enter") {
                     e.target.closest('.messageParent').querySelector('.messageSubmit').click()

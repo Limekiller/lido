@@ -2,6 +2,7 @@ import { getSession } from "@/lib/auth/auth"
 import Providers from "@/lib/auth/providers"
 import { redirect } from 'next/navigation'
 
+import Search from "@/components/ui/Search/Search"
 import Navbar from "@/components/ui/Navbar/Navbar"
 
 const DashboardRootLayout = async ({ children }) => {
@@ -11,6 +12,7 @@ const DashboardRootLayout = async ({ children }) => {
         return <>
             <Providers session={session}>
                 <Navbar />
+                <Search />
                 <div className="pageContainer">
                     {children}
                 </div>
