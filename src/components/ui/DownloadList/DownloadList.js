@@ -43,25 +43,6 @@ const DownloadList = ({ downloads, torrents }) => {
         response = await response.json()
     }
 
-    const reconcileNonInteractibleDownloads = () => {
-        if (fetchStatus !== 200) return;
-
-        const downloads = currentDownloads.reduce((acc, item) => {
-            acc[item.id] = item
-            return acc;
-        }, {})
-
-        for (const id of Object.keys(nonInteractibleDownloads)) {
-            // Once the download we have in our canonical state does not match the saved object in the nonInt array,
-            // remove it from the nonInt array; the state has been updated.
-            if (!downloads[id] || downloads[id].state === nonInteractibleDownloads[id]) {
-                const newNonIntDls = { ...nonInteractibleDownloads }
-                delete newNonIntDls[id]
-                setNonInteractibleDownloads(newNonIntDls)
-            }
-        }
-    }
-
     const deleteDownload = async id => {
         let response = await fetch(`api/download/${id}`, {
             method: "DELETE"
@@ -72,6 +53,24 @@ const DownloadList = ({ downloads, torrents }) => {
     }
 
     useEffect(() => {
+        const reconcileNonInteractibleDownloads = () => {
+            if (fetchStatus !== 200) return;
+    
+            const downloads = currentDownloads.reduce((acc, item) => {
+                acc[item.id] = item
+                return acc;
+            }, {})
+    
+            for (const id of Object.keys(nonInteractibleDownloads)) {
+                // Once the download we have in our canonical state does not match the saved object in the nonInt array,
+                // remove it from the nonInt array; the state has been updated.
+                if (!downloads[id] || downloads[id].state === nonInteractibleDownloads[id]) {
+                    const newNonIntDls = { ...nonInteractibleDownloads }
+                    delete newNonIntDls[id]
+                    setNonInteractibleDownloads(newNonIntDls)
+                }
+            }
+        }
         reconcileNonInteractibleDownloads()
     }, [currentDownloads])
 
@@ -149,7 +148,7 @@ const DownloadList = ({ downloads, torrents }) => {
                 >
                     <div className={styles.topLine}>
                         <span>{download.name}</span>
-                        <button 
+                        <button
                             className='unstyled'
                             onClick={() => messageFunctions.addMessage({
                                 title: "Are you sure?",
@@ -160,18 +159,23 @@ const DownloadList = ({ downloads, torrents }) => {
                             <span className='material-icons'>delete</span>
                         </button>
                     </div>
-                    <div className={styles.fileList}>
-                        {download.File.map(file => {
-                            return <span key={file.id}>
-                                {file.name}
-                                <span className={styles.categoryTree}>
-                                    {file.categoryTree.map(treeItem => {
-                                        return <span key={treeItem.id}>{treeItem.name}</span>
-                                    })}
-                                </span>
-                            </span>
-                        })}
-                    </div>
+                    <table className={styles.fileList}>
+                        <tbody>
+                            {download.File.map(file => {
+                                return <tr key={file.id}>
+                                    <td>{file.name}</td>
+                                    {file.area === 'video' ?
+                                        <td className={styles.categoryTree}>
+                                            {file.categoryTree.map(treeItem => {
+                                                return <span key={treeItem.id}>{treeItem.name}</span>
+                                            })}
+                                        </td>
+                                        : ""
+                                    }
+                                </tr>
+                            })}
+                        </tbody>
+                    </table>
                 </div>
             })
             : <div className={styles.emptyAlert}>

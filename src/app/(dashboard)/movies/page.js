@@ -12,7 +12,7 @@ const movies = async ({
     const categories = await prisma.category.findMany(
         {
             where: {
-                parentId: categoryId
+                parentId: categoryId,
             }
         }
     )
@@ -20,7 +20,8 @@ const movies = async ({
     const files = await prisma.file.findMany(
         {
             where: {
-                categoryId: categoryId
+                categoryId: categoryId,
+                area: "video"
             }
         }
     )
@@ -34,16 +35,19 @@ const movies = async ({
                 <span>Nothing here!<br />Why not add some movies?</span>
             </div> :
             <>
-                <div className={styles.categories}>
-                    {categories.map(category => {
-                        return <Category
-                            key={category.id}
-                            name={category.name}
-                            link={`/${title.toLowerCase()}/${category.id}`}
-                            topCat={title.toLowerCase()}
-                        />
-                    })}
-                </div>
+                {categories.length > 0 ?
+                    <div className={styles.categories}>
+                        {categories.map(category => {
+                            return <Category
+                                key={category.id}
+                                name={category.name}
+                                link={`/${title.toLowerCase()}/${category.id}`}
+                                topCat={title.toLowerCase()}
+                            />
+                        })}
+                    </div>
+                    : ""
+                }
 
                 <div className={styles.files}>
                     {files.map(file => {

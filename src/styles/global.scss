@@ -157,6 +157,10 @@ button {
     }
 }
 
+.videoPlaying .addButton {
+    display: none;
+}
+
 .video-js {
     width: 100%;
     height: 100%;
@@ -232,6 +236,14 @@ button {
         -2px -2px 0 black;
 }
 
+.vjs-subs-caps-button {
+    display: none;
+}
+
+.captionsAvailable .vjs-subs-caps-button {
+    display: initial;
+}
+
 .vjs-subs-caps-button .vjs-menu {
     display: none !important;
 }
@@ -243,7 +255,6 @@ button {
 .partyMode .video-js.vjs-playing .vjs-tech {
     pointer-events: none;
 }
-
 
 .logo {
     margin: 0 auto;

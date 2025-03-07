@@ -65,11 +65,12 @@
             gap: 0.25rem;
 
             .categoryTree {
-                margin-left: 0.5rem;
+                padding-left: 0.5rem;
+                padding-bottom: 0.25rem;
                 color: var(--fg-color-light);
 
                 span:not(:last-child)::after {
-                    content: " > ";
+                    content: " / ";
                     margin: 0 0.25rem;
                 }
             }

@@ -116,6 +116,7 @@ const UserProfile = ({ data }) => {
                 <img
                     src={`/api/file/${data.image}` || 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'}
                     id='profileImgThumb'
+                    alt="User profile image"
                 />
             </button>
 

@@ -28,7 +28,8 @@ const getFileExtFromMime = mimetype => {
         'video/mp4': 'mp4',
         'video/x-matroska': 'mkv',
         'image/png': 'png',
-        'image/jpg': 'jpg'
+        'image/jpg': 'jpg',
+        'text/vtt': 'vtt'
     }
 
     return mimes[mimetype]

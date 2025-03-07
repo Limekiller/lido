@@ -17,7 +17,7 @@ const Account = ({
         onClick={setActiveAccount}
         style={{pointerEvents: clickable ? 'initial' : 'none'}}
     >
-        <img src={image ? `/api/file/${image}` : 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
+        <img alt="User profile image" src={image ? `/api/file/${image}` : 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
         <h2>{name}</h2>
     </button>
 }

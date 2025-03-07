@@ -24,7 +24,7 @@ const Navbar = () => {
         <div className={styles.bottomOptions}>
             {session.data.user.id !== -1 ?
                 <Link href='/profile' className={styles.profile}>
-                    <img src={session.data.user.image ? `/api/file/${session.data.user.image}` : 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
+                    <img alt="User profile image" src={session.data.user.image ? `/api/file/${session.data.user.image}` : 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
                 </Link>
                 : ""
             }

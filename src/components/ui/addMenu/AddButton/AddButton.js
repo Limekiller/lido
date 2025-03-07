@@ -43,7 +43,13 @@ const AddButton = () => {
         }
     }
 
-    const showMenu = () => {
+    const toggleMenu = () => {
+        if (isActive) {
+            messageFunctions.popMessage()
+            setIsActive(false)
+            return
+        }
+        
         setIsActive(true)
         messageFunctions.addMessage({
             title: "Menu",
@@ -79,11 +85,12 @@ const AddButton = () => {
 
     return <button
         className={`
+            addButton
             ${styles.AddButton} 
             ${isActive ? styles.active : ''}
             unstyled
         `}
-        onClick={showMenu}
+        onClick={toggleMenu}
     >
         <span className='material-icons'>add_circle</span>
     </button>

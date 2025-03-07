@@ -23,6 +23,7 @@ const VideoPlayer = ({
     const [playerEl, setPlayerEl] = useState(null)
     const [player, setPlayer] = useState(null)
     const [showOverlay, setShowOverlay] = useState(true)
+    const [captionsEnabled, setCaptionsEnabled] = useState(false)
 
     const onVideo = useCallback((el) => {
         setPlayerEl(el);
@@ -50,14 +51,17 @@ const VideoPlayer = ({
     // Initialize player
     useEffect(() => {
         if (playerEl == null) return;
-
         const newPlayer = videojs(playerEl, {})
-        newPlayer.on('pause', () => {
-            setShowOverlay(true)
+        newPlayer.ready(() => {
+            newPlayer.on('pause', () => {
+                setShowOverlay(true)
+            })
+            newPlayer.on('play', () => {
+                setShowOverlay(false)
+            })
+            newPlayer.addRemoteTextTrack({ src: `/api/moviedata/subtitles?id=${fileId}` }, false)
         })
-        newPlayer.on('play', () => {
-            setShowOverlay(false)
-        })
+
         setPlayer(newPlayer)
 
         return () => {
@@ -68,19 +72,42 @@ const VideoPlayer = ({
 
     // Initialize effects once player is mounted
     useEffect(() => {
+        const setSubtitles = () => {
+            player.textTracks()[0].mode = 'hidden'
+            if (!captionsEnabled) {
+                player.textTracks()[0].mode = 'showing'
+            }
+            setCaptionsEnabled(!captionsEnabled)
+        }
+
         document.addEventListener('keydown', keyDownHandler)
+        document.querySelector('.vjs-subs-caps-button')?.addEventListener('click', setSubtitles)
         return () => {
+            document.querySelector('.vjs-subs-caps-button')?.removeEventListener('click', setSubtitles)
             document.removeEventListener('keydown', keyDownHandler)
         }
-    }, [player])
+    }, [player, captionsEnabled])
+
+    // Add a class to the body if the vide player is open
+    useEffect(() => {
+        document.body.classList.add('videoPlaying')
+        return () => {
+            document.body.classList.remove('videoPlaying')
+        }
+    }, [])
 
 
-    return <div className={`${styles.VideoPlayer} ${showOverlay ? 'controlbarHidden' : ''}`}>
+    return <div className={`
+        ${styles.VideoPlayer} 
+        ${showOverlay ? 'controlbarHidden' : ''}
+        ${captionsEnabled ? 'captions' : ''}
+        ${player?.textTracks()[0]?.cues_.length > 0 ? 'captionsAvailable' : ''}
+    `}>
         <div data-vjs-player>
             <div className={`${styles.overlay} ${showOverlay && !player?.seeking() ? '' : styles.hidden}`}>
-                <img src={metadata.Poster} />
+                <img alt="Poster for media" src={metadata.Poster} />
                 <div className={styles.details}>
-                    <h1 style={{wordBreak: metadata.Title ? 'initial' : 'break-all'}}>
+                    <h1 style={{ wordBreak: metadata.Title ? 'initial' : 'break-all' }}>
                         {metadata.Title || name}
                     </h1>
                     <h2>{metadata.Year}</h2>
@@ -101,7 +128,7 @@ const VideoPlayer = ({
                             <span className="material-icons">arrow_back</span>
                         </button>
                         <div>
-                            <button 
+                            <button
                                 className={`unstyled ${styles.option}`}
                                 onClick={() => messageFunctions.addMessage({
                                     title: "Rename file",
@@ -111,7 +138,7 @@ const VideoPlayer = ({
                             >
                                 <span className="material-icons">border_color</span>
                             </button>
-                            <button 
+                            <button
                                 className={`unstyled ${styles.option}`}
                                 onClick={() => messageFunctions.addMessage({
                                     title: "Are you sure?",
@@ -121,7 +148,7 @@ const VideoPlayer = ({
                             >
                                 <span className="material-icons">delete</span>
                             </button>
-                            <button 
+                            <button
                                 className={`unstyled ${styles.option}`}
                             >
                                 <Link href={`/api/video?id=${fileId}&mime=${mimetype}&download=true`}>
@@ -150,7 +177,7 @@ const VideoPlayer = ({
                     src={`/api/video?id=${fileId}&mime=${mimetype}`}
                     // Even though we have the correct mimetype, it doesn't work?
                     // It only works if we just claim everything is mp4? Um, OKAAAYYY (Tim Robinson voice)
-                    type='video/mp4' 
+                    type='video/mp4'
                 />
             </video>
         </div>

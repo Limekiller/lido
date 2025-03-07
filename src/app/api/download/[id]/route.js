@@ -73,7 +73,7 @@ export const DELETE = verifySession(
             }
         })
         for (const file of files) {
-            fs.removeSync(`${process.env.STORAGE_PATH}/video/${file.id}.${file.name.split('.').slice(-1)[0]}`)
+            fs.removeSync(`${process.env.STORAGE_PATH}/${file.area}/${file.id}.${file.name.split('.').slice(-1)[0]}`)
         }
 
         // Remove the torrent, if it exists

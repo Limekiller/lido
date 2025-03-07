@@ -21,7 +21,6 @@ const AccountSelector = ({ accounts }) => {
             toastFunctions.createToast({message: "Invalid username or password", type: "alert"})
         }
     }, [])
-    
 
     return <div className={styles.accountSelector}>
         <button 

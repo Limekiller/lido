@@ -12,6 +12,7 @@
   "dependencies": {
     "@ctrl/transmission": "^7.2.0",
     "@prisma/client": "^6.4.1",
+    "adm-zip": "^0.5.16",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "file-type": "^20.4.0",

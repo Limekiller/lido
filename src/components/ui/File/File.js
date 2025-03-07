@@ -76,7 +76,7 @@ const File = ({ data, list }) => {
                 </span> : ""
                 }
             </div>
-            {metadata.Poster ? <img src={metadata.Poster} /> : ""}
+            {metadata.Poster ? <img alt="Poster for media" src={metadata.Poster} /> : ""}
         </div>
     </button>
 }

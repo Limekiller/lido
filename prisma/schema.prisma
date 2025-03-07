@@ -49,4 +49,7 @@ model File {
     metadata   String?   @default("{}")
     mimetype   String?
     area       String    @default("video")
+    parentId   String?
+    parent     File?     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+    children   File[]    @relation("ParentChild")
 }

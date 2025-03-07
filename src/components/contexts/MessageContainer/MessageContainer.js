@@ -34,7 +34,7 @@ const MessageContainer = ({ children }) => {
                 />
             })}
         </div>
-        <div inert={messages.length > 0}>
+        <div>
             {children}
         </div>
     </MessageContext>

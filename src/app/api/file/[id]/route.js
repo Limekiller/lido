@@ -14,6 +14,14 @@ export const deleteFile = async id => {
         }
     })
 
+    // Check if there are any children of this file, and if so, delete them
+    let children = await prisma.file.findMany({
+        where: {parentId: id}
+    })
+    for (const child of children) {
+        deleteFile(child.id)
+    }
+
     // Check if there are any other files that belong to this download
     // If not, delete the download
     let otherFiles = []
