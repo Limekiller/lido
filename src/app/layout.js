@@ -12,7 +12,7 @@ const RootLayout = async ({ children }) => {
 
     return <html lang="en">
         <head>
-            <script src="/js/spatialnav.js"></script>
+            <script src="/js/spatialnav.js" async></script>
         </head>
         <body>
             <SpatialNav />

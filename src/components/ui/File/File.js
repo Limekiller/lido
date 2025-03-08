@@ -4,6 +4,7 @@ import { useContext } from 'react'
 import MessageContext from '@/lib/contexts/MessageContext'
 import ContextMenuContext from '@/lib/contexts/ContextMenuContext'
 
+import MoveFile from '../MoveFile/MoveFile'
 import RenameFile from '@/components/ui/RenameFile/RenameFile'
 import { renameFile as submitRename } from '@/components/ui/RenameFile/RenameFile'
 
