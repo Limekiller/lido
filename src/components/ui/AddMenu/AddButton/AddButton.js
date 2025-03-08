@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import MessageContext from '@/lib/contexts/MessageContext'
 
@@ -11,7 +11,6 @@ const AddButton = () => {
     const pathname = usePathname()
 
     const messageFunctions = useContext(MessageContext)
-    const [isActive, setIsActive] = useState(false)
 
     const createCategory = async () => {
         let parentId = pathname.split('/').slice(-1)[0]
@@ -44,13 +43,13 @@ const AddButton = () => {
     }
 
     const toggleMenu = () => {
-        if (isActive) {
+        if (document.body.classList.contains('hasMessages')) {
             messageFunctions.popMessage()
-            setIsActive(false)
+            document.body.classList.remove('hasMessages')
             return
         }
-        
-        setIsActive(true)
+
+        document.body.classList.add('hasMessages')
         messageFunctions.addMessage({
             title: "Menu",
             body: <div className={styles.mainMenu}>
@@ -87,7 +86,6 @@ const AddButton = () => {
         className={`
             addButton
             ${styles.AddButton} 
-            ${isActive ? styles.active : ''}
             unstyled
         `}
         onClick={toggleMenu}

@@ -41,7 +41,8 @@
         object-fit: cover;
     }
 
-    &:hover {
+    &:hover, &:focus {
+        outline: none;
         box-shadow: 0px 0px 10px rgba(255, 166, 0, 0.692);
         transform: scale(1.01);
     }

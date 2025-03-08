@@ -8,7 +8,8 @@
     display: flex;
     gap: 0.5rem;
 
-    a:hover {
+    a:hover, a:focus {
+        outline: none;
         color: white;
     }
 

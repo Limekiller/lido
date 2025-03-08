@@ -9,7 +9,8 @@
     border-radius: 1rem;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 
-    &:hover {
+    &:hover, &:focus {
+        outline: none;
         box-shadow: 0px 0px 10px rgba(255, 166, 0, 0.692);
         transform: scale(0.95);
     }

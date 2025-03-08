@@ -64,3 +64,21 @@ export const PUT = verifySession(
         })
     }
 )
+
+export const GET = verifySession(
+    async (req, { params }) => {
+        const id = (await params).id
+
+        const category = await prisma.category.findUnique({
+            where: { id: parseInt(id) },
+            include: {
+                children: true
+            }
+        })
+
+        return Response.json({
+            result: "success",
+            data: category
+        })
+    }
+)

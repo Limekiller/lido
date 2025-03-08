@@ -8,7 +8,7 @@ import Link from 'next/link'
 const Navbar = () => {
     const session = useSession()
 
-    return <div className={styles.Navbar}>
+    return <div className={`${styles.Navbar} sidebar`}>
         <div className={styles.topOptions}>
             <Link href='/'><span className="material-icons">cottage</span></Link>
             <div className={styles.divider} />

@@ -38,30 +38,33 @@ const Category = ({ link, name }) => {
         }
     }
 
-    return <Link href={link}>
-        <div
-            className={styles.Category}
-            onContextMenu={e => {
-                contextMenuFunctions.showMenu(e, [
-                    {icon: "delete", label: "Delete", function: () => messageFunctions.addMessage({
+    return <Link
+        href={link}
+        className={styles.Category}
+        onContextMenu={e => {
+            contextMenuFunctions.showMenu(e, [
+                {
+                    icon: "delete", label: "Delete", function: () => messageFunctions.addMessage({
                         title: "Are you sure?",
                         body: "Are you sure you want to delete this category? Everything inside of it, including sub-categories and movies, will be deleted too.",
                         onSubmit: deleteCategory
-                    })},
-                    {icon: "border_color", label: "Rename", function: () => messageFunctions.addMessage({
+                    })
+                },
+                {
+                    icon: "border_color", label: "Rename", function: () => messageFunctions.addMessage({
                         title: "Rename category",
                         body: <>
                             <label htmlFor='catRename'>Name</label><br />
                             <input type='text' id='catRename' name='catRename' />
                         </>,
                         onSubmit: renameCategory
-                    })},
-                ])
-            }}
-        >
-            <span className='material-icons'>folder</span>
-            <span>{name}</span>
-        </div>
+                    })
+                },
+            ])
+        }}
+    >
+        <span className='material-icons'>folder</span>
+        <span>{name}</span>
     </Link>
 }
 

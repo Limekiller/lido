@@ -1,9 +1,4 @@
 @use 'variables.scss';
-// @use 'path.scss';
-// @use 'downloads.scss';
-// @use 'login.scss';
-// @use 'explore.scss';
-// @use 'imdbID.scss';
 
 html,
 body {
@@ -19,10 +14,6 @@ h1,
 h2,
 h3 {
     font-family: halyard-text, sans-serif;
-}
-
-h1 {
-    color: white;
 }
 
 a {
@@ -67,7 +58,9 @@ button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not
     font-size: 0.75rem;
 }
 
-button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled):not(.secondary):hover {
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled):not(.secondary):hover,
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled):not(.secondary):focus {
+    outline: none;
     box-shadow: 0px 0px 20px orange;
     transform: scale(0.95);
 }
@@ -89,7 +82,9 @@ button.secondary {
     background: var(--fg-color-light) !important;
 }
 
-button.secondary:hover {
+button.secondary:hover,
+button.secondary:focus {
+    outline: none;
     transform: scale(0.95);
 }
 
@@ -130,12 +125,6 @@ button {
     padding: 3rem 5rem 5rem 8rem;
 }
 
-.body {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: left;
-}
-
 .title {
     color: white;
     font-size: 90px;
@@ -144,19 +133,13 @@ button {
     line-height: 5rem;
 }
 
-.emptyIcon {
-    width: min-content;
-    margin: 0 auto;
-    text-align: center;
-    opacity: 0.4;
-    line-height: 25px;
-    margin-top: 150px;
 
-    img {
-        max-width: 160px;
-    }
+// Hack for setting the add button state
+.hasMessages .addButton {
+    transform: rotate(45deg);
 }
 
+// Hack for hiding the floating add button
 .videoPlaying .addButton {
     display: none;
 }
@@ -171,61 +154,73 @@ button {
     display: none;
 }
 
-#video.video-js .vjs-control-bar {
-    width: 80%;
-    bottom: 50px;
-    margin: 0 auto;
-    height: 50px;
-    padding: 0.5rem 1rem 0 1rem;
-    border-radius: 99rem;
-    backdrop-filter: blur(10px);
-    transform: scale(1.2);
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);;
+#video.video-js {
+
+    &.vjs-user-inactive {
+        .vjs-control-bar {
+            transform: scale(1.15);
+        }
+    }
+
+    .vjs-control-bar {
+        width: 80%;
+        bottom: 50px;
+        margin: 0 auto;
+        height: 50px;
+        padding: 0.5rem 1rem 0 1rem;
+        border-radius: 99rem;
+        backdrop-filter: blur(10px);
+        background: rgba(43, 51, 63, 0.63);
+        box-shadow: 0px 10px 40px #00000087;
+        transform: scale(1.2);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+        .vjs-progress-holder {
+            margin-top: -10px;
+        }
+    }
+
+    .vjs-control {
+        box-shadow: none;
+    }
+
+    .vjs-current-time {
+        display: block;
+    }
 }
 
 .controlbarHidden #video.video-js .vjs-control-bar {
     opacity: 0;
 }
 
-#video.video-js .vjs-control-bar .vjs-progress-holder {
-    margin-top: -10px;
-}
-
-#video.video-js .vjs-control {
-    box-shadow: none;
-}
-
-.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
-    transition: all 0.2s ease;
-}
-
-#video.video-js.vjs-user-inactive .vjs-control-bar {
-    transform: scale(1.15);
-}
 
 /* For TV control */
 .vjs-control-bar.tv-control {
     background: transparent;
     backdrop-filter: none;
-}
 
-.vjs-control-bar.tv-control .vjs-progress-holder {
-    height: 1.3em;
-    border-radius: 50px;
+    .vjs-volume-panel {
+        display: none;
+    }
+
+    .vjs-progress-holder {
+        height: 1.3em;
+        border-radius: 50px;
+    }
+
+    .vjs-play-progress::before {
+        display: none;
+    }
+
+    button {
+        display: none;
+    }
 }
 
 .vjs-control-bar.tv-control .vjs-load-progress,
 .vjs-control-bar.tv-control .vjs-load-progress *,
 .vjs-control-bar.tv-control .vjs-play-progress {
     border-radius: 50px;
-}
-
-.vjs-control-bar.tv-control .vjs-play-progress::before {
-    display: none;
-}
-
-.vjs-control-bar.tv-control button {
-    display: none;
 }
 
 .vjs-text-track-cue div {
@@ -254,62 +249,4 @@ button {
 
 .partyMode .video-js.vjs-playing .vjs-tech {
     pointer-events: none;
-}
-
-.logo {
-    margin: 0 auto;
-    display: block;
-    margin-bottom: 100px;
-    width: 200px;
-}
-
-.home {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.dashboardModules {
-    display: grid;
-    justify-content: space-between;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 175px));
-    grid-gap: 20px;
-}
-
-@media (max-width: 1000px) {
-    .pageContainer {
-        padding: 20px;
-        padding-top: 80px;
-    }
-
-    .title {
-        font-size: 60px;
-        margin-top: 40px;
-        line-height: 65px;
-    }
-}
-
-@media (max-width: 600px) {
-    .dashboardModules {
-        justify-content: center;
-    }
-}
-
-@keyframes loading {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(364deg);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
 }

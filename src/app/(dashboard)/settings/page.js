@@ -14,7 +14,13 @@ const settings = async () => {
 
     return <div>
         <h1 className="title">Settings</h1>
-        <div className="centeredContainer">
+        <div style={{
+            display: 'grid', 
+            gap: '1rem', 
+            gridTemplateRows: 'masonry', 
+            gridTemplateColumns: '50% 50%',
+            marginTop: '4rem'            
+        }}>
             <UserEditor users={accounts} />
             <FileEditor files={files} />
         </div>

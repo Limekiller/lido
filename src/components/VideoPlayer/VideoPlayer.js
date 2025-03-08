@@ -22,22 +22,12 @@ const VideoPlayer = ({
 
     const [playerEl, setPlayerEl] = useState(null)
     const [player, setPlayer] = useState(null)
-    const [showOverlay, setShowOverlay] = useState(true)
+    const [showOverlay, setShowOverlay] = useState(2)
     const [captionsEnabled, setCaptionsEnabled] = useState(false)
 
     const onVideo = useCallback((el) => {
         setPlayerEl(el);
     }, []);
-
-    const keyDownHandler = e => {
-        if (e.code === 'Space') {
-            if (player.paused()) {
-                player.play()
-            } else {
-                player.pause()
-            }
-        }
-    }
 
     const deleteFile = async () => {
         let response = await fetch(`/api/file/${fileId}`, {
@@ -48,24 +38,50 @@ const VideoPlayer = ({
         }
     }
 
+    const keyDownHandler = e => {
+        if (showOverlay && e.key !== ' ') return;
+        document.querySelector('.vjs-control-bar').classList.add('tv-control')
+        const currTime = player.currentTime()
+        switch (e.key) {
+            case " ":
+                e.preventDefault()
+                player.paused() ? player.play() : player.pause()
+                document.querySelector(`#${styles.playVideo}`).focus()
+                break;
+            case "ArrowLeft":
+                player.currentTime(currTime - 10)
+                break;
+            case "ArrowRight":
+                player.currentTime(currTime + 10)
+                break;
+            default:
+                break;
+        }
+    }
+
     // Initialize player
     useEffect(() => {
         if (playerEl == null) return;
         const newPlayer = videojs(playerEl, {})
         newPlayer.ready(() => {
+            setPlayer(newPlayer)
             newPlayer.on('pause', () => {
-                setShowOverlay(true)
+                setShowOverlay(1)
             })
             newPlayer.on('play', () => {
-                setShowOverlay(false)
+                // EXTREMELY hacky way to detect if this is the "first play" or not
+                // We want to bind the overlay to the play state in every case except for autoplaying at the beginning
+                // If "vjs-has-started" is the most recent class in the video's class list, this is the first time it started playing,
+                // so don't hide the overlay
+                const playerClassList = [...document.querySelector('#video').classList]
+                if (playerClassList.slice(-1)[0] !== 'vjs-has-started') {
+                    setShowOverlay(0)
+                }
             })
             newPlayer.addRemoteTextTrack({ src: `/api/moviedata/subtitles?id=${fileId}` }, false)
         })
 
-        setPlayer(newPlayer)
-
         return () => {
-            document.removeEventListener('keydown', keyDownHandler)
             newPlayer.dispose();
         }
     }, [playerEl])
@@ -80,29 +96,26 @@ const VideoPlayer = ({
             setCaptionsEnabled(!captionsEnabled)
         }
 
-        document.addEventListener('keydown', keyDownHandler)
+        SpatialNavigation.disable('add')
+        document.body.classList.add('videoPlaying')
         document.querySelector('.vjs-subs-caps-button')?.addEventListener('click', setSubtitles)
         return () => {
-            document.querySelector('.vjs-subs-caps-button')?.removeEventListener('click', setSubtitles)
-            document.removeEventListener('keydown', keyDownHandler)
+            SpatialNavigation.enable('add')
+            document.body.classList.remove('videoPlaying')
         }
     }, [player, captionsEnabled])
 
-    // Add a class to the body if the vide player is open
-    useEffect(() => {
-        document.body.classList.add('videoPlaying')
-        return () => {
-            document.body.classList.remove('videoPlaying')
-        }
-    }, [])
 
-
-    return <div className={`
-        ${styles.VideoPlayer} 
-        ${showOverlay ? 'controlbarHidden' : ''}
-        ${captionsEnabled ? 'captions' : ''}
-        ${player?.textTracks()[0]?.cues_.length > 0 ? 'captionsAvailable' : ''}
-    `}>
+    return <div
+        className={`
+            ${styles.VideoPlayer} 
+            ${showOverlay ? 'controlbarHidden' : ''}
+            ${captionsEnabled ? 'captions' : ''}
+            ${player?.textTracks()[0]?.cues_.length > 0 ? 'captionsAvailable' : ''}
+        `}
+        onKeyUp={keyDownHandler}
+        onMouseMove={() => document.querySelector('.vjs-control-bar').classList.remove('tv-control')}
+    >
         <div data-vjs-player>
             <div className={`${styles.overlay} ${showOverlay && !player?.seeking() ? '' : styles.hidden}`}>
                 <img alt="Poster for media" src={metadata.Poster} />
@@ -117,9 +130,14 @@ const VideoPlayer = ({
                         If this information is not correct, try renaming the file.<br />
                         ({name})
                     </p>
+
                     <div className={styles.options}>
-                        <button className='unstyled' onClick={() => player.play()}>
-                            <span id={styles.playVideo} className="material-icons">play_circle</span>
+                        <button 
+                            id={styles.playVideo} 
+                            className='unstyled' 
+                            onClick={() => {player.play(); setShowOverlay(0)}}
+                        >
+                            <span className="material-icons">play_circle</span>
                         </button>
                         <button
                             className={`secondary ${styles.back}`}
@@ -157,6 +175,7 @@ const VideoPlayer = ({
                             </button>
                         </div>
                     </div>
+
                 </div>
             </div>
 

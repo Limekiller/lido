@@ -13,9 +13,9 @@ const Message = ({ data }) => {
     }, [])
 
     return data.hideBoilerplate ? 
-        <div>{data.body}</div>
+        <div id={`message-${data.id}`}>{data.body}</div>
     :
-        <div className={`${styles.Message} messageParent`} data-messageid={data.id}>
+        <div className={`${styles.Message} messageParent`} id={`message-${data.id}`}>
             <h1>{data.title}</h1>
             <div style={{marginTop: '1rem'}}>{data.body}</div>
             <div className={styles.actions}>

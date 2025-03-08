@@ -6,9 +6,16 @@ import MessageContainer from '@/components/contexts/MessageContainer/MessageCont
 import ToastContainer from '@/components/contexts/ToastContainer/ToastContainer'
 import ContextMenuContainer from '@/components/contexts/ContextMenuContainer/ContextMenuContainer'
 
+import SpatialNav from '@/components/ui/SpatialNav/SpatialNav'
+
 const RootLayout = async ({ children }) => {
+
     return <html lang="en">
+        <head>
+            <script src="/js/spatialnav.js"></script>
+        </head>
         <body>
+            <SpatialNav />
             <ContextMenuContainer>
                 <ToastContainer>
                     <MessageContainer>
@@ -17,7 +24,7 @@ const RootLayout = async ({ children }) => {
                 </ToastContainer>
             </ContextMenuContainer>
         </body>
-    </html> 
+    </html>
 }
 
 export default RootLayout

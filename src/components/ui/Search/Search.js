@@ -12,7 +12,7 @@ const Search = () => {
         window.location.href = `/search?query=${query}`
     }
 
-    return <div className={styles.Search}>
+    return <div className={`${styles.Search} search`}>
         <div className={styles.searchContainer}>
             <span className={`${styles.searchIcon} material-icons`}>search</span>
             <input 
