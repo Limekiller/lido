@@ -25,7 +25,8 @@ const category = async ({ params, list = false }) => {
 
     const files = await prisma.file.findMany({
         where: {
-            categoryId: parseInt(category.slice(-1)[0])
+            categoryId: parseInt(category.slice(-1)[0]),
+            area: "video"
         },
         orderBy: {
             name: "asc"
