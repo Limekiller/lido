@@ -1,3 +1,13 @@
 .MoveFile {
-    
+    > span {
+        display: block;
+        color: var(--fg-color-light);
+        margin-bottom: 1rem;
+    }
+
+    .actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 0.5rem;
+    }
 }

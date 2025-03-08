@@ -42,7 +42,6 @@ const movies = async ({
                                 key={category.id}
                                 name={category.name}
                                 link={`/${title.toLowerCase()}/${category.id}`}
-                                topCat={title.toLowerCase()}
                             />
                         })}
                     </div>

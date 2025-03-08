@@ -18,7 +18,7 @@ const SpatialNav = () => {
             selector: `
                 .sidebar a, 
                 .sidebar button,
-                .search input,
+                #search,
                 .pageContainer a, 
                 .pageContainer input, 
                 .pageContainer button, 

@@ -5,14 +5,16 @@ import Link from 'next/link'
 
 import MessageContext from '@/lib/contexts/MessageContext'
 import ContextMenuContext from '@/lib/contexts/ContextMenuContext'
+
+import MoveFile from '../MoveFile/MoveFile'
 import styles from './Category.module.scss'
 
 const Category = ({ link, name }) => {
     const messageFunctions = useContext(MessageContext)
     const contextMenuFunctions = useContext(ContextMenuContext)
+    const id = link.split('/').slice(-1)[0]
 
     const deleteCategory = async () => {
-        const id = link.split('/').slice(-1)[0]
         let response = await fetch(`/api/category/${id}`, {
             method: "DELETE"
         })
@@ -22,7 +24,6 @@ const Category = ({ link, name }) => {
     }
 
     const renameCategory = async () => {
-        const id = link.split('/').slice(-1)[0]
         const name = document.querySelector('#catRename').value
         let response = await fetch(`/api/category/${id}`, {
             method: "PUT",
@@ -31,6 +32,22 @@ const Category = ({ link, name }) => {
             },
             body: JSON.stringify({
                 name: name
+            })
+        })
+        if (response.status === 200) {
+            window.location.reload()
+        }
+    }
+
+    const moveCategory = async () => {
+        const newId = document.querySelector('#activeCat').value
+        let response = await fetch(`/api/category/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                parentId: parseInt(newId)
             })
         })
         if (response.status === 200) {
@@ -60,6 +77,13 @@ const Category = ({ link, name }) => {
                         onSubmit: renameCategory
                     })
                 },
+                {
+                    icon: "drive_file_move_rtl", label: "Move", function: () => messageFunctions.addMessage({
+                        title: "Move file",
+                        body: <MoveFile type='category' id={id} />,
+                        onSubmit: moveCategory
+                    })
+                }
             ])
         }}
     >

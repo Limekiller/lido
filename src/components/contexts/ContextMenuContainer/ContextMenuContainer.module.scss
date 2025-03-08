@@ -17,9 +17,10 @@
         transition: background 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 1rem;
 
-        &:hover {
+        &:hover, &:focus {
+            outline: none;
             background: var(--bg-color);
         }
     }

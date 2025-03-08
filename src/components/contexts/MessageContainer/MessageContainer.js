@@ -11,6 +11,7 @@ const MessageContainer = ({ children }) => {
 
     const addMessage = data => {
         const id = Date.now()
+        SpatialNavigation.disable('contextMenu')
         SpatialNavigation.add(`message-${id}`, {
             selector: `
                 #message-${id} button,

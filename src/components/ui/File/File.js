@@ -24,6 +24,22 @@ const File = ({ data, list }) => {
         }
     }
 
+    const submitMove = async () => {
+        const newId = document.querySelector('#activeCat').value
+        let response = await fetch(`/api/category/${data.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                categoryId: newId
+            })
+        })
+        if (response.status === 200) {
+            window.location.reload()
+        }
+    }
+
     return <button
         className={`
             ${styles.File}
@@ -49,6 +65,13 @@ const File = ({ data, list }) => {
                         title: "Rename file",
                         body: <RenameFile id={data.id} name={data.name} />,
                         onSubmit: () => submitRename(data.id)
+                    })
+                },
+                {
+                    icon: "drive_file_move_rtl", label: "Move", function: () => messageFunctions.addMessage({
+                        title: "Move file",
+                        body: <MoveFile />,
+                        onSubmit: submitMove
                     })
                 }
             ])

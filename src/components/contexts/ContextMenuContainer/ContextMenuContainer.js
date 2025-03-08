@@ -22,9 +22,25 @@ const ContextMenuContainer = ({ children }) => {
         if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
             setIsDisplaying(false);
         }
-      }
+    }
 
     useEffect(() => {
+        SpatialNavigation.enable('contextMenu')
+        if (!document.body.classList.contains('hasMessages')) {
+            SpatialNavigation.enable('mainNav')
+        }
+        if (isDisplaying) {
+            document.querySelector('#contextMenu button').focus()
+            SpatialNavigation.disable('mainNav')
+        }
+    }, [isDisplaying])
+
+    useEffect(() => {
+        SpatialNavigation.add(`contextMenu`, {
+            selector: `#contextMenu button`,
+            defaultElement: `#contextMenu button`
+        })
+
         document.addEventListener('contextmenu', event => event.preventDefault())
         document.addEventListener("click", handleClickOutside, false)
         return () => {
@@ -38,14 +54,15 @@ const ContextMenuContainer = ({ children }) => {
         }}
     >
         {isDisplaying ?
-            <div 
+            <div
                 className={styles.ContextMenu}
-                style={{left: `${menuPos[0]}px`, top: `${menuPos[1]}px`}}
+                id='contextMenu'
+                style={{ left: `${menuPos[0]}px`, top: `${menuPos[1]}px` }}
                 ref={wrapperRef}
             >
                 {contextItems.map(item => {
-                    return <button 
-                        key={item.label} 
+                    return <button
+                        key={item.label}
                         className={`unstyled ${styles.item}`}
                         onClick={() => {
                             setIsDisplaying(false)

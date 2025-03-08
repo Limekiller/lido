@@ -33,6 +33,9 @@ const category = async ({ params, list = false }) => {
     })
 
     const createPath = () => {
+        if (!params.topCat) {
+            params.topCat = 'movies'
+        }
         let path = `/${params.topCat}/`
         for (let catId of category) {
             path += `${catId}/`

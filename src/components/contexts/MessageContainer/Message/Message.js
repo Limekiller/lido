@@ -18,10 +18,13 @@ const Message = ({ data }) => {
         <div className={`${styles.Message} messageParent`} id={`message-${data.id}`}>
             <h1>{data.title}</h1>
             <div style={{marginTop: '1rem'}}>{data.body}</div>
-            <div className={styles.actions}>
-                <button id={`submit-${data.id}`} className="messageSubmit" onClick={data.onSubmit}>Ok</button>
-                <button className="secondary" onClick={messageFunctions.popMessage}>Cancel</button>
-            </div>
+            {!data.hideButtons ?
+                <div className={styles.actions}>
+                    <button id={`submit-${data.id}`} className="messageSubmit" onClick={data.onSubmit}>Ok</button>
+                    <button className="secondary" onClick={messageFunctions.popMessage}>Cancel</button>
+                </div>
+                : ""
+            }
         </div>
 }
 
