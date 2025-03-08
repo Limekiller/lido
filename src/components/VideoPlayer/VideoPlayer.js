@@ -111,7 +111,7 @@ const VideoPlayer = ({
             ${styles.VideoPlayer} 
             ${showOverlay ? 'controlbarHidden' : ''}
             ${captionsEnabled ? 'captions' : ''}
-            ${player?.textTracks()[0]?.cues_.length > 0 ? 'captionsAvailable' : ''}
+            ${player?.textTracks()[0]?.cues_?.length > 0 ? 'captionsAvailable' : ''}
         `}
         onKeyUp={keyDownHandler}
         onMouseMove={() => document.querySelector('.vjs-control-bar').classList.remove('tv-control')}

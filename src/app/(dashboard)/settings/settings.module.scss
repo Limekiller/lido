@@ -1,0 +1,16 @@
+.Settings {
+    .settingsContainer {
+        display: grid;
+        gap: 1rem;
+        grid-template-rows: masonry;
+        grid-template-columns: 50% 50%;
+        margin-top: 4rem;
+    }
+
+    @media screen and (max-width: 1500px) {
+        .settingsContainer {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}

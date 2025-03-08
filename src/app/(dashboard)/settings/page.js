@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import UserEditor from '@/components/settings/UserEditor/UserEditor';
 import FileEditor from '@/components/settings/FileEditor/FileEditor';
 
+import styles from './settings.module.scss'
+
 const settings = async () => {
     const accounts = await prisma.user.findMany()
     const files = await prisma.file.findMany({
@@ -12,15 +14,9 @@ const settings = async () => {
         ]
     })
 
-    return <div>
+    return <div className={styles.Settings}>
         <h1 className="title">Settings</h1>
-        <div style={{
-            display: 'grid', 
-            gap: '1rem', 
-            gridTemplateRows: 'masonry', 
-            gridTemplateColumns: '50% 50%',
-            marginTop: '4rem'            
-        }}>
+        <div className={styles.settingsContainer}>
             <UserEditor users={accounts} />
             <FileEditor files={files} />
         </div>
