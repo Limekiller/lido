@@ -26,12 +26,13 @@ export default async function Home() {
         for (let item of recent) {
             const json = JSON.parse(item.File.metadata)
             fullRecentArray.push({
-                imdbID: json.imdbID,
-                title: json.Title,
-                poster: json.Poster,
+                id: json.id,
+                title: (json.title || json.name) || item.File.name,
+                poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${json.poster_path}`,
                 link: await libFunctions.getCategoryTreeLink(item.File.categoryId)
             })
         }
+        fullRecentArray = fullRecentArray.reverse()
 
         movies = getPopularMovies()
         shows = getPopularShows()

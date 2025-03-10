@@ -17,8 +17,6 @@ export const POST = verifySession(
             }, { status: 401 })   
         }
 
-        console.log(id)
-
         const createLog = await prisma.WatchLog.create({
             data: {
                 fileId: fileId,

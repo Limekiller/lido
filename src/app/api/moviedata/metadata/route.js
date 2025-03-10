@@ -1,5 +1,13 @@
 import { verifySession } from "@/lib/auth/lib"
 
+const getFirstResultByYear = (results, year) => {
+    for (const result of results) {
+        if (result.release_date && result.release_date.includes(year)) {
+            return result
+        }
+    }
+}
+
 export const getFileInfo = async fullTitle => {
     // Get filename if path is absolute
     fullTitle = decodeURI(fullTitle).split('/').slice(-1).join()
@@ -26,36 +34,36 @@ export const getFileInfo = async fullTitle => {
             season = episodeString.split('e')[0].slice(1, 3)
             episode = episodeString.split('e')[1]
         }
-    } else {
-        year = `&y=${year}`
     }
 
-    let OMDBLink = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${encodeURIComponent(title)}${year}`
-    if (season && episode) {
-        OMDBLink += `&season=${season}&episode=${episode}`
-    }
-    let data = await fetch(OMDBLink)
+    // Replace periods with spaces
+    title = title.replaceAll('.', ' ')
 
-    // if fetch times out, we'll just sent some empty JSON
-    if (data.status === 522) {
-        data = {}
-    } else {
-        data = await data.json()
-
-        // If it's an episode, let's also get data for the series it belongs to
-        if (data.Type == 'episode') {
-            // apparently sometimes the series ID that the API returns only starts with one "t" instead of two "t"s
-            // and in this case, making a request for the series causes a server error!!! Fun!!!!!!
-            // So we check if this is the case and, if it is, prepend another "t" to the ID to fix this.
-            let seriesId = data.seriesID
-            if (seriesId.slice(0, 2) !== 'tt') {
-                seriesId = `t${seriesId}`
-            }
-            
-            let seriesData = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${seriesId}`)
-            seriesData = await seriesData.json()
-            data.seriesData = seriesData
+    let TMDBLink = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(title)}`
+    let data = await fetch(TMDBLink, {
+        headers: {
+            'Authorization': `Bearer ${process.env.TMDB_API_KEY}`
         }
+    })
+
+    data = await data.json()
+
+    if (year) {
+        data = getFirstResultByYear(data.results, year)
+    } else {
+        data = data.results[0]
+    }
+
+    // If it's an episode, let's also get data for the specific episode
+    const seriesId = data.id
+    if (season && episode) {
+        let episodeData = await fetch(`https://api.themoviedb.org/3/tv/${seriesId}/season/${season}/episode/${episode}`, {
+            headers: {
+                'Authorization': `Bearer ${process.env.TMDB_API_KEY}`
+            }
+        })
+        episodeData = await episodeData.json()
+        data.episodeData = episodeData
     }
 
     return data

@@ -41,7 +41,6 @@ const VideoPlayer = ({
     }
 
     const recordToWatchLog = async () => {
-        console.log('gig')
         fetch(`/api/user/${session.data.user.id}/file/${fileId}`, {
             method: "POST"
         })
@@ -137,13 +136,13 @@ const VideoPlayer = ({
     >
         <div data-vjs-player>
             <div className={`${styles.overlay} ${showOverlay && !player?.seeking() ? '' : styles.hidden}`}>
-                <img alt="Poster for media" src={metadata.Poster} />
+                <img alt="Poster for media" src={metadata.poster_path} />
                 <div className={styles.details}>
-                    <h1 style={{ wordBreak: metadata.Title ? 'initial' : 'break-all' }}>
-                        {metadata.Title || name}
+                    <h1 style={{ wordBreak: (metadata.name || metadata.title) ? 'initial' : 'break-all' }}>
+                        {(metadata.name || metadata.title) || name}
                     </h1>
-                    <h2>{metadata.Year}</h2>
-                    <p>{metadata.Plot}</p>
+                    <h2>{metadata.release_date}</h2>
+                    <p>{metadata.overview}</p>
                     <p style={{ fontSize: '0.75rem', lineHeight: '1rem' }}>
                         Film information and subtitles are retrieved based on the filename.<br />
                         If this information is not correct, try renaming the file.<br />

@@ -89,7 +89,6 @@ const User = ({
                         name='img' 
                         accept="image/png, image/jpeg"
                         onChange={e => {
-                            console.log(e.target.files)
                             const file = e.target.files[0]
                             if (file) {
                                 e.target.parentElement.querySelector('img').src = URL.createObjectURL(file)

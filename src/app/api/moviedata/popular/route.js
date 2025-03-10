@@ -1,48 +1,41 @@
 import { verifySession } from '@/lib/auth/lib'
-import jsdom from 'jsdom'
 
 export const getPopularMovies = async () => {
-    let html = await fetch('https://www.imdb.com/chart/moviemeter/')
-    html = await html.text()
-    let dom = new jsdom.JSDOM(html)
-
-    let movieResults = [];
-    const movies = dom.window.document.querySelectorAll('a.ipc-title-link-wrapper')
-    for (let i = 0; i < 25; i++) {
-        const imdbID = movies[i].href.split('/')[2]
-        let fullData = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${imdbID}`)
-        fullData = await fullData.json()
-
-        movieResults.push({
-            title: movies[i].textContent, 
-            imdbID: imdbID, 
-            poster: fullData.Poster 
+    let result = await fetch('https://api.themoviedb.org/3/trending/movie/week', {
+        headers: {
+            "Authorization": `Bearer ${process.env.TMDB_API_KEY}`
+        }
+    })
+    result = await result.json()
+    let finalData = []
+    for (const movie of result.results) {
+        finalData.push({
+            id: movie.id,
+            title: movie.title || movie.name,
+            poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`,
         })
     }
 
-    return movieResults
+    return finalData
 }
 
 export const getPopularShows = async () => {
-    let html = await fetch('https://www.imdb.com/chart/tvmeter/')
-    html = await html.text()
-    let dom = new jsdom.JSDOM(html)
-
-    let tvResults = [];
-    const shows = dom.window.document.querySelectorAll('a.ipc-title-link-wrapper')
-    for (let i = 0; i < 25; i++) {
-        const imdbID = shows[i].href.split('/')[2]
-        let fullData = await fetch(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${imdbID}`)
-        fullData = await fullData.json()
-
-        tvResults.push({
-            title: shows[i].textContent, 
-            imdbID: imdbID, 
-            poster: fullData.Poster 
+    let result = await fetch('https://api.themoviedb.org/3/trending/tv/week', {
+        headers: {
+            "Authorization": `Bearer ${process.env.TMDB_API_KEY}`
+        }
+    })
+    result = await result.json()
+    let finalData = []
+    for (const movie of result.results) {
+        finalData.push({
+            id: movie.id,
+            title: movie.title || movie.name,
+            poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`,
         })
     }
 
-    return tvResults
+    return finalData
 }
 
 export const GET = verifySession(

@@ -12,11 +12,19 @@ const MovieList = ({ movies }) => {
     const [moviesState, setMoviesState] = useState([])
 
     useEffect(() => {
+        const filterDuplicateTitles = movies => {
+            return movies.filter((obj, index, self) => 
+                index === self.findIndex(o => (
+                    o.title === obj.title
+                ))
+            )
+        }
+
         Promise.resolve(movies).then(async () => {
             if (movies.value) {
-                setMoviesState(movies.value)
+                setMoviesState(filterDuplicateTitles(movies.value))
             } else {
-                setMoviesState(movies)
+                setMoviesState(filterDuplicateTitles(movies))
             }
         })
     }, [])
@@ -53,10 +61,10 @@ const MovieList = ({ movies }) => {
             moviesState.map(movie => {
                 return <SplideSlide
                     className={styles.movieItem}
-                    key={movie.imdbID}
+                    key={movie.title}
                 >
-                    <Link href={movie.link ? movie.link : `/browse/${movie.imdbID}`}>
-                        <img src={movie.poster !== 'N/A' ? movie.poster : "asdf"} />
+                    <Link href={movie.link ? movie.link : `/browse/${movie.id}`}>
+                        <img src={movie.poster || "asdf"} />
                         <h3>{movie.title}</h3>
                     </Link>
                 </SplideSlide>

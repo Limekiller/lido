@@ -46,3 +46,14 @@ export const verifySession = handler => {
         return handler(req, context)
     }
 }
+
+export const verifyUserResource = async (req, userId) => {
+    const secret = process.env.NEXTAUTH_SECRET
+    const session = await getSession()
+
+    if (req.headers.get('authorization') !== `Bearer ${secret}` && session?.user.id !== id && session?.user.admin !== true) {
+        return false
+    }
+    
+    return true
+}

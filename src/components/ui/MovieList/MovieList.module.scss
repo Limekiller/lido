@@ -16,6 +16,8 @@
         h3 {
             margin: 0.5rem 0;
             font-weight: normal;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         &:hover {

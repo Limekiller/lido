@@ -63,12 +63,12 @@ const File = ({ data, list }) => {
         className={`
             ${styles.File}
             ${styles.unstyled}
-            ${metadata.Poster ? styles.hasImg : ""}
+            ${metadata.poster_path ? styles.hasImg : ""}
             ${list || viewStatus.view === 'list' ? styles.list : ""}
             unstyled
         `}
         style={{
-            padding: metadata.Poster && !(list || viewStatus.view === 'list') ? 0 : '1rem',
+            padding: metadata.poster_path && !(list || viewStatus.view === 'list') ? 0 : '1rem',
             display: listState === null ? 'none' : 'block'
         }}
         onContextMenu={e => {
@@ -111,15 +111,21 @@ const File = ({ data, list }) => {
     >
         <div>
             <div>
-                <span className={styles.fileName}>{metadata.Title || data.name}</span>
-                {metadata.seriesData ? <span
+                <span 
+                    className={styles.fileName}
+                >
+                    {metadata.episodeData?.season_number ? metadata.episodeData.name : 
+                    (metadata.name || metadata.title) || data.name}
+                </span>
+                
+                {metadata.episodeData?.season_number ? <span
                     className={styles.seriesData}
                 >
-                    <br />{metadata.seriesData.Title} • S{metadata.Season.padStart(2, '0')}E{metadata.Episode.padStart(2, '0')}
+                    <br />{metadata.name} • S{metadata.episodeData.season_number}E{metadata.episodeData.episode_number}
                 </span> : ""
                 }
             </div>
-            {metadata.Poster ? <img alt="Poster for media" src={metadata.Poster} /> : ""}
+            {metadata.poster_path ? <img alt="Poster for media" src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path}`} /> : ""}
         </div>
     </button>
 }
