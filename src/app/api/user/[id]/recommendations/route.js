@@ -45,7 +45,7 @@ export const GET = verifySession(
             //         "Authorization": `Bearer ${process.env.TMDB_API_KEY}`
             //     }
             // })
-            let response = await fetch(`https://api.themoviedb.org/3/discover/${metadata.media_type}?with_genres=${metadata.genre_ids.join(',')}&with_origin_country=${metadata.origin_country[0]}`, {
+            let response = await fetch(`https://api.themoviedb.org/3/discover/${metadata.media_type}?with_genres=${metadata.genre_ids.join(',')}`, {
                 headers: {
                     "Authorization": `Bearer ${process.env.TMDB_API_KEY}`
                 }

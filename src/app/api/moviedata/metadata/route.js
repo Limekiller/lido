@@ -2,6 +2,7 @@ import { verifySession } from "@/lib/auth/lib"
 
 const getFirstResultByYear = (results, year) => {
     for (const result of results) {
+        if (result.media_type === 'person') continue
         if (result.release_date && result.release_date.includes(year)) {
             return result
         }
@@ -51,7 +52,11 @@ export const getFileInfo = async fullTitle => {
     if (year) {
         data = getFirstResultByYear(data.results, year)
     } else {
-        data = data.results[0]
+        for (const result of data.results) {
+            if (result.media_type === 'person') continue
+            data = result
+            break
+        }
     }
 
     // If it's an episode, let's also get data for the specific episode

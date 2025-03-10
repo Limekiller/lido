@@ -64,7 +64,7 @@ const MovieList = ({ movies }) => {
                     key={movie.title}
                 >
                     <Link href={movie.link ? movie.link : `/browse/${movie.id}`}>
-                        <img src={movie.poster || "asdf"} />
+                        <img src={movie.poster} />
                         <h3>{movie.title}</h3>
                     </Link>
                 </SplideSlide>
