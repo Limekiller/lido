@@ -4,11 +4,15 @@ import Category from '@/components/ui/Category/Category';
 import File from '@/components/ui/File/File';
 import styles from './category.module.scss'
 
-const category = async ({ params, list = false }) => {
+const category = async ({ params, list = null }) => {
     const { category } = await params
 
     if (!category) {
         return
+    }
+
+    if (!params.topCat) {
+        params.topCat = 'movies'
     }
 
     const currCategory = await prisma.category.findUnique({
@@ -34,9 +38,6 @@ const category = async ({ params, list = false }) => {
     })
 
     const createPath = () => {
-        if (!params.topCat) {
-            params.topCat = 'movies'
-        }
         let path = `/${params.topCat}/`
         for (let catId of category) {
             path += `${catId}/`

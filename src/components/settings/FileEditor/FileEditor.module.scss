@@ -21,8 +21,12 @@
             border-radius: 0.5rem;
             align-items: center;
 
-            a:hover {
-                text-decoration: underline;
+            a {
+                word-break: break-all;
+
+                &:hover {
+                    text-decoration: underline;
+                }
             }
 
             button {

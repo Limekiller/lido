@@ -2,6 +2,8 @@ import { getSession } from "@/lib/auth/auth"
 import Providers from "@/lib/auth/providers"
 import { redirect } from 'next/navigation'
 
+import MessageContainer from '@/components/contexts/MessageContainer/MessageContainer'
+
 import Search from "@/components/ui/Search/Search"
 import Navbar from "@/components/ui/Navbar/Navbar"
 
@@ -11,11 +13,13 @@ const DashboardRootLayout = async ({ children }) => {
     if (session) { 
         return <>
             <Providers session={session}>
-                <Navbar />
-                <Search />
-                <div className="pageContainer">
-                    {children}
-                </div>
+                <MessageContainer>
+                    <Navbar />
+                    <Search />
+                    <div className="pageContainer">
+                        {children}
+                    </div>
+                </MessageContainer>
             </Providers>
         </> 
     }

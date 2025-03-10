@@ -18,6 +18,7 @@ const UserEditor = ({ users }) => {
         const newUserData = {
             name: document.querySelector('#createUserName').value,
             email: document.querySelector('#createUserEmail').value,
+            password: document.querySelector('#createUserPassword').value,
             admin: document.querySelector('#createUserAdmin').checked
         }
 
@@ -41,6 +42,8 @@ const UserEditor = ({ users }) => {
         <input id='createUserName' type='text' name='name' /><br /><br />
         <label htmlFor='email'>Email</label><br />
         <input id='createUserEmail' type='text' name='email' /><br /><br />
+        <label htmlFor='password'>Initial Password</label><br />
+        <input id='createUserPassword' type='password' name='password' /><br /><br />
         <label htmlFor='admin'>Is admin?</label>
         <input id='createUserAdmin' type='checkbox' name='admin' />
     </form>

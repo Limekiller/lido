@@ -7,24 +7,23 @@ import styles from './movies.module.scss'
 const movies = async ({
     title = "Movies",
     categoryId = 0,
-    list = false
+    list = null
 }) => {
-    const categories = await prisma.category.findMany(
-        {
-            where: {
-                parentId: categoryId,
-            }
+    const categories = await prisma.category.findMany({
+        where: {
+            parentId: categoryId,
         }
-    )
+    })
 
-    const files = await prisma.file.findMany(
-        {
-            where: {
-                categoryId: categoryId,
-                area: "video"
-            }
+    const files = await prisma.file.findMany({
+        where: {
+            categoryId: categoryId,
+            area: "video"
+        },
+        orderBy: {
+            'name': 'asc'
         }
-    )
+    })
 
     return <div className={styles.Movies}>
         <h1 className='title'>{title}</h1>

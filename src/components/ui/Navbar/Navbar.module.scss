@@ -1,5 +1,5 @@
 .Navbar {
-    width: 105px;
+    width: 6rem;
     padding: 1rem;
     background: var(--menu-color);
     height: 100vh;
@@ -106,14 +106,19 @@
 
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 500px) {
+        height: 5rem;
+        padding: 0.25rem;
+
         .topOptions, .bottomOptions {
             gap: 1rem;
 
-            svg {
-                width: 2rem !important;
-                height: 2rem !important;
-                font-size: 2rem;
+            a {
+                display: flex;
+
+                span {
+                    font-size: 2.5rem;
+                }
             }
         }
     }

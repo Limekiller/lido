@@ -148,16 +148,21 @@ const DownloadList = ({ downloads, torrents }) => {
                 >
                     <div className={styles.topLine}>
                         <span>{download.name}</span>
-                        <button
-                            className='unstyled'
-                            onClick={() => messageFunctions.addMessage({
-                                title: "Are you sure?",
-                                body: "Are you sure you want to delete this download? All attached files will be deleted!",
-                                onSubmit: () => deleteDownload(download.id)
-                            })}
-                        >
-                            <span className='material-icons'>delete</span>
-                        </button>
+                        <div style={{display: 'flex', gap: '0.5rem'}}>
+                            <span style={{color: 'var(--fg-color-light', fontSize: '0.75rem'}}>
+                                {download.User ? download.User.name : 'Admin'}
+                            </span>
+                            <button
+                                className='unstyled'
+                                onClick={() => messageFunctions.addMessage({
+                                    title: "Are you sure?",
+                                    body: "Are you sure you want to delete this download? All attached files will be deleted!",
+                                    onSubmit: () => deleteDownload(download.id)
+                                })}
+                            >
+                                <span className='material-icons'>delete</span>
+                            </button>
+                        </div>
                     </div>
                     <table className={styles.fileList}>
                         <tbody>

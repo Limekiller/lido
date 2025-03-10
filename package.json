@@ -12,6 +12,7 @@
   "dependencies": {
     "@ctrl/transmission": "^7.2.0",
     "@prisma/client": "^6.4.1",
+    "@splidejs/react-splide": "^0.7.12",
     "adm-zip": "^0.5.16",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
@@ -21,6 +22,7 @@
     "jsdom": "^26.0.0",
     "next": "15.2.0",
     "next-auth": "^4.24.11",
+    "nextjs-toploader": "^3.7.15",
     "prisma": "^6.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

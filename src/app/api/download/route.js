@@ -1,5 +1,6 @@
 import { Transmission } from '@ctrl/transmission'
 import { prisma } from "@/lib/prisma"
+import { getSession } from "@/lib/auth/auth"
 import { verifySession } from '@/lib/auth/lib'
 
 import libFunctions from '@/lib/lib'
@@ -12,12 +13,14 @@ const client = new Transmission({
 export const POST = verifySession(
     async req => {
         const data = await req.json()
+        const session = await getSession()
 
         const newDownload = await prisma.download.create({
             data: {
                 name: data.name,
                 categoryId: parseInt(data.category),
-                state: 'downloading'
+                state: 'downloading',
+                userId: session.user.id === -1 ? null : session.user.id
             }
         })
 
@@ -59,7 +62,8 @@ export const GET = verifySession(
     async req => {
         let downloads = await prisma.download.findMany({
             include: {
-                File: true
+                File: true,
+                User: true
             }
         })
 

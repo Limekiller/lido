@@ -7,6 +7,7 @@ import styles from './MoveFile.module.scss'
 
 const MoveFile = ({
     type='file',
+    label="Move to ",
     id
 }) => {
 
@@ -25,7 +26,7 @@ const MoveFile = ({
 
     return <div className={styles.MoveFile}>
         <input type='hidden' id='activeCat' value={String(activeCat.id)} />
-        {activeCat ? <span>Move to: {activeCat.name}</span> : ""}
+        {activeCat ? <span>{label} {activeCat.name}</span> : ""}
         {Object.keys(categories).map(key => {
             const category = categories[key]
             return <div style={{ marginBottom: '0.5rem' }} key={categories[key]['id']} >

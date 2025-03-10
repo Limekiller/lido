@@ -18,7 +18,7 @@ const Search = () => {
             <input 
                 placeholder='Search movies...' 
                 type='text' 
-                id='#search' 
+                id='search' 
                 name='search'
                 defaultValue={query || ''}
                 onKeyDown={e => {

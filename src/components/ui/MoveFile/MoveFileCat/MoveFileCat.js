@@ -57,8 +57,6 @@ const MoveFileCat = ({
             {children.length > 0 ?
                 <div className={styles.childContainer} style={{display: expanded ? 'block' : 'none'}}>
                     {children.map(child => {
-                        console.log(id)
-                        console.log(child.id)
                         if (type === 'category' && child.id == id) {
                             return
                         }

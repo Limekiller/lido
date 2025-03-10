@@ -6,10 +6,7 @@ export const GET = verifySession(
         const searchParams = req.nextUrl.searchParams
         const query = searchParams.get('query')
 
-        let results
-        for (let provider of searchProviders) {
-            results = await provider(query)
-        }
+        const results = await searchProviders._1337x(query)
 
         return Response.json({
             result: "success",

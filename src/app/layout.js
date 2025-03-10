@@ -2,7 +2,8 @@ import '@/styles/global.scss'
 import '@/styles/external/material-icons.css'
 import '@/styles/external/typekit.css'
 
-import MessageContainer from '@/components/contexts/MessageContainer/MessageContainer'
+import NextTopLoader from 'nextjs-toploader';
+
 import ToastContainer from '@/components/contexts/ToastContainer/ToastContainer'
 import ContextMenuContainer from '@/components/contexts/ContextMenuContainer/ContextMenuContainer'
 
@@ -15,12 +16,16 @@ const RootLayout = async ({ children }) => {
             <script src="/js/spatialnav.js" async></script>
         </head>
         <body>
+            <NextTopLoader 
+                height={1}
+                color='linear-gradient(to right, orange, gold)'
+                crawlSpeed={500}
+                speed={300}
+            />
             <SpatialNav />
             <ContextMenuContainer>
                 <ToastContainer>
-                    <MessageContainer>
-                        {children}
-                    </MessageContainer>
+                    {children}
                 </ToastContainer>
             </ContextMenuContainer>
         </body>

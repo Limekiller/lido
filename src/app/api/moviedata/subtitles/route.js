@@ -59,7 +59,13 @@ const getSubsFromPodnapisi = async (id, name, categoryId, downloadId) => {
     `)
     searchResults = await searchResults.text()
     const dom = new jsdom.JSDOM(searchResults)
-    const downloadLink = dom.window.document.querySelector('.subtitle-entry a').href
+    const firstResult = dom.window.document.querySelector('.subtitle-entry a')
+
+    if (!firstResult) {
+        return false
+    }
+
+    const downloadLink = firstResult.href
 
     // Unfortunately it provides downloads as a .zip containing the subtitle files, so we have to download it,
     // write it to disk, extract the first entry (we're not going to bother trying to figure out the best one in the archive)

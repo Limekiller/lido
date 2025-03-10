@@ -3,6 +3,7 @@
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
+import { useSession } from 'next-auth/react'
 import { useEffect, useState, useCallback, useContext } from 'react'
 import Link from 'next/link'
 import MessageContext from '@/lib/contexts/MessageContext'
@@ -18,6 +19,7 @@ const VideoPlayer = ({
     metadata,
     name
 }) => {
+    const session = useSession()
     const messageFunctions = useContext(MessageContext)
 
     const [playerEl, setPlayerEl] = useState(null)
@@ -36,6 +38,13 @@ const VideoPlayer = ({
         if (response.status === 200) {
             window.location.reload()
         }
+    }
+
+    const recordToWatchLog = async () => {
+        console.log('gig')
+        fetch(`/api/user/${session.data.user.id}/file/${fileId}`, {
+            method: "POST"
+        })
     }
 
     const keyDownHandler = e => {
@@ -105,6 +114,16 @@ const VideoPlayer = ({
         }
     }, [player, captionsEnabled])
 
+    // Add a duplicate to the history so we can close the window when going back in the browser
+    // without also going back a page
+    useEffect(() => {
+        recordToWatchLog()
+        window.history.pushState(null, "", window.location.href)
+        window.addEventListener('popstate', messageFunctions.popMessage)
+        return () => {
+            window.removeEventListener('popstate', messageFunctions.popMessage)
+        }
+    }, [])
 
     return <div
         className={`
@@ -132,10 +151,10 @@ const VideoPlayer = ({
                     </p>
 
                     <div className={styles.options}>
-                        <button 
-                            id={styles.playVideo} 
-                            className='unstyled' 
-                            onClick={() => {player.play(); setShowOverlay(0)}}
+                        <button
+                            id={styles.playVideo}
+                            className='unstyled'
+                            onClick={() => { player.play(); setShowOverlay(0) }}
                         >
                             <span className="material-icons">play_circle</span>
                         </button>

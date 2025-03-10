@@ -1,8 +1,9 @@
 "use client"
 
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import MessageContext from '@/lib/contexts/MessageContext'
 import ContextMenuContext from '@/lib/contexts/ContextMenuContext'
+import ViewContext from '@/lib/contexts/ViewContext'
 
 import MoveFile from '../MoveFile/MoveFile'
 import RenameFile from '@/components/ui/RenameFile/RenameFile'
@@ -14,6 +15,9 @@ import styles from './File.module.scss'
 const File = ({ data, list }) => {
     const contextMenuFunctions = useContext(ContextMenuContext)
     const messageFunctions = useContext(MessageContext)
+    const viewStatus = useContext(ViewContext)
+
+    const [listState, setListState] = useState(null)
     const metadata = JSON.parse(data.metadata)
 
     const deleteFile = async () => {
@@ -24,16 +28,16 @@ const File = ({ data, list }) => {
             window.location.reload()
         }
     }
-
+    
     const submitMove = async () => {
         const newId = document.querySelector('#activeCat').value
-        let response = await fetch(`/api/category/${data.id}`, {
+        let response = await fetch(`/api/file/${data.id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                categoryId: newId
+                categoryId: parseInt(newId)
             })
         })
         if (response.status === 200) {
@@ -41,16 +45,31 @@ const File = ({ data, list }) => {
         }
     }
 
+    // In the TV category, we want to only allow list view
+    // So we allow you to pass in a "list" prop that can tell files to display as a list
+    // We ALSO control view state via the ViewContext, which overrides the prop (the context isn't available in the TV category)
+    // Here, we initialize the local state to null and then set it from the prop once the component mounts
+    // This way, we can check if the client has finished loading in the JSX or not by checking if the local state is null
+    // Otherwise, the files show up in poster view first before switching, which looks bad. This way they just don't show up at all at first.
+    useEffect(() => {
+        if (!list) {
+            setListState(false)
+        } else {
+            setListState(list)
+        }
+    }, [])
+
     return <button
         className={`
             ${styles.File}
             ${styles.unstyled}
             ${metadata.Poster ? styles.hasImg : ""}
-            ${list ? styles.list : ""}
+            ${list || viewStatus.view === 'list' ? styles.list : ""}
             unstyled
         `}
         style={{
-            padding: metadata.Poster && !list ? 0 : '1rem'
+            padding: metadata.Poster && !(list || viewStatus.view === 'list') ? 0 : '1rem',
+            display: listState === null ? 'none' : 'block'
         }}
         onContextMenu={e => {
             contextMenuFunctions.showMenu(e, [

@@ -9,6 +9,8 @@ const Downloads = async () => {
     const torrents = response.data.torrents
     const downloads = response.data.downloads
 
+    console.log(downloads)
+
     return <div>
         <h1 className="title">Downloads</h1>
         <DownloadList downloads={downloads} torrents={torrents} />

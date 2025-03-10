@@ -1,12 +1,16 @@
 @use 'variables.scss';
 
+html {
+    font-size: 18px;
+    outline-color: white;
+}
+
 html,
 body {
     background-color: var(--bg-color);
     padding: 0;
     margin: 0;
     font-family: halyard-display, sans-serif;
-    font-size: 18px;
     color: white;
 }
 
@@ -123,7 +127,8 @@ button {
 }
 
 .pageContainer {
-    padding: 3rem 5rem 5rem 8rem;
+    padding: 3rem 2rem 5rem 8rem;
+    overflow: hidden;
 }
 
 .title {
@@ -252,6 +257,14 @@ button {
     pointer-events: none;
 }
 
+.splide {
+    width: calc(100% + 2rem);
+}
+
+.splide__track {
+    padding-top: 0.5rem;
+}
+
 @media screen and (max-width: 1000px) {
     html {
         font-size: 12px;
@@ -264,10 +277,8 @@ button {
     span.material-icons {
         font-size: 1.5rem;
     }
-}
 
-@media screen and (max-width: 500px) {
-    html {
-        font-size: 9px;
+    button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled) {
+        font-size: 1.25rem;
     }
 }

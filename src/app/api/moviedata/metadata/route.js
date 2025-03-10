@@ -3,7 +3,6 @@ import { verifySession } from "@/lib/auth/lib"
 export const getFileInfo = async fullTitle => {
     // Get filename if path is absolute
     fullTitle = decodeURI(fullTitle).split('/').slice(-1).join()
-    console.log(fullTitle)
     // Remove file extension
     fullTitle = fullTitle.split('.')
     if (fullTitle.length > 1) {

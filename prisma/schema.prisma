@@ -11,12 +11,14 @@ datasource db {
 }
 
 model User {
-    id       String  @id @default(cuid())
-    name     String  @unique
+    id       String     @id @default(cuid())
+    name     String     @unique
     email    String
     password String
     admin    Boolean
     image    String?
+    Download Download[]
+    WatchLog WatchLog[]
 }
 
 model Category {
@@ -37,19 +39,31 @@ model Download {
     category       Category @relation(fields: [categoryId], references: [id])
     categoryId     Int      @default(0)
     File           File[]
+    userId         String?
+    User           User?    @relation(fields: [userId], references: [id])
 }
 
 model File {
-    id         String    @id @default(cuid())
+    id         String     @id @default(cuid())
     name       String
-    category   Category? @relation(fields: [categoryId], references: [id])
+    category   Category?  @relation(fields: [categoryId], references: [id])
     categoryId Int?
-    download   Download? @relation(fields: [downloadId], references: [id], onDelete: Cascade)
+    download   Download?  @relation(fields: [downloadId], references: [id], onDelete: Cascade)
     downloadId String?
-    metadata   String?   @default("{}")
+    metadata   String?    @default("{}")
     mimetype   String?
-    area       String    @default("video")
+    area       String     @default("video")
     parentId   String?
-    parent     File?     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
-    children   File[]    @relation("ParentChild")
+    parent     File?      @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+    children   File[]     @relation("ParentChild")
+    WatchLog   WatchLog[]
+}
+
+model WatchLog {
+    id         Int      @id @default(autoincrement())
+    userId     String?
+    User       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    fileId     String
+    File       File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+    created_at DateTime @default(now())
 }

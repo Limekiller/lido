@@ -9,7 +9,7 @@ const getCategoryTree = async catId => {
     let categoryList = [{id: catId, name: lastCategory.name}]
 
     while (true) {
-        if (!lastCategory.parentId) {
+        if (lastCategory.parentId === null) {
             break
         }
         lastCategory = await prisma.category.findUnique({
@@ -21,6 +21,22 @@ const getCategoryTree = async catId => {
     }
 
     return categoryList.reverse()
+}
+
+const getCategoryTreeLink = async catId => {
+    const tree = await getCategoryTree(catId)
+    let catArray = tree.map(item => item.id)
+    let path = ''
+    for (const pathItem of catArray) {
+        if (pathItem === 0) {
+            path += '/movies'
+        } else if (pathItem === 1) {
+            path += '/tv'
+        } else {
+            path += `/${pathItem}`
+        }
+    }   
+    return path
 }
 
 const getFileExtFromMime = mimetype => {
@@ -37,7 +53,8 @@ const getFileExtFromMime = mimetype => {
 
 const libFunctions = {
     getCategoryTree: getCategoryTree,
-    getFileExtFromMime: getFileExtFromMime
+    getFileExtFromMime: getFileExtFromMime,
+    getCategoryTreeLink: getCategoryTreeLink
 }
 
 export default libFunctions
