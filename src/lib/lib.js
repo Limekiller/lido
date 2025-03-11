@@ -45,6 +45,7 @@ const getFileExtFromMime = mimetype => {
         'video/x-matroska': 'mkv',
         'image/png': 'png',
         'image/jpg': 'jpg',
+        'image/jpeg': 'jpeg',
         'text/vtt': 'vtt'
     }
 
