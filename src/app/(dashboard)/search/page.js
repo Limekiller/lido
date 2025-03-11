@@ -4,16 +4,17 @@ import libFunctions from "@/lib/lib"
 
 import File from "@/components/ui/File/File"
 import styles from './search.module.scss'
+import Link from "next/link"
 
 const search = async ({ searchParams }) => {
-    let params = await searchParams
+    let { query } = await searchParams
 
     let matchingFiles = await prisma.file.findMany({
         where: {
             AND: [
                 {
                     name: {
-                        contains: params.query
+                        contains: query
                     }
                 },
                 { area: "video" }
@@ -40,8 +41,21 @@ const search = async ({ searchParams }) => {
         return acc
     }, {})
 
+    let tmdbResults = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, {
+        headers: {
+            "Authorization": `Bearer ${process.env.TMDB_API_KEY}`
+        }
+    })
+    tmdbResults = await tmdbResults.json()
+    tmdbResults = tmdbResults.results.filter(result => 
+        result.media_type !== 'person' && 
+        result.original_language === 'en' &&
+        result.popularity > 1 &&
+        result.poster_path
+    )
 
     return <div className={styles.Search}>
+        <h1 className="title">Search results</h1><br />
         {Object.keys(matchingFiles).map(async categoryId => {
             const category = matchingFiles[categoryId]
             const categoryTree = await libFunctions.getCategoryTree(categoryId)
@@ -70,6 +84,17 @@ const search = async ({ searchParams }) => {
             </div>
 
         })}
+        {Object.keys(matchingFiles).length && tmdbResults ? <><br /><h1>Other results</h1></> : ""}
+        <div className={styles.externalResults}>
+            {tmdbResults.map(result => {
+                return <Link key={result.id} href={`/browse/${result.media_type}/${result.id}`}>
+                    <File
+                        data={{ metadata: JSON.stringify(result) }}
+                        link={true}
+                    />
+                </Link>
+            })}
+        </div>
     </div>
 }
 

@@ -53,7 +53,7 @@ const MovieList = ({ movies }) => {
             perMove: 1,
             gap: '1rem',
             pagination: false,
-            fixedWidth: typeof window !== 'undefined' ? Math.floor(window.innerWidth / 7) : '0px',
+            fixedWidth: '12rem',
             arrows: false,
         }}
     >

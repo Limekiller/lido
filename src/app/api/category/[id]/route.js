@@ -4,7 +4,7 @@ import { verifySession } from "@/lib/auth/lib"
 import { deleteFile } from "../../file/[id]/route"
 
 const findRecursiveCats = async (catId, cats = []) => {
-    cats.push(catId)
+    cats.push(parseInt(catId))
 
     const categories = await prisma.category.findMany({
         where: {
@@ -24,7 +24,8 @@ export const DELETE = verifySession(
         const id = (await params).id
 
         let cats = await findRecursiveCats(id)
-        cats = cats.sort((a, b) => {return b - a})
+        cats = cats.sort((a, b) => {return parseInt(b) - parseInt(a)})
+        console.log(cats)
 
         for (const cat of cats) {
             const files = await prisma.file.findMany({
@@ -35,6 +36,7 @@ export const DELETE = verifySession(
             for (const file of files) {
                 await deleteFile(file.id)
             }
+            console.log(cat)
             await prisma.category.delete({
                 where: {
                     id: parseInt(cat)

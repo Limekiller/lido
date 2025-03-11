@@ -12,7 +12,7 @@ import { renameFile as submitRename } from '@/components/ui/RenameFile/RenameFil
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer'
 import styles from './File.module.scss'
 
-const File = ({ data, list }) => {
+const File = ({ data, list, link=false }) => {
     const contextMenuFunctions = useContext(ContextMenuContext)
     const messageFunctions = useContext(MessageContext)
     const viewStatus = useContext(ViewContext)
@@ -97,6 +97,7 @@ const File = ({ data, list }) => {
             ])
         }}
         onClick={() => {
+            if (link) return
             messageFunctions.addMessage({
                 title: data.name,
                 body: <VideoPlayer

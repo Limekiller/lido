@@ -136,7 +136,7 @@ const VideoPlayer = ({
     >
         <div data-vjs-player>
             <div className={`${styles.overlay} ${showOverlay && !player?.seeking() ? '' : styles.hidden}`}>
-                <img alt="Poster for media" src={metadata.poster_path} />
+                <img alt="Poster for media" src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path}`} />
                 <div className={styles.details}>
                     <h1 style={{ wordBreak: (metadata.name || metadata.title) ? 'initial' : 'break-all' }}>
                         {(metadata.name || metadata.title) || name}
@@ -208,9 +208,6 @@ const VideoPlayer = ({
                 crossOrigin="anonymous"
             >
                 <source
-                    // src={this.props.stream ? `/api/video?range=0&stream=1&magnet=${this.props.magnet}` 
-                    //     : '/api/video?range=0&path=' + encodeURIComponent(this.props.path)
-                    // } 
                     src={`/api/video?id=${fileId}&mime=${mimetype}`}
                     // Even though we have the correct mimetype, it doesn't work?
                     // It only works if we just claim everything is mp4? Um, OKAAAYYY (Tim Robinson voice)

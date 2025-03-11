@@ -28,19 +28,17 @@ model Category {
     parent   Category?  @relation("ParentChild", fields: [parentId], references: [id])
     children Category[] @relation("ParentChild")
     file     File[]
-    Download Download[]
 }
 
 model Download {
-    id             String   @id @default(cuid())
-    name           String
-    state          String
-    transmissionId String?
-    category       Category @relation(fields: [categoryId], references: [id])
-    categoryId     Int      @default(0)
-    File           File[]
-    userId         String?
-    User           User?    @relation(fields: [userId], references: [id])
+    id                  String  @id @default(cuid())
+    name                String
+    state               String
+    transmissionId      String?
+    destinationCategory Int     @default(0) // No relation, this is just needed to know where to put it once the download is finished
+    File                File[]
+    userId              String?
+    User                User?   @relation(fields: [userId], references: [id])
 }
 
 model File {

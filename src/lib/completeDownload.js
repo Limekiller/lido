@@ -148,7 +148,7 @@ const main = async () => {
 
     await filterFiles(downloadPath, mediaPath)
 
-    // fs.rmSync(downloadPath, {recursive: true, force: true})
+    fs.rmSync(downloadPath, {recursive: true, force: true})
 }
 
 main()

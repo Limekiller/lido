@@ -12,6 +12,8 @@ const SpatialNav = () => {
      * Helper function to initialize all the spatial nav stuff
      */
     const initSpatialNav = () => {
+        while (!SpatialNav) {continue}
+
         SpatialNavigation.init();
         SpatialNavigation.add(
             'mainNav', {

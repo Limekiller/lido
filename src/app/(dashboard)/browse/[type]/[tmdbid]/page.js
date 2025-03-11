@@ -29,7 +29,9 @@ const page = async ({ params }) => {
     }
     metadata = await metadata.json()
 
-    const torrents = searchProviders._1337x(metadata.name || metadata.title)
+    const year = (metadata.release_date || metadata.first_air_date).slice(0, 4)
+    const searchString = `${metadata.name || metadata.title}+${type === 'movie' ? year : 'complete'}`
+    const torrents = searchProviders._1337x(searchString)
 
     return <div className={styles.Browse}>
         <div
@@ -42,7 +44,7 @@ const page = async ({ params }) => {
                 <img src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path}`} />
                 <div style={{ width: '100%' }}>
                     <h1 className={`title ${styles.title}`}>{metadata.name || metadata.title}</h1>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <h2>{metadata.release_date || metadata.first_air_date}</h2>
                         <p>
                             {metadata.genres.map((genre, index) => {

@@ -13,6 +13,7 @@ export const getRecommendations = async userId => {
                 metadata: { not: "{}" }
             }
         },
+        orderBy: [{ id: 'desc' }],
         distinct: ['fileId'],
         take: 5
     })
