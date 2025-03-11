@@ -18,7 +18,7 @@ export const POST = verifySession(
         const newDownload = await prisma.download.create({
             data: {
                 name: data.name,
-                categoryId: parseInt(data.category),
+                destinationCategory: parseInt(data.category),
                 state: 'downloading',
                 userId: session.user.id === -1 ? null : session.user.id
             }
@@ -68,6 +68,8 @@ export const GET = verifySession(
         })
 
         for (const download of downloads) {
+            const downloadCategoryTree = await libFunctions.getCategoryTree(download.destinationCategory)
+            download.categoryTree = downloadCategoryTree
             for (const file of download.File) {
                 const categoryTree = await libFunctions.getCategoryTree(file.categoryId)
                 file.categoryTree = categoryTree

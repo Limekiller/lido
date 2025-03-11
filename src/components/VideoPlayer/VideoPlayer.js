@@ -56,6 +56,14 @@ const VideoPlayer = ({
                 player.paused() ? player.play() : player.pause()
                 document.querySelector(`#${styles.playVideo}`).focus()
                 break;
+            case "Enter":
+                e.preventDefault()
+                const playerClassList = [...document.querySelector('#video').classList]
+                const hasJustStarted = playerClassList.slice(-1)[0] !== 'vjs-has-started'
+                if (player.paused() && !hasJustStarted) break
+                player.pause()
+                document.querySelector(`#${styles.playVideo}`).focus()
+                break;
             case "ArrowLeft":
                 player.currentTime(currTime - 10)
                 break;
@@ -131,7 +139,7 @@ const VideoPlayer = ({
             ${captionsEnabled ? 'captions' : ''}
             ${player?.textTracks()[0]?.cues_?.length > 0 ? 'captionsAvailable' : ''}
         `}
-        onKeyUp={keyDownHandler}
+        onKeyDown={keyDownHandler}
         onMouseMove={() => document.querySelector('.vjs-control-bar').classList.remove('tv-control')}
     >
         <div data-vjs-player>

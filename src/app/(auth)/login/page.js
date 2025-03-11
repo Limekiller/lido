@@ -13,7 +13,7 @@ const login = async ({ csrfToken }) => {
 
     const accounts = await prisma.user.findMany()
 
-    return <div>
+    return <div className='login'>
         <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" async></script>
 
         <PosterBg />

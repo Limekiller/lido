@@ -18,6 +18,9 @@ const SpatialNav = () => {
         SpatialNavigation.add(
             'mainNav', {
             selector: `
+                .login a,
+                .login button,
+                .login input,
                 .sidebar a, 
                 .sidebar button,
                 #search,

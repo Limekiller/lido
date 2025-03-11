@@ -84,7 +84,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
                     },
                     body: JSON.stringify({
                         name: file.split('/').slice(-1)[0],
-                        categoryId: download.categoryId,
+                        categoryId: download.destinationCategory,
                         downloadId: download.id,
                         mimetype: fileData.mime,
                         area: "video"
@@ -109,7 +109,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
                             },
                             body: JSON.stringify({
                                 name: `${newFile.name}.vtt`,
-                                categoryId: download.categoryId,
+                                categoryId: download.destinationCategory,
                                 downloadId: download.id,
                                 mimetype: 'text/vtt',
                                 area: "subtitles",

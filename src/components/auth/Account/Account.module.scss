@@ -4,7 +4,8 @@
     border-radius: 1rem;
     transition: background 0.1s ease;
 
-    &:hover {
+    &:hover, &:focus {
+        outline: none;
         cursor: pointer;
         
         img {

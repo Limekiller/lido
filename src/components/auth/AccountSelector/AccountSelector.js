@@ -17,10 +17,17 @@ const AccountSelector = ({ accounts }) => {
     const [password, setPassword] = useState('')
 
     useEffect(() => {
+        document.querySelector('.accounts button').focus()
         if (searchParams.get('error') && searchParams.get('error') === 'CredentialsSignin') {
             toastFunctions.createToast({message: "Invalid username or password", type: "alert"})
         }
     }, [])
+
+    useEffect(() => {
+        document.querySelector('.accounts button')?.focus()
+        document.querySelector('input')?.focus()
+    }, [activeAccount])
+    
 
     return <div className={styles.accountSelector}>
         <button 
@@ -32,12 +39,7 @@ const AccountSelector = ({ accounts }) => {
         </button>
 
         {!activeAccount ? 
-            <div className={styles.accounts}>
-                {/* <Account
-                    name='Admin'
-                    id='-1'
-                    setActiveAccount={() => setActiveAccount({name: 'Admin', id: -1})}
-                /> */}
+            <div className={`${styles.accounts} accounts`}>
                 {accounts.map(account => {
                     return <Account 
                         key={account.id} 

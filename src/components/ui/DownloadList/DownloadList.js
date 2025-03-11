@@ -127,6 +127,9 @@ const DownloadList = ({ downloads, torrents }) => {
                             </button>
                         </div>
                     </div>
+                    <span className={styles.destinationCategory}>
+                        {download.categoryTree.map((folder, index) => `${folder.name} ${index < download.categoryTree.length - 1 ? ' / ' : ''}`)}
+                    </span>
                 </div>
             })
             : <div className={styles.emptyAlert}>

@@ -39,7 +39,7 @@ const MovieList = ({ movies }) => {
         }
 
         if (slider.current.splide) {
-            slider.current.splide.root.addEventListener('keyup', handleKey)
+            slider.current.splide.root.addEventListener('keydown', handleKey)
             slider.current.splide.refresh();
         }
 

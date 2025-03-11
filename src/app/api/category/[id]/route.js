@@ -25,7 +25,6 @@ export const DELETE = verifySession(
 
         let cats = await findRecursiveCats(id)
         cats = cats.sort((a, b) => {return parseInt(b) - parseInt(a)})
-        console.log(cats)
 
         for (const cat of cats) {
             const files = await prisma.file.findMany({
@@ -36,7 +35,6 @@ export const DELETE = verifySession(
             for (const file of files) {
                 await deleteFile(file.id)
             }
-            console.log(cat)
             await prisma.category.delete({
                 where: {
                     id: parseInt(cat)

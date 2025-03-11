@@ -43,8 +43,6 @@ export const PUT = verifySession(
                 }
             })
 
-            console.log(profileImgFile)
-
             const bytes = await profileImg.arrayBuffer();
             const buffer = Buffer.from(bytes);
             fs.writeFileSync(`${process.env.STORAGE_PATH}/profile/${profileImgFile.id}.${profileImg.type.split('/')[1]}`, buffer)
