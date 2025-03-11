@@ -24,7 +24,7 @@ const VideoPlayer = ({
 
     const [playerEl, setPlayerEl] = useState(null)
     const [player, setPlayer] = useState(null)
-    const [showOverlay, setShowOverlay] = useState(2)
+    const [showOverlay, setShowOverlay] = useState(true)
     const [captionsEnabled, setCaptionsEnabled] = useState(false)
 
     const onVideo = useCallback((el) => {
@@ -47,28 +47,31 @@ const VideoPlayer = ({
     }
 
     const keyDownHandler = e => {
-        if (showOverlay && e.key !== ' ') return;
+        if (document.querySelector('.videoPlayer').classList.contains('showingOverlay') && e.code !== 'Space') return
+
+        document.player.reportUserActivity()
         document.querySelector('.vjs-control-bar').classList.add('tv-control')
-        const currTime = player.currentTime()
-        switch (e.key) {
-            case " ":
+        const currTime = document.player.currentTime()
+
+        switch (e.code) {
+            case "Space":
                 e.preventDefault()
-                player.paused() ? player.play() : player.pause()
+                document.player.paused() ? document.player.play() : document.player.pause()
                 document.querySelector(`#${styles.playVideo}`).focus()
                 break;
             case "Enter":
                 e.preventDefault()
                 const playerClassList = [...document.querySelector('#video').classList]
                 const hasJustStarted = playerClassList.slice(-1)[0] !== 'vjs-has-started'
-                if (player.paused() && !hasJustStarted) break
-                player.pause()
+                if (document.player.paused() && !hasJustStarted) break
+                document.player.pause()
                 document.querySelector(`#${styles.playVideo}`).focus()
                 break;
             case "ArrowLeft":
-                player.currentTime(currTime - 10)
+                document.player.currentTime(currTime - 10)
                 break;
             case "ArrowRight":
-                player.currentTime(currTime + 10)
+                document.player.currentTime(currTime + 10)
                 break;
             default:
                 break;
@@ -80,9 +83,7 @@ const VideoPlayer = ({
         if (playerEl == null) return;
         const newPlayer = videojs(playerEl, {})
         newPlayer.ready(() => {
-            setPlayer(newPlayer)
             newPlayer.on('pause', () => {
-                document.querySelector(styles.playVideo).focus()
                 setShowOverlay(1)
             })
             newPlayer.on('play', () => {
@@ -92,11 +93,15 @@ const VideoPlayer = ({
                 // so don't hide the overlay
                 const playerClassList = [...document.querySelector('#video').classList]
                 if (playerClassList.slice(-1)[0] !== 'vjs-has-started') {
-                    document.querySelector('#video').focus()
                     setShowOverlay(0)
                 }
             })
             newPlayer.addRemoteTextTrack({ src: `/api/moviedata/subtitles?id=${fileId}` }, false)
+
+            // Make the player available to both react and the DOM
+            setPlayer(newPlayer)
+            document.player = newPlayer
+            document.player.play()
         })
 
         return () => {
@@ -123,13 +128,19 @@ const VideoPlayer = ({
         }
     }, [player, captionsEnabled])
 
+    useEffect(() => {
+        if (showOverlay) document.querySelector(`#${styles.playVideo}`)?.focus()
+    }, [showOverlay])
+    
     // Add a duplicate to the history so we can close the window when going back in the browser
     // without also going back a page
     useEffect(() => {
         recordToWatchLog()
+        document.addEventListener('keydown', keyDownHandler)
         window.history.pushState(null, "", window.location.href)
         window.addEventListener('popstate', messageFunctions.popMessage)
         return () => {
+            document.removeEventListener('keydown', keyDownHandler)
             window.removeEventListener('popstate', messageFunctions.popMessage)
         }
     }, [])
@@ -137,15 +148,18 @@ const VideoPlayer = ({
     return <div
         className={`
             ${styles.VideoPlayer} 
-            ${showOverlay ? 'controlbarHidden' : ''}
+            ${showOverlay ? 'controlbarHidden showingOverlay' : ''}
             ${captionsEnabled ? 'captions' : ''}
             ${player?.textTracks()[0]?.cues_?.length > 0 ? 'captionsAvailable' : ''}
+            videoPlayer
         `}
-        onKeyDown={keyDownHandler}
         onMouseMove={() => document.querySelector('.vjs-control-bar').classList.remove('tv-control')}
     >
         <div data-vjs-player>
-            <div className={`${styles.overlay} ${showOverlay && !player?.seeking() ? '' : styles.hidden}`}>
+            <div 
+                className={`${styles.overlay} ${showOverlay && !player?.seeking() ? '' : styles.hidden}`}
+                inert={showOverlay ? false : true}
+            >
                 <img alt="Poster for media" src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path}`} />
                 <div className={styles.details}>
                     <h1 style={{ wordBreak: (metadata.name || metadata.title) ? 'initial' : 'break-all' }}>
