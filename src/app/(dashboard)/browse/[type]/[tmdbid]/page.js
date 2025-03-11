@@ -17,22 +17,13 @@ const getUSRating = data => {
 }
 
 const page = async ({ params }) => {
-    const { tmdbid } = await params
+    const { type, tmdbid } = await params
 
-    let type = 'movie'
-    let metadata = await fetch(`https://api.themoviedb.org/3/movie/${tmdbid}?append_to_response=release_dates`, {
+    let metadata = await fetch(`https://api.themoviedb.org/3/${type}/${tmdbid}?append_to_response=release_dates`, {
         headers: {
             'Authorization': `Bearer ${process.env.TMDB_API_KEY}`
         }
     })
-    if (metadata.status !== 200) {
-        type = 'tv'
-        metadata = await fetch(`https://api.themoviedb.org/3/tv/${tmdbid}?append_to_response=release_dates`, {
-            headers: {
-                'Authorization': `Bearer ${process.env.TMDB_API_KEY}`
-            }
-        })
-    }
     if (metadata.status !== 200) {
         redirect('/')
     }
@@ -42,7 +33,7 @@ const page = async ({ params }) => {
 
     return <div className={styles.Browse}>
         <div
-            className={styles.header}
+            className={`${styles.header} ${type === 'tv' ? styles.tv : ""}`}
             style={{
                 backgroundImage: `url(https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path})`,
             }}
@@ -59,15 +50,16 @@ const page = async ({ params }) => {
                             })}
                         </p>
                     </div>
-                    {type === 'movie' ?
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                            <span className={styles.runtime}>{metadata.runtime} min.</span>
-                            <span className={styles.rated}>{getUSRating(metadata)}</span>
-                        </div>
-                        : ""
-                    }
-                    <br />
-                    <p style={{ width: '66%' }}>{metadata.overview}</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <p style={{ width: '66%' }}>{metadata.overview}</p>
+                        {type === 'movie' ?
+                            <div style={{ display: 'flex', gap: '1rem', height: 'min-content' }}>
+                                <span className={styles.runtime}>{metadata.runtime} min.</span>
+                                <span className={styles.rated}>{getUSRating(metadata)}</span>
+                            </div>
+                            : ""
+                        }
+                    </div>
                 </div>
             </div>
         </div>

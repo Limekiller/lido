@@ -63,9 +63,10 @@ const MovieList = ({ movies }) => {
                     className={styles.movieItem}
                     key={movie.title}
                 >
-                    <Link href={movie.link ? movie.link : `/browse/${movie.id}`}>
+                    <Link href={movie.link ? movie.link : `/browse/${movie.type}/${movie.id}`}>
                         <img src={movie.poster} />
                         <h3>{movie.title}</h3>
+                        {movie.addendum ? <p className={styles.addendum}>{movie.addendum}</p> : ""}
                     </Link>
                 </SplideSlide>
             })

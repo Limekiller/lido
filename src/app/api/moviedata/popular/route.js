@@ -12,6 +12,7 @@ export const getPopularMovies = async () => {
         finalData.push({
             id: movie.id,
             title: movie.title || movie.name,
+            type: "movie",
             poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`,
         })
     }
@@ -31,6 +32,7 @@ export const getPopularShows = async () => {
         finalData.push({
             id: movie.id,
             title: movie.title || movie.name,
+            type: "tv",
             poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`,
         })
     }

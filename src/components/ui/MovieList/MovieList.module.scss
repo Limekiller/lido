@@ -14,10 +14,17 @@
         }
 
         h3 {
-            margin: 0.5rem 0;
+            margin: 0.5rem 0 0.15rem 0;
             font-weight: normal;
             text-overflow: ellipsis;
             overflow: hidden;
+        }
+
+        .addendum {
+            font-size: 0.9rem;
+            color: var(--fg-color-light);
+            line-height: 0.9rem;
+            margin: 0.25rem 0 0 0;
         }
 
         &:hover {
