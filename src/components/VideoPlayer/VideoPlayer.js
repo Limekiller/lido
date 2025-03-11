@@ -82,6 +82,7 @@ const VideoPlayer = ({
         newPlayer.ready(() => {
             setPlayer(newPlayer)
             newPlayer.on('pause', () => {
+                document.querySelector(styles.playVideo).focus()
                 setShowOverlay(1)
             })
             newPlayer.on('play', () => {
@@ -91,6 +92,7 @@ const VideoPlayer = ({
                 // so don't hide the overlay
                 const playerClassList = [...document.querySelector('#video').classList]
                 if (playerClassList.slice(-1)[0] !== 'vjs-has-started') {
+                    document.querySelector('#video').focus()
                     setShowOverlay(0)
                 }
             })

@@ -29,20 +29,18 @@ const MovieList = ({ movies }) => {
         })
     }, [])
 
-    useEffect(() => {
-        const handleKey = e => {
-            if (e.key === 'ArrowRight') {
-                slider.current.splide.go('>')
-            } else if (e.key === 'ArrowLeft') {
-                slider.current.splide.go('<')
-            }
+    const handleKey = e => {
+        if (e.key === 'ArrowRight') {
+            slider.current.splide.go('>')
+        } else if (e.key === 'ArrowLeft') {
+            slider.current.splide.go('<')
         }
+    }
 
+    useEffect(() => {
         if (slider.current.splide) {
-            slider.current.splide.root.addEventListener('keydown', handleKey)
             slider.current.splide.refresh();
         }
-
     }, [slider])
 
     return <Splide
@@ -62,6 +60,7 @@ const MovieList = ({ movies }) => {
                 return <SplideSlide
                     className={styles.movieItem}
                     key={movie.title}
+                    onKeyDown={handleKey}
                 >
                     <Link href={movie.link ? movie.link : `/browse/${movie.type}/${movie.id}`}>
                         <img src={movie.poster} />

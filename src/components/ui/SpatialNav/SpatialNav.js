@@ -44,7 +44,7 @@ const SpatialNav = () => {
             }
             if (document.activeElement.closest('.pageContainer')) {
                 const position = document.activeElement.getBoundingClientRect()
-                window.scrollTo({ left: position.left, top: position.top + window.scrollY - (window.innerHeight / 2), behavior: 'smooth' })
+                window.scrollTo({ left: position.left, top: position.top + window.scrollY - (window.innerHeight / 1.5), behavior: 'smooth' })
             }
         }, true);
     }
