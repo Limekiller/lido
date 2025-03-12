@@ -10,6 +10,7 @@ import { renameFile as submitRename } from '@/components/ui/RenameFile/RenameFil
 import styles from './Overlay.module.scss'
 
 const Overlay = ({
+    player,
     show,
     metadata,
     fileId,
@@ -49,7 +50,7 @@ const Overlay = ({
                 <button
                     id='playVideo'
                     className={`unstyled ${styles.playVideo}`}
-                    onClick={() => { document.player.play(); setShowOverlay(0) }}
+                    onClick={() => { player.current.play(); setShowOverlay(0) }}
                 >
                     <span className="material-icons">play_circle</span>
                 </button>

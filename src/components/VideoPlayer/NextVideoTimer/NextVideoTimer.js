@@ -7,6 +7,7 @@ import VideoPlayer from '../VideoPlayer'
 import styles from './NextVideoTimer.module.scss'
 
 const NextVideoTimer = ({
+    player,
     nextEpisode
 }) => {
     const messageFunctions = useContext(MessageContext)
@@ -16,9 +17,9 @@ const NextVideoTimer = ({
     useEffect(() => {
         const timeLeftChecker = e => {
             if (!nextEpisode) return
-            if (document.player.duration() - document.player.currentTime() > 40) return
+            if (player.current.duration() - player.current.currentTime() > 40) return
             setShow(true)
-            if (document.player.duration() - document.player.currentTime() > 30) return
+            if (player.current.duration() - player.current.currentTime() > 30) return
             clearInterval(nextEpChecker)
             messageFunctions.replaceMessage({
                 title: nextEpisode.name,
