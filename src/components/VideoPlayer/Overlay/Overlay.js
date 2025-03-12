@@ -38,7 +38,7 @@ const Overlay = ({
             <h1 style={{ wordBreak: (metadata.name || metadata.title) ? 'initial' : 'break-all' }}>
                 {(metadata.name || metadata.title) || name}
             </h1>
-            <h2>{metadata.release_date.slice(0, 4)}</h2>
+            <h2>{metadata.release_date?.slice(0, 4) || metadata.first_air_date?.slice(0, 4)}</h2>
             <p>{metadata.overview}</p>
             <p style={{ fontSize: '0.75rem', lineHeight: '1rem' }}>
                 Film information and subtitles are retrieved based on the filename.<br />

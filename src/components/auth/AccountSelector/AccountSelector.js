@@ -17,7 +17,7 @@ const AccountSelector = ({ accounts }) => {
     const [password, setPassword] = useState('')
 
     useEffect(() => {
-        document.querySelector('.accounts button').focus()
+        document.querySelector('.accounts button')?.focus()
         if (searchParams.get('error') && searchParams.get('error') === 'CredentialsSignin') {
             toastFunctions.createToast({message: "Invalid username or password", type: "alert"})
         }
