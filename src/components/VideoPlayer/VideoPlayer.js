@@ -5,13 +5,11 @@ import 'video.js/dist/video-js.css'
 
 import { useSession } from 'next-auth/react'
 import { useEffect, useState, useCallback, useContext } from 'react'
-import Link from 'next/link'
 import MessageContext from '@/lib/contexts/MessageContext'
 
-import RenameFile from '@/components/ui/RenameFile/RenameFile'
-import { renameFile as submitRename } from '@/components/ui/RenameFile/RenameFile'
-
 import styles from './VideoPlayer.module.scss'
+import Overlay from './Overlay/Overlay'
+import NextVideoTimer from './NextVideoTimer/NextVideoTimer'
 
 const VideoPlayer = ({
     fileId,
@@ -24,27 +22,16 @@ const VideoPlayer = ({
 
     const [playerEl, setPlayerEl] = useState(null)
     const [player, setPlayer] = useState(null)
+
     const [showOverlay, setShowOverlay] = useState(true)
     const [captionsEnabled, setCaptionsEnabled] = useState(false)
 
+    const [nextEpisode, setNextEpisode] = useState(null)
+
+    // Used for setting up VideoJS
     const onVideo = useCallback((el) => {
         setPlayerEl(el);
     }, []);
-
-    const deleteFile = async () => {
-        let response = await fetch(`/api/file/${fileId}`, {
-            method: "DELETE"
-        })
-        if (response.status === 200) {
-            window.location.reload()
-        }
-    }
-
-    const recordToWatchLog = async () => {
-        fetch(`/api/user/${session.data.user.id}/file/${fileId}`, {
-            method: "POST"
-        })
-    }
 
     const keyDownHandler = e => {
         if (document.querySelector('.videoPlayer').classList.contains('showingOverlay') && e.code !== 'Space') return
@@ -57,7 +44,7 @@ const VideoPlayer = ({
             case "Space":
                 e.preventDefault()
                 document.player.paused() ? document.player.play() : document.player.pause()
-                document.querySelector(`#${styles.playVideo}`).focus()
+                document.querySelector(`#playVideo`).focus()
                 break;
             case "Enter":
                 e.preventDefault()
@@ -65,7 +52,7 @@ const VideoPlayer = ({
                 const hasJustStarted = playerClassList.slice(-1)[0] !== 'vjs-has-started'
                 if (document.player.paused() && !hasJustStarted) break
                 document.player.pause()
-                document.querySelector(`#${styles.playVideo}`).focus()
+                document.querySelector(`#playVideo`).focus()
                 break;
             case "ArrowLeft":
                 document.player.currentTime(currTime - 10)
@@ -84,6 +71,7 @@ const VideoPlayer = ({
         const newPlayer = videojs(playerEl, {})
         newPlayer.ready(() => {
             newPlayer.on('pause', () => {
+                if (newPlayer.seeking()) return
                 setShowOverlay(1)
             })
             newPlayer.on('play', () => {
@@ -96,7 +84,9 @@ const VideoPlayer = ({
                     setShowOverlay(0)
                 }
             })
-            newPlayer.addRemoteTextTrack({ src: `/api/moviedata/subtitles?id=${fileId}` }, false)
+            const trackEl = newPlayer.addRemoteTextTrack({ src: `/api/moviedata/subtitles?id=${fileId}` }, false)
+            // Captions button doesn't appear unless we do this lol
+            setTimeout(() => trackEl.addEventListener('load', () => { newPlayer.pause(); newPlayer.play() }), 5000)
 
             // Make the player available to both react and the DOM
             setPlayer(newPlayer)
@@ -118,7 +108,6 @@ const VideoPlayer = ({
             }
             setCaptionsEnabled(!captionsEnabled)
         }
-
         SpatialNavigation.disable('add')
         document.body.classList.add('videoPlaying')
         document.querySelector('.vjs-subs-caps-button')?.addEventListener('click', setSubtitles)
@@ -128,17 +117,44 @@ const VideoPlayer = ({
         }
     }, [player, captionsEnabled])
 
+    // Set focus to play button when the overlay appears
     useEffect(() => {
-        if (showOverlay) document.querySelector(`#${styles.playVideo}`)?.focus()
+        if (showOverlay) document.querySelector(`#playVideo`)?.focus()
     }, [showOverlay])
-    
-    // Add a duplicate to the history so we can close the window when going back in the browser
-    // without also going back a page
+
     useEffect(() => {
+        const getNextEpisode = async () => {
+            let download = await fetch(`/api/file/${fileId}/download`)
+            download = await download.json()
+            download = download.data
+
+            let nextFile = null
+            for (let i = 0; i < download['File']?.length; i++) {
+                if (download['File'][i].id === fileId) {
+                    nextFile = download['File']?.[i + 1]
+                    break
+                }
+            }
+
+            if (nextFile) setNextEpisode(nextFile)
+        }
+
+        const recordToWatchLog = async () => {
+            fetch(`/api/user/${session.data.user.id}/file/${fileId}`, {
+                method: "POST"
+            })
+        }
+
+        getNextEpisode()
         recordToWatchLog()
-        document.addEventListener('keydown', keyDownHandler)
+
+        // Add a duplicate to the history so we can close the window when going back in the browser
+        // without also going back a page
         window.history.pushState(null, "", window.location.href)
         window.addEventListener('popstate', messageFunctions.popMessage)
+
+        // We have to add the listener to the entire document because of the way lido-android works
+        document.addEventListener('keydown', keyDownHandler)
         return () => {
             document.removeEventListener('keydown', keyDownHandler)
             window.removeEventListener('popstate', messageFunctions.popMessage)
@@ -148,7 +164,7 @@ const VideoPlayer = ({
     return <div
         className={`
             ${styles.VideoPlayer} 
-            ${showOverlay ? 'controlbarHidden showingOverlay' : ''}
+            ${showOverlay ? 'showingOverlay' : ''}
             ${captionsEnabled ? 'captions' : ''}
             ${player?.textTracks()[0]?.cues_?.length > 0 ? 'captionsAvailable' : ''}
             videoPlayer
@@ -156,70 +172,18 @@ const VideoPlayer = ({
         onMouseMove={() => document.querySelector('.vjs-control-bar').classList.remove('tv-control')}
     >
         <div data-vjs-player>
-            <div 
-                className={`${styles.overlay} ${showOverlay && !player?.seeking() ? '' : styles.hidden}`}
-                inert={showOverlay ? false : true}
-            >
-                <img alt="Poster for media" src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path}`} />
-                <div className={styles.details}>
-                    <h1 style={{ wordBreak: (metadata.name || metadata.title) ? 'initial' : 'break-all' }}>
-                        {(metadata.name || metadata.title) || name}
-                    </h1>
-                    <h2>{metadata.release_date}</h2>
-                    <p>{metadata.overview}</p>
-                    <p style={{ fontSize: '0.75rem', lineHeight: '1rem' }}>
-                        Film information and subtitles are retrieved based on the filename.<br />
-                        If this information is not correct, try renaming the file.<br />
-                        ({name})
-                    </p>
+            <NextVideoTimer
+                nextEpisode={nextEpisode}
+            />
 
-                    <div className={styles.options}>
-                        <button
-                            id={styles.playVideo}
-                            className='unstyled'
-                            onClick={() => { player.play(); setShowOverlay(0) }}
-                        >
-                            <span className="material-icons">play_circle</span>
-                        </button>
-                        <button
-                            className={`secondary ${styles.back}`}
-                            onClick={messageFunctions.popMessage}
-                        >
-                            <span className="material-icons">arrow_back</span>
-                        </button>
-                        <div>
-                            <button
-                                className={`unstyled ${styles.option}`}
-                                onClick={() => messageFunctions.addMessage({
-                                    title: "Rename file",
-                                    body: <RenameFile id={fileId} name={name} />,
-                                    onSubmit: () => submitRename(fileId)
-                                })}
-                            >
-                                <span className="material-icons">border_color</span>
-                            </button>
-                            <button
-                                className={`unstyled ${styles.option}`}
-                                onClick={() => messageFunctions.addMessage({
-                                    title: "Are you sure?",
-                                    body: "Are you sure you want to delete this movie?",
-                                    onSubmit: deleteFile
-                                })}
-                            >
-                                <span className="material-icons">delete</span>
-                            </button>
-                            <button
-                                className={`unstyled ${styles.option}`}
-                            >
-                                <Link href={`/api/video?id=${fileId}&mime=${mimetype}&download=true`}>
-                                    <span className="material-icons">download</span>
-                                </Link>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+            <Overlay
+                show={showOverlay}
+                metadata={metadata}
+                fileId={fileId}
+                name={name}
+                mimetype={mimetype}
+                setShowOverlay={setShowOverlay}
+            />
 
             <video
                 className='video-js'
@@ -233,7 +197,7 @@ const VideoPlayer = ({
             >
                 <source
                     src={`/api/video?id=${fileId}&mime=${mimetype}`}
-                    // Even though we have the correct mimetype, it doesn't work?
+                    // Even though we could set the correct mimetype, it doesn't work?
                     // It only works if we just claim everything is mp4? Um, OKAAAYYY (Tim Robinson voice)
                     type='video/mp4'
                 />

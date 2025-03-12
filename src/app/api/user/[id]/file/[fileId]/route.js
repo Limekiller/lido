@@ -20,7 +20,7 @@ export const POST = verifySession(
         const createLog = await prisma.WatchLog.create({
             data: {
                 fileId: fileId,
-                userId: id === '-1' ? null : id
+                userId: id == '-1' ? null : id
             }
         })
 

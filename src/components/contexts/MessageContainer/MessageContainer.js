@@ -23,6 +23,20 @@ const MessageContainer = ({ children }) => {
         setMessages([...messages, { ...data, id: id }])
     }
 
+    const replaceMessage = data => {
+        const id = Date.now()
+        SpatialNavigation.disable('contextMenu')
+        SpatialNavigation.add(`message-${id}`, {
+            selector: `
+                #message-${id} button,
+                #message-${id} button.vjs-control,
+                #message-${id} input
+            `,
+            defaultElement: `#message-${id} button`
+        })
+        setMessages([{ ...data, id: id }])
+    }
+
     const popMessage = () => {
         setMessages(messages.slice(0, -1))
     }
@@ -54,6 +68,7 @@ const MessageContainer = ({ children }) => {
     return <MessageContext
         value={{
             addMessage: addMessage,
+            replaceMessage: replaceMessage,
             popMessage: popMessage
         }}
     >
