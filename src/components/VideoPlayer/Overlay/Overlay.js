@@ -50,7 +50,10 @@ const Overlay = ({
                 <button
                     id='playVideo'
                     className={`unstyled ${styles.playVideo}`}
-                    onClick={() => { player.current.play(); setShowOverlay(0) }}
+                    onClick={() => { 
+                        player.current.play()
+                        setShowOverlay(0) 
+                    }}
                 >
                     <span className="material-icons">play_circle</span>
                 </button>

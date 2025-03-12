@@ -12,7 +12,7 @@ const SpatialNav = () => {
      * Helper function to initialize all the spatial nav stuff
      */
     const initSpatialNav = () => {
-        while (!SpatialNavigation) {continue}
+        while (!document.querySelector('script[src="/js/spatialnav.js"]')) {continue}
 
         SpatialNavigation.init();
         SpatialNavigation.add(

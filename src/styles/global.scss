@@ -224,9 +224,12 @@ button {
 }
 
 .vjs-control-bar.tv-control .vjs-load-progress,
-.vjs-control-bar.tv-control .vjs-load-progress *,
 .vjs-control-bar.tv-control .vjs-play-progress {
     border-radius: 50px;
+}
+
+.video-js .vjs-load-progress, .video-js .vjs-load-progress div {
+    background: rgb(107, 124, 148) !important;
 }
 
 .vjs-text-track-cue div {

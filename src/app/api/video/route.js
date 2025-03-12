@@ -54,7 +54,7 @@ export const GET = verifySession(
             })
         }
 
-        const CHUNK_SIZE = 50 ** 6; // 5MB
+        const CHUNK_SIZE = 25 ** 6; // 2.5MB
         const start = Number(range.replace(/\D/g, ""));
         const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
         const contentLength = end - start + 1;

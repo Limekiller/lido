@@ -88,6 +88,7 @@ const VideoPlayer = ({
             if (playerEl == null) return
             const player = playerRef.current = videojs(playerEl, {})
             player.ready(() => {
+                player.play()
                 player.on('pause', () => {
                     if (player.seeking()) return
                     setShowOverlay(1)
