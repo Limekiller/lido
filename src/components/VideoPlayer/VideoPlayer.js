@@ -6,6 +6,7 @@ import 'video.js/dist/video-js.css'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState, useRef, useContext, useCallback } from 'react'
 import MessageContext from '@/lib/contexts/MessageContext'
+import ToastContext from '@/lib/contexts/ToastContext'
 
 import styles from './VideoPlayer.module.scss'
 import Overlay from './Overlay/Overlay'
@@ -19,6 +20,7 @@ const VideoPlayer = ({
 }) => {
     const session = useSession()
     const messageFunctions = useContext(MessageContext)
+    const toastFunctions = useContext(ToastContext)
     const playerRef = useRef(null)
 
     // Used to initialize player
@@ -54,28 +56,34 @@ const VideoPlayer = ({
                 document.querySelector(`#playVideo`).focus()
                 break;
             case "ArrowLeft":
-                playerRef.current.currentTime(currTime - 10)
+                playerRef.current.currentTime(currTime - (playerRef.current.duration()/50))
                 break;
             case "ArrowRight":
-                playerRef.current.currentTime(currTime + 10)
+                playerRef.current.currentTime(currTime + (playerRef.current.duration()/50))
+                break;
+            case "ArrowUp":
+                toastFunctions.createToast({
+                    message: "Subtitles toggled"
+                })
+                setSubtitles(e)
                 break;
             default:
                 break;
         }
     }
 
-    useEffect(() => {
-        const setSubtitles = e => {
-            e.preventDefault()
-            if (playerRef.current.textTracks()[0].mode === 'hidden' || playerRef.current.textTracks()[0].mode === 'disabled') {
-                setCaptionsEnabled(true)
-                playerRef.current.textTracks()[0].mode = 'showing'
-            } else {
-                setCaptionsEnabled(false)
-                playerRef.current.textTracks()[0].mode = 'hidden'
-            }
+    const setSubtitles = e => {
+        e.preventDefault()
+        if (playerRef.current.textTracks()[0].mode === 'hidden' || playerRef.current.textTracks()[0].mode === 'disabled') {
+            setCaptionsEnabled(true)
+            playerRef.current.textTracks()[0].mode = 'showing'
+        } else {
+            setCaptionsEnabled(false)
+            playerRef.current.textTracks()[0].mode = 'hidden'
         }
+    }
 
+    useEffect(() => {
         if (!playerRef.current) {
             if (playerEl == null) return
             const player = playerRef.current = videojs(playerEl, {})
