@@ -1,0 +1,25 @@
+.Account {
+    color: white;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    transition: background 0.1s ease;
+
+    &:hover, &:focus {
+        outline: none;
+        cursor: pointer;
+        
+        img {
+            box-shadow: 0px 8px 20px orange;
+            transform: scale(1.1);
+        }
+    }
+
+    img {
+        width: 5rem;
+        height: 5rem;
+        object-fit: cover;
+        border-radius: 99rem;
+        margin-bottom: -1rem;
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+}

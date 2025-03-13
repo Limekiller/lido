@@ -1,0 +1,56 @@
+.MovieList {
+    display: flex;
+    gap: 1rem;
+
+    .movieItem {
+        // width: 16%;
+
+        img {
+            width: 100%;
+            height: 18rem;
+            object-fit: cover;
+            border-radius: 0.25rem;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        h3 {
+            margin: 0.5rem 0 0.15rem 0;
+            font-weight: normal;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .addendum {
+            font-size: 0.9rem;
+            color: var(--fg-color-light);
+            line-height: 0.9rem;
+            margin: 0.25rem 0 0 0;
+        }
+
+        a:hover, a:focus {
+            outline: none;
+
+            img {
+                transform: scale(1.05);
+                box-shadow: 0px 0px 10px orange;
+            }
+        }
+
+        &.loadingPoster {
+            height: 18rem;
+            width: calc(100vw / 7);
+            background-color: var(--fg-color-dark);
+            flex-shrink: 0;
+            margin-right: 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 3rem;
+            animation: loading 2s linear infinite;
+        }
+    }
+}
+
+@keyframes loading {
+    0% {opacity: 1}
+    50% {opacity: 0}
+    100% {opacity: 1}
+}

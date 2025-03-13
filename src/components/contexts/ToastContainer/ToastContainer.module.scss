@@ -1,0 +1,33 @@
+.ToastContainer {
+    margin-top: 1rem;
+    position: fixed;
+    width: 15rem;
+    height: 100vh;
+    right: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    pointer-events: none;
+    z-index: 4;
+
+    .toast {
+        box-sizing: border-box;
+        padding: 1rem;
+        width: 100%;
+        background: linear-gradient(to right, orange, gold);
+        animation: toast 5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+        &.alert {
+            background: linear-gradient(to right, rgb(102, 27, 27), rgb(128, 43, 43));
+        }
+    }
+}
+
+@keyframes toast {
+    0% {transform: translateX(15rem)}
+    10% {transform: translateX(0rem)}
+    80% {transform: translateX(0rem);}
+    90% {transform: translateX(15rem); padding: 1rem; margin-top: 0rem}
+    100% {padding: 0; transform: translateX(15rem); margin-top: -3.75rem;}
+}

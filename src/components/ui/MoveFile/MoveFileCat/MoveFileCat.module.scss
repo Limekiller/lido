@@ -1,0 +1,38 @@
+.MoveFileCat {
+    .categoryContainer {
+        border: 1px solid var(--fg-color-dark);
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+        padding: 0.25rem;
+
+        .category {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            transition: background 0.2s ease;
+            border-radius: 0.5rem;
+
+            &:hover {
+                background: var(--fg-color-dark);
+            }
+
+            &.active {
+                background: linear-gradient(orange, gold);
+            }
+
+            button {
+                text-align: left;
+                border-radius: 0.5rem;
+                display: flex;
+
+                .chevron.expanded {
+                    transform: rotate(90deg);
+                }
+            }
+        }
+
+        .childContainer {
+            margin-top: 1rem;
+        }
+    }
+}

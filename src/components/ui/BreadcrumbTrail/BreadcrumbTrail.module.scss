@@ -1,0 +1,27 @@
+.BreadcrumbTrail {
+    padding: 0.75rem 2rem;
+    background-color: #272728;
+    margin-left: -2.2rem;
+    margin-top: 0rem;
+    width: calc(100vw - 9.8rem);
+    color: var(--fg-color-light);
+    display: flex;
+    gap: 0.5rem;
+
+    a:hover, a:focus {
+        outline: none;
+        color: white;
+    }
+
+    .link{
+        a {
+            margin-right: 0.5rem;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        margin-left: -2rem;
+        width: calc(100vw - 4rem);
+        font-size: 1.5rem;
+    }
+}

@@ -1,0 +1,26 @@
+.Category {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 8rem;
+    height: 8rem;
+    background: linear-gradient(to bottom, var(--fg-color-light), var(--fg-color-dark));
+    padding: 1rem;
+    border-radius: 1rem;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &:hover, &:focus {
+        outline: none;
+        box-shadow: 0px 0px 10px rgba(255, 166, 0, 0.692);
+        transform: scale(0.95);
+    }
+
+    span:first-child {
+        font-size: 3rem;
+        align-self: flex-end;
+    }
+
+    span {
+        align-self: flex-start;
+    }
+}

@@ -1,0 +1,60 @@
+.UserProfile {
+    .mainEditForm {
+        display: flex;
+        gap: 2rem;
+        background-color: var(--fg-color-dark);
+        padding: 2rem;
+        border-radius: 1rem;
+    
+        > * {
+            width: 50%;
+        }
+
+        button {
+            display: flex;
+            width: 33%;
+            height: min-content;
+
+            &:hover {
+                img {
+                    filter: brightness(0.75);
+                }
+            }
+
+            img {
+                width: 10rem;
+                height: 10rem;
+                border-radius: 99rem;
+                object-fit: cover;
+                box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.57);
+                transition: filter 0.2s ease;
+            }
+
+            @media screen and (max-width: 500px) {
+                width: unset;
+                margin: 0 auto;
+            }
+        }
+        
+        .profileForm {
+            width: 100%;
+
+            .error {
+                float: right;
+                color: rgb(201, 58, 58);
+            }
+
+            input {
+                width: 100%;
+
+                &.errored {
+                    box-shadow: inset 0px 0px 15px #660d0d;
+                }
+            }
+        }
+
+        @media screen and (max-width: 500px) {
+            flex-direction: column;
+        }
+    }
+}

@@ -1,0 +1,287 @@
+@use 'variables.scss';
+
+html {
+    font-size: 18px;
+    outline-color: white;
+}
+
+html,
+body {
+    background-color: var(--bg-color);
+    padding: 0;
+    margin: 0;
+    font-family: halyard-display, sans-serif;
+    color: white;
+}
+
+h1,
+h2,
+h3 {
+    font-family: halyard-text, sans-serif;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+label {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+input {
+    padding: 0.5rem;
+    box-sizing: border-box;
+    font-family: halyard-text, sans-serif;
+    transition: all 0.4s ease;
+    border: none;
+    background-color: var(--fg-color-light);
+    color: white;
+    border-radius: 0.1rem;
+    margin-top: 0.25rem;
+}
+
+input.keyboard-focus {
+    box-shadow: 0px 0px 5px orange;
+    transform: scale(1.01);
+}
+
+.messageParent input:not([type="checkbox"]) {
+    width: 100%;
+}
+
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled) {
+    background: linear-gradient(orange, gold);
+    border: none;
+    padding: 0.5rem 1rem;
+    color: white;
+    box-shadow: 0px 0px 10px #0000004d;
+    font-family: halyard-text, sans-serif;
+    text-shadow: 0px 0px 10px black;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 0.75rem;
+}
+
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled):not(.secondary):hover,
+button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled):not(.secondary):focus {
+    outline: none;
+    box-shadow: 0px 0px 20px orange;
+    transform: scale(0.95);
+}
+
+button.unstyled {
+    font-family: halyard-text, sans-serif;
+    color: white;
+    appearance: none;
+    background: none;
+    border: none;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button.secondary {
+    text-shadow: none;
+    background: var(--fg-color-light) !important;
+}
+
+button.secondary:hover,
+button.secondary:focus {
+    outline: none;
+    transform: scale(0.95);
+}
+
+button {
+    font-size: 1rem;
+}
+
+.buttonHeading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .button,
+    button {
+        height: fit-content;
+    }
+}
+
+.highlight {
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.highlight:hover,
+.highlight:focus {
+    transform: scale(1.01);
+    box-shadow: 0px 0px 5px orange;
+    cursor: pointer;
+    outline: none;
+}
+
+.centeredContainer {
+    max-width: 40rem;
+    margin: 0 auto;
+    margin-top: 5rem;
+}
+
+.pageContainer {
+    padding: 3rem 2rem 5rem 8rem;
+    overflow: hidden;
+}
+
+.title {
+    color: white;
+    font-size: 5rem;
+    margin: 0;
+    margin-top: 1rem;
+    line-height: 5rem;
+}
+
+
+// Hack for setting the add button state
+.hasMessages .addButton {
+    transform: rotate(45deg);
+}
+
+// Hack for hiding the floating add button
+.videoPlaying .addButton {
+    display: none;
+}
+
+.video-js {
+    width: 100%;
+    height: 100%;
+}
+
+.overlay .video-js .vjs-control-bar,
+.display-none {
+    display: none;
+}
+
+#video.video-js {
+
+    &.vjs-user-inactive {
+        .vjs-control-bar {
+            transform: scale(1.15);
+        }
+    }
+
+    .vjs-control-bar {
+        width: 80%;
+        bottom: 50px;
+        margin: 0 auto;
+        height: 50px;
+        padding: 0.5rem 1rem 0 1rem;
+        border-radius: 99rem;
+        backdrop-filter: blur(10px);
+        background: rgba(43, 51, 63, 0.63);
+        box-shadow: 0px 10px 40px #00000087;
+        transform: scale(1.2);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+        .vjs-progress-holder {
+            margin-top: -10px;
+        }
+    }
+
+    .vjs-control {
+        box-shadow: none;
+    }
+
+    .vjs-current-time {
+        display: block;
+    }
+}
+
+.showingOverlay #video.video-js .vjs-control-bar {
+    opacity: 0;
+}
+
+
+/* For TV control */
+.vjs-control-bar.tv-control {
+    background: transparent;
+    backdrop-filter: none;
+
+    .vjs-volume-panel {
+        display: none;
+    }
+
+    .vjs-progress-holder {
+        height: 1.3em;
+        border-radius: 50px;
+    }
+
+    .vjs-play-progress::before {
+        display: none;
+    }
+
+    button {
+        display: none;
+    }
+}
+
+.vjs-control-bar.tv-control .vjs-load-progress,
+.vjs-control-bar.tv-control .vjs-play-progress {
+    border-radius: 50px;
+}
+
+.video-js .vjs-load-progress, .video-js .vjs-load-progress div {
+    background: rgb(107, 124, 148) !important;
+}
+
+.vjs-text-track-cue div {
+    background: transparent !important;
+    text-shadow: 0px 0px 10px black,
+        -2px 2px 0 black,
+        2px -2px 0 black,
+        -2px -2px 0 black;
+}
+
+.vjs-subs-caps-button {
+    display: none;
+}
+
+.captionsAvailable .vjs-subs-caps-button {
+    display: initial;
+}
+
+.vjs-subs-caps-button .vjs-menu {
+    display: none !important;
+}
+
+.captions .vjs-subs-caps-button .vjs-icon-placeholder:before {
+    color: gold !important;
+}
+
+.partyMode .video-js.vjs-playing .vjs-tech {
+    pointer-events: none;
+}
+
+.splide {
+    width: calc(100% + 2rem);
+}
+
+.splide__track {
+    padding-top: 0.5rem;
+}
+
+@media screen and (max-width: 1000px) {
+    html {
+        font-size: 12px;
+    }
+
+    .pageContainer {
+        padding: 4rem 2rem 10rem 2rem;
+    }
+
+    span.material-icons {
+        font-size: 1.5rem;
+    }
+
+    button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled) {
+        font-size: 1.25rem;
+    }
+}
