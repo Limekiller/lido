@@ -119,17 +119,6 @@ const VideoPlayer = ({
         }
     }, [playerEl])
 
-    useEffect(() => {
-        const player = playerRef.current;
-
-        return () => {
-            if (player && !player.isDisposed()) {
-                player.dispose();
-                playerRef.current = null
-            }
-        }
-    }, [playerRef])
-
     // Set focus to play button when the overlay appears
     useEffect(() => {
         if (showOverlay) document.querySelector(`#playVideo`)?.focus()
@@ -173,6 +162,9 @@ const VideoPlayer = ({
         document.body.classList.add('videoPlaying')
 
         return () => {
+            if (playerRef?.current) {
+                playerRef.current.dispose()
+            }
             document.removeEventListener('keydown', keyDownHandler)
             window.removeEventListener('popstate', messageFunctions.popMessage)
             SpatialNavigation.enable('add')
