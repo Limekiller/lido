@@ -45,7 +45,7 @@ const page = async ({ params }) => {
                 <div style={{ width: '100%' }}>
                     <h1 className={`title ${styles.title}`}>{metadata.name || metadata.title}</h1>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h2>{metadata.release_date.slice(0, 4) || metadata.first_air_date.slice(0, 4)}</h2>
+                        <h2>{metadata.release_date?.slice(0, 4) || metadata.first_air_date?.slice(0, 4)}</h2>
                         <p>
                             {metadata.genres.map((genre, index) => {
                                 return <span key={genre.name}>{genre.name}{index < metadata.genres.length - 1 ? ',' : ''} </span>
