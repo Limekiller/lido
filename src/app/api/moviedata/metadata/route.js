@@ -60,7 +60,7 @@ export const getFileInfo = async fullTitle => {
     }
 
     // If it's an episode, let's also get data for the specific episode
-    const seriesId = data.id
+    const seriesId = data?.id
     if (season && episode) {
         let episodeData = await fetch(`https://api.themoviedb.org/3/tv/${seriesId}/season/${season}/episode/${episode}`, {
             headers: {
