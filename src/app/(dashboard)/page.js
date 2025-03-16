@@ -27,7 +27,7 @@ export default async function Home() {
         for (let item of recent) {
             const json = JSON.parse(item.File.metadata)
             fullRecentArray.push({
-                id: json.id,
+                id: item.fileId,
                 title: (json.title || json.name) || item.File.name,
                 poster: json.poster_path ? `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${json.poster_path}` : '/images/lido_no_poster.jpg',
                 link: await libFunctions.getCategoryTreeLink(item.File.categoryId),
@@ -61,7 +61,7 @@ export default async function Home() {
         {fullRecentArray.length > 0 ?
             <>
                 <h1>Recently viewed</h1>
-                <MovieList movies={fullRecentArray} />
+                <MovieList movies={fullRecentArray} type='recent' />
             </>
             : ""
         }

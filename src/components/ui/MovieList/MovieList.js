@@ -1,19 +1,33 @@
 "use client"
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
+import { useSession } from "next-auth/react"
 import '@splidejs/react-splide/css';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import Link from 'next/link';
 
+import ContextMenuContext from '@/lib/contexts/ContextMenuContext'
 import styles from './MovieList.module.scss'
 
-const MovieList = ({ movies }) => {
+const MovieList = ({
+    movies,
+    type = 'popular'
+}) => {
+    const session = useSession()
+    const contextMenuFunctions = useContext(ContextMenuContext)
     const slider = useRef();
     const [moviesState, setMoviesState] = useState([])
 
+    const removeRecent = async (element, fileId) => {
+        await fetch(`/api/user/${session.data.user.id}/file/${fileId}`, {
+            method: "DELETE"
+        })
+        element.parentElement.parentElement.remove()
+    }
+
     useEffect(() => {
         const filterDuplicateTitles = movies => {
-            return movies.filter((obj, index, self) => 
+            return movies.filter((obj, index, self) =>
                 index === self.findIndex(o => (
                     o.title === obj.title
                 ))
@@ -68,6 +82,15 @@ const MovieList = ({ movies }) => {
                 return <SplideSlide
                     className={styles.movieItem}
                     key={movie.title}
+                    onContextMenu={e => {
+                        if (type === 'recent') {
+                            contextMenuFunctions.showMenu(e, [
+                                {
+                                    icon: "remove_circle", label: "Remove", function: () => removeRecent(e.target, movie.id)
+                                },
+                            ])
+                        }
+                    }}
                 >
                     <Link href={movie.link ? movie.link : `/browse/${movie.type}/${movie.id}`}>
                         <img src={movie.poster} />
