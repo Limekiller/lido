@@ -36,10 +36,13 @@ const Overlay = ({
         <img alt="Poster for media" src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path}`} />
         <div className={styles.details}>
             <h1 style={{ wordBreak: (metadata.name || metadata.title) ? 'initial' : 'break-all' }}>
-                {(metadata.name || metadata.title) || name}
+                {(metadata.episodeData?.name || metadata.title) || name}
             </h1>
-            <h2>{metadata.release_date?.slice(0, 4) || metadata.first_air_date?.slice(0, 4)}</h2>
-            <p>{metadata.overview}</p>
+            {metadata.episodeData ? 
+                <span className={styles.epData}>{metadata.name} • S{metadata.episodeData.season_number}E{metadata.episodeData.episode_number}</span>
+            : ""}
+            <h2>{metadata.release_date?.slice(0, 4) || metadata.episodeData?.air_date.slice(0, 4)}</h2>
+            <p>{metadata.episodeData?.overview || metadata.overview}</p>
             <p style={{ fontSize: '0.75rem', lineHeight: '1rem' }}>
                 Film information and subtitles are retrieved based on the filename.<br />
                 If this information is not correct, try renaming the file.<br />

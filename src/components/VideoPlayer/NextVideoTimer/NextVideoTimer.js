@@ -13,10 +13,19 @@ const NextVideoTimer = ({
     const messageFunctions = useContext(MessageContext)
 
     const [show, setShow] = useState(false)
+    const [userInput, setUserInput] = useState(false)
 
     useEffect(() => {
+        const reportUserActivity = () => {
+            if (player.current.duration() - player.current.currentTime() < 40) {
+                setUserInput(true)
+                setShow(false)
+            }
+        }
+
         const timeLeftChecker = e => {
-            if (!nextEpisode) return
+            console.log(userInput)
+            if (!nextEpisode || userInput) return
             if (player.current.duration() - player.current.currentTime() > 40) return
             setShow(true)
             if (player.current.duration() - player.current.currentTime() > 30) return
@@ -33,11 +42,15 @@ const NextVideoTimer = ({
             })
             setTimeout(() => document.querySelector(`#playVideo`).click(), 5000)
         }
+        document.addEventListener('mousemove', reportUserActivity)
+        document.addEventListener('keydown', reportUserActivity)
         const nextEpChecker = setInterval(timeLeftChecker, 2000)
         return () => {
             clearInterval(nextEpChecker)
+            document.removeEventListener('mousemove', reportUserActivity)
+            document.removeEventListener('keydown', reportUserActivity)
         }
-    }, [nextEpisode])
+    }, [nextEpisode, userInput])
 
     return nextEpisode && show ? <div className={`${styles.NextVideoTimer}`}>
         <span><b>Up next:</b> {
