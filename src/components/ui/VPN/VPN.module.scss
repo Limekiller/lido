@@ -1,0 +1,14 @@
+.VPN {
+    height: 60px;
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+    mask: url("/images/icons/lock.svg") no-repeat 50% 50%;
+    justify-content: flex-end;
+    padding-bottom: 5px;
+    box-sizing: border-box;
+    font-size: 0.75rem;
+}
