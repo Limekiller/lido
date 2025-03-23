@@ -40,6 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-storage/
+/storage/
 prisma/data.db
 prisma/migrations
