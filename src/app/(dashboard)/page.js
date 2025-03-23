@@ -6,6 +6,7 @@ import libFunctions from "@/lib/lib"
 
 import styles from './dashboard.module.scss'
 import MovieList from "@/components/ui/MovieList/MovieList"
+import Storage from "@/components/ui/Storage/Storage"
 
 export default async function Home() {
 
@@ -55,7 +56,10 @@ export default async function Home() {
     return <div className={styles.Dashboard}>
         <div className={styles.topBar}>
             <h3>Hey, {session?.user.name}!<br />What do you want to watch?</h3>
-            <img src='/images/logo_white.svg' />
+            <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                <Storage />
+                <img src='/images/logo_white.svg' />
+            </div>
         </div>
 
         {fullRecentArray.length > 0 ?
