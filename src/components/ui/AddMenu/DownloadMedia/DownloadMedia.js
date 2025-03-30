@@ -7,6 +7,7 @@ import MessageContext from '@/lib/contexts/MessageContext'
 import ToastContext from '@/lib/contexts/ToastContext'
 import Spinner from '@/components/ui/Spinner/Spinner'
 import styles from './DownloadMedia.module.scss'
+import DownloadResultList from '../../DownloadResultList/DownloadResultList'
 
 const DownloadMedia = () => {
     const messageFunctions = useContext(MessageContext)
@@ -33,30 +34,6 @@ const DownloadMedia = () => {
         setIsSearching(false)
     }
 
-    const startDownload = async (name, link) => {
-        const data = {
-            name: name,
-            category: category,
-            magnet: link
-        }
-
-        let response = await fetch(`/api/download`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-        response = await response.json()
-
-        if (response.result === 'success') {
-            messageFunctions.popMessage()
-            toastFunctions.createToast({message: "Download started!"})
-        } else {
-            toastFunctions.createToast({message: response.data.message})
-        }
-    }
-
     return <div className={styles.DownloadMedia}>
         <div style={{ display: 'flex' }}>
             <input
@@ -75,21 +52,7 @@ const DownloadMedia = () => {
         {isSearching ? <Spinner /> :
             results.length > 0 ?
                 <div className={styles.results}>
-                    {results.map((result, index) => {
-                        return <button 
-                            className={`${styles.result} unstyled`}
-                            key={index}
-                            onClick={() => startDownload(result.name, result.link)}
-                        >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '3rem' }}>
-                                <span>{result.name}</span>
-                                <div style={{ display: 'flex', gap: "0.5rem" }}>
-                                    <span className={styles.seeders}>{result.seeders}</span>
-                                    <span className={styles.leechers}>{result.leechers}</span>
-                                </div>
-                            </div>
-                        </button>
-                    })}
+                    <DownloadResultList results={results} category={category} />
                 </div>
             : ""
         }

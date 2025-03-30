@@ -16,12 +16,38 @@ const DownloadResultList = ({
     const [resultState, setResultState] = useState(null)
 
     Promise.resolve(results).then(async () => {
-        setResultState(results.value)
+        setResultState(results.value || results)
     })
 
+    const initiateDownload = async (download, category = null) => {
+        category = category == null ? document.querySelector('#activeCat').value : category
+        const data = {
+            name: download.name,
+            category: category,
+            magnet: download.link
+        }
+
+        let response = await fetch(`/api/download`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        response = await response.json()
+
+        if (response.result === 'success') {
+            messageFunctions.popMessage()
+            toastFunctions.createToast({message: "Download started!"})
+        } else {
+            toastFunctions.createToast({message: response.data.message})
+        }
+    }
+
     const selectDownload = download => {
-        if (category) {
-            // do some stuff
+        if (category != null) {
+            initiateDownload(download, category)
+            return
         }
         messageFunctions.addMessage({
             title: "Choose category",
@@ -31,30 +57,7 @@ const DownloadResultList = ({
                     label="Save in "
                 />
             </>,
-            onSubmit: async () => {
-                const category = document.querySelector('#activeCat').value
-                const data = {
-                    name: download.name,
-                    category: category,
-                    magnet: download.link
-                }
-       
-                let response = await fetch(`/api/download`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                })
-                response = await response.json()
-        
-                if (response.result === 'success') {
-                    messageFunctions.popMessage()
-                    toastFunctions.createToast({message: "Download started!"})
-                } else {
-                    toastFunctions.createToast({message: response.data.message})
-                }
-            }
+            onSubmit: () => initiateDownload(download)
         })
     }
 
