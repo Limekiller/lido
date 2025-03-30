@@ -24,7 +24,6 @@ const NextVideoTimer = ({
         }
 
         const timeLeftChecker = e => {
-            console.log(userInput)
             if (!nextEpisode || userInput) return
             if (player.current.duration() - player.current.currentTime() > 40) return
             setShow(true)

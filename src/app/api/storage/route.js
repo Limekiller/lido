@@ -5,7 +5,7 @@ import { verifySession } from '@/lib/auth/lib'
 export const GET = verifySession(
     async req => {
 
-        const output = await exec('df -h | grep "/$"')
+        const output = await exec(`df -h ${process.env.STORAGE_PATH} | grep "/"`)
         const storageStats = output.stdout.split(/[ ]+/)
 
         return Response.json({
