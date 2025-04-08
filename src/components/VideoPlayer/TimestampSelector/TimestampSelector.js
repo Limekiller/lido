@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { clientLibFunctions } from '@/lib/client/lib';
 
 import '@splidejs/react-splide/css';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
@@ -17,12 +18,7 @@ const TimestampSelector = ({
     const slider = useRef();
     const numberOfThumbnails = 20
 
-    const getTimestampFromDuration = duration => {
-        const hours = (Math.floor(duration / 3600)).toString()
-        const minutes = (Math.floor(duration / 60) - (hours * 60)).toString()
-        const seconds = Math.round(duration % 60).toString()
-        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, 0)}`
-    }
+    const [thumbnails, setThumbnails] = useState([])
 
     useEffect(() => {
         const handleKey = e => {
@@ -44,12 +40,18 @@ const TimestampSelector = ({
     }, [slider])
 
     useEffect(() => {
+        if (thumbnails.length === 0 && duration) {
+            fetch(`/api/video/${fileId}/thumbnail?duration=${duration}&mime=${mimetype}&number=${numberOfThumbnails}`)
+            .then(response => response.json())
+            .then(data => setThumbnails(data))
+        }
+
         if (!active) return
         const currIndex = Math.floor(playerRef.current.currentTime() / (duration / numberOfThumbnails))
         slider.current.splide.go(currIndex - 3)
         setTimeout(() => document.querySelector(`#thumbnail-${currIndex}`).focus(), 200)
     }, [active])
-
+    
     return <Splide
         ref={slider}
         aria-label="Thumbnails"
@@ -69,14 +71,14 @@ const TimestampSelector = ({
     >
         {[...Array(numberOfThumbnails).keys()].map(i => {
             const rawTimestamp = (duration / numberOfThumbnails) * i
-            const timestamp = getTimestampFromDuration(rawTimestamp)
+            const timestamp = clientLibFunctions.getTimestampFromDuration(rawTimestamp)
             return <SplideSlide key={i}>
                 <button
                     className={`${styles.thumbnail} unstyled`}
                     id={`thumbnail-${i}`}
                     onClick={() => playerRef.current.currentTime(rawTimestamp)}
                 >
-                    <img src={`/api/video/${fileId}/thumbnail?timestamp=${timestamp}&mime=${mimetype}`} />
+                    <img src={thumbnails && thumbnails.length > 0 ? `data:image/jpeg;base64,${thumbnails[i]}` : 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921' } />
                     {timestamp}
                 </button>
             </SplideSlide>

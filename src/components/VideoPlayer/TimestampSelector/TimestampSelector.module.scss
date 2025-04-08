@@ -9,7 +9,9 @@
     transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     visibility: visible;
     padding: 0.5rem;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    background: rgba(43, 51, 63, 0.63);
+    box-shadow: 0px 10px 40px #00000087;
 
     &.active {
         opacity: 1;

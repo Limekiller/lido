@@ -1,6 +1,7 @@
 import util from 'util'
 const exec = util.promisify(require('child_process').exec)
 import { prisma } from "./prisma"
+import { clientLibFunctions } from './client/lib'
 
 const getCategoryTree = async catId => {
     let lastCategory = await prisma.category.findUnique({
@@ -8,7 +9,7 @@ const getCategoryTree = async catId => {
             id: parseInt(catId)
         }
     })
-    let categoryList = [{id: catId, name: lastCategory.name}]
+    let categoryList = [{ id: catId, name: lastCategory.name }]
 
     while (true) {
         if (lastCategory.parentId === null) {
@@ -19,7 +20,7 @@ const getCategoryTree = async catId => {
                 id: lastCategory.parentId
             }
         })
-        categoryList.push({id: lastCategory.id, name: lastCategory.name})
+        categoryList.push({ id: lastCategory.id, name: lastCategory.name })
     }
 
     return categoryList.reverse()
@@ -37,7 +38,7 @@ const getCategoryTreeLink = async catId => {
         } else {
             path += `/${pathItem}`
         }
-    }   
+    }
     return path
 }
 
@@ -54,9 +55,20 @@ const getFileExtFromMime = mimetype => {
     return mimes[mimetype]
 }
 
-const getThumbnailAtTimestamp = async (file, timestamp, mime) => {
-    const filename = `${Date.now()}-tmb.gif`
-    await exec(`ffmpeg -ss ${timestamp} -i ${process.env.STORAGE_PATH}/video/${file}.${mime} -vframes 1 -f gif -filter:v scale="280:-1" - | cat > /tmp/${filename}`)
+const getThumbnails = async (file, mime, duration, number = 20) => {
+    let filenames = []
+    for (let i = 0; i < number; i++) {
+        const timestamp = clientLibFunctions.getTimestampFromDuration((duration / number) * i)
+        const filename = await getThumbnailAtTimestamp(file, mime, timestamp)
+        filenames.push(filename)
+    }
+
+    return filenames
+}
+
+const getThumbnailAtTimestamp = async (file, mime, timestamp) => {
+    const filename = `${Date.now()}-tmb.jpg`
+    await exec(`ffmpeg -ss ${timestamp} -i ${process.env.STORAGE_PATH}/video/${file}.${mime} -vframes 1 -filter:v scale="280:-1" /tmp/${filename}`)
     return filename
 }
 
@@ -64,7 +76,8 @@ const libFunctions = {
     getCategoryTree: getCategoryTree,
     getFileExtFromMime: getFileExtFromMime,
     getCategoryTreeLink: getCategoryTreeLink,
-    getThumbnailAtTimestamp: getThumbnailAtTimestamp
+    getThumbnailAtTimestamp: getThumbnailAtTimestamp,
+    getThumbnails: getThumbnails
 }
 
 export default libFunctions
