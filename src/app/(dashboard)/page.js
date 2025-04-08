@@ -26,7 +26,7 @@ export default async function Home() {
             distinct: ['fileId']
         })
         fullRecentArray = []
-        for (let item of recent) {
+        for (let item of recent.reverse()) {
             const json = JSON.parse(item.File.metadata)
             fullRecentArray.push({
                 id: item.fileId,
@@ -36,7 +36,6 @@ export default async function Home() {
                 type: json.media_type
             })
         }
-        fullRecentArray = fullRecentArray.reverse()
 
         fullRecommendedArray = []
         const recommendations = await getRecommendations(session.user.id)

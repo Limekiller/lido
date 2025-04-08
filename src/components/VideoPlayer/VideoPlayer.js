@@ -11,6 +11,7 @@ import ToastContext from '@/lib/contexts/ToastContext'
 import styles from './VideoPlayer.module.scss'
 import Overlay from './Overlay/Overlay'
 import NextVideoTimer from './NextVideoTimer/NextVideoTimer'
+import TimestampSelector from './TimestampSelector/TimestampSelector'
 
 const VideoPlayer = ({
     fileId,
@@ -23,16 +24,17 @@ const VideoPlayer = ({
     const toastFunctions = useContext(ToastContext)
     const playerRef = useRef(null)
 
+    const [playerEl, setPlayerEl] = useState(null)
+    const [showOverlay, setShowOverlay] = useState(true)
+    const [captionsEnabled, setCaptionsEnabled] = useState(false)
+    const [captionsAvailable, setCaptionsAvailable] = useState(false)
+    const [nextEpisode, setNextEpisode] = useState(null)
+    const [thumbnailsActive, setthumbnailsActive] = useState(false)
+
     // Used to initialize player
     const onVideo = useCallback((el) => {
         setPlayerEl(el);
     }, []);
-
-    const [playerEl, setPlayerEl] = useState(null)
-    const [captionsEnabled, setCaptionsEnabled] = useState(false)
-    const [captionsAvailable, setCaptionsAvailable] = useState(false)
-    const [showOverlay, setShowOverlay] = useState(true)
-    const [nextEpisode, setNextEpisode] = useState(null)
 
     const keyDownHandler = e => {
         if (document.querySelector('.videoPlayer').classList.contains('showingOverlay') && e.code !== 'Space') return
@@ -48,24 +50,36 @@ const VideoPlayer = ({
                 document.querySelector(`#playVideo`).focus()
                 break;
             case "Enter":
-                e.preventDefault()
                 const playerClassList = [...document.querySelector('#video').classList]
                 const hasJustStarted = playerClassList.slice(-1)[0] !== 'vjs-has-started'
-                if (playerRef.current.paused() && !hasJustStarted) break
+                if (
+                    (playerRef.current.paused() && !hasJustStarted) ||
+                    document.querySelector('.timestampSelector').classList.contains('active')
+                ) break
+                e.preventDefault()
                 playerRef.current.pause()
                 document.querySelector(`#playVideo`).focus()
                 break;
+            case "ArrowUp":
+                setthumbnailsActive(true)
+                break;
+            case "ArrowDown":
+                if (document.querySelector('.timestampSelector').classList.contains('active')) {
+                    setthumbnailsActive(false)
+                } else {
+                    toastFunctions.createToast({
+                        message: "Subtitles toggled"
+                    })
+                    setSubtitles(e)
+                }
+                break;
             case "ArrowLeft":
-                playerRef.current.currentTime(currTime - (playerRef.current.duration()/50))
+                if (document.querySelector('.timestampSelector').classList.contains('active')) break;
+                playerRef.current.currentTime(currTime - (playerRef.current.duration() / 50))
                 break;
             case "ArrowRight":
-                playerRef.current.currentTime(currTime + (playerRef.current.duration()/50))
-                break;
-            case "ArrowUp":
-                toastFunctions.createToast({
-                    message: "Subtitles toggled"
-                })
-                setSubtitles(e)
+                if (document.querySelector('.timestampSelector').classList.contains('active')) break;
+                playerRef.current.currentTime(currTime + (playerRef.current.duration() / 50))
                 break;
             default:
                 break;
@@ -91,6 +105,7 @@ const VideoPlayer = ({
                 player.play()
                 player.on('pause', () => {
                     if (player.seeking()) return
+                    setthumbnailsActive(false)
                     setShowOverlay(1)
                 })
                 player.on('play', () => {
@@ -178,6 +193,7 @@ const VideoPlayer = ({
             ${showOverlay ? 'showingOverlay' : ''}
             ${captionsEnabled ? 'captions' : ''}
             ${captionsAvailable ? 'captionsAvailable' : ''}
+            ${thumbnailsActive ? 'thumbnailsActive' : ''}
             videoPlayer
         `}
         onMouseMove={() => document.querySelector('.vjs-control-bar').classList.remove('tv-control')}
@@ -198,6 +214,14 @@ const VideoPlayer = ({
                 setShowOverlay={setShowOverlay}
             />
 
+            <TimestampSelector
+                mimetype={mimetype}
+                fileId={fileId}
+                duration={playerRef?.current?.duration()}
+                playerRef={playerRef}
+                active={thumbnailsActive}
+            />
+
             <video
                 className='video-js'
                 preload="auto"
@@ -205,11 +229,10 @@ const VideoPlayer = ({
                 controls
                 autoPlay='autoplay'
                 ref={onVideo}
-                //autoPlay={this.props.partyMode ? '' : 'autoplay'}
                 crossOrigin="anonymous"
             >
                 <source
-                    src={`/api/video?id=${fileId}&mime=${mimetype}`}
+                    src={`/api/video/${fileId}?mime=${mimetype}`}
                     // Even though we could set the correct mimetype, it doesn't work?
                     // It only works if we just claim everything is mp4? Um, OKAAAYYY (Tim Robinson voice)
                     type='video/mp4'

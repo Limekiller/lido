@@ -30,11 +30,11 @@ const streamFile = (path, start, end) => {
 }
 
 export const GET = verifySession(
-    async req => {
+    async (req, { params }) => {
+        const fileId = (await params).id
         let range = req.headers.get('range')
 
         const searchParams = req.nextUrl.searchParams
-        let fileId = searchParams.get('id')
         let mime = searchParams.get('mime')
         let download = searchParams.get('download')
 

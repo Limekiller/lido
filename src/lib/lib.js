@@ -1,3 +1,5 @@
+import util from 'util'
+const exec = util.promisify(require('child_process').exec)
 import { prisma } from "./prisma"
 
 const getCategoryTree = async catId => {
@@ -52,10 +54,17 @@ const getFileExtFromMime = mimetype => {
     return mimes[mimetype]
 }
 
+const getThumbnailAtTimestamp = async (file, timestamp, mime) => {
+    const filename = `${Date.now()}-tmb.gif`
+    await exec(`ffmpeg -ss ${timestamp} -i ${process.env.STORAGE_PATH}/video/${file}.${mime} -vframes 1 -f gif -filter:v scale="280:-1" - | cat > /tmp/${filename}`)
+    return filename
+}
+
 const libFunctions = {
     getCategoryTree: getCategoryTree,
     getFileExtFromMime: getFileExtFromMime,
-    getCategoryTreeLink: getCategoryTreeLink
+    getCategoryTreeLink: getCategoryTreeLink,
+    getThumbnailAtTimestamp: getThumbnailAtTimestamp
 }
 
 export default libFunctions

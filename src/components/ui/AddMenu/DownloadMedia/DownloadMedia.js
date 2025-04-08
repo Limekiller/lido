@@ -1,18 +1,13 @@
 "use client"
 
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 
-import MessageContext from '@/lib/contexts/MessageContext'
-import ToastContext from '@/lib/contexts/ToastContext'
 import Spinner from '@/components/ui/Spinner/Spinner'
 import styles from './DownloadMedia.module.scss'
 import DownloadResultList from '../../DownloadResultList/DownloadResultList'
 
 const DownloadMedia = () => {
-    const messageFunctions = useContext(MessageContext)
-    const toastFunctions = useContext(ToastContext)
-
     const pathname = usePathname() 
     let category = pathname.split('/').slice(-1)[0]
     if (category === 'movies') {

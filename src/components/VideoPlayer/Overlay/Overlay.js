@@ -31,7 +31,7 @@ const Overlay = ({
 
     return <div
         className={`${styles.Overlay} ${styles.overlay} ${show ? '' : styles.hidden}`}
-        inert={show ? false : true}
+        inert={!show}
     >
         <img alt="Poster for media" src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path}`} />
         <div className={styles.details}>
@@ -90,7 +90,7 @@ const Overlay = ({
                     <button
                         className={`unstyled ${styles.option}`}
                     >
-                        <Link href={`/api/video?id=${fileId}&mime=${mimetype}&download=true`}>
+                        <Link href={`/api/video/${fileId}?mime=${mimetype}&download=true`}>
                             <span className="material-icons">download</span>
                         </Link>
                     </button>

@@ -199,6 +199,10 @@ button {
     opacity: 0;
 }
 
+.thumbnailsActive #video.video-js .vjs-control-bar {
+    opacity: 1;
+}
+
 
 /* For TV control */
 .vjs-control-bar.tv-control {

@@ -1,0 +1,39 @@
+.TimestampSelector { 
+    position: absolute;
+    display: flex;
+    gap: 1rem;
+    bottom: 7rem;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    visibility: visible;
+    padding: 0.5rem;
+    backdrop-filter: blur(5px);
+
+    &.active {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
+    }
+
+    button {
+        &:hover, &:focus {
+            outline: none;
+
+            img {
+                box-shadow: 0px 0px 20px rgba(255, 166, 0, 0.692);
+                transform: scale(0.95);
+            }
+        }
+
+        img {
+            width: 10rem;
+            height: 7rem;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-bottom: 0.5rem;
+        }
+    }
+}
