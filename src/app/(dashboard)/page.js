@@ -23,10 +23,13 @@ export default async function Home() {
             include: {
                 File: true
             },
+            orderBy: {
+                id: 'desc'
+            },
             distinct: ['fileId']
         })
         fullRecentArray = []
-        for (let item of recent.reverse()) {
+        for (let item of recent) {
             const json = JSON.parse(item.File.metadata)
             fullRecentArray.push({
                 id: item.fileId,
