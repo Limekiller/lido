@@ -15,10 +15,12 @@ const TimestampSelector = ({
     playerRef,
     active = false
 }) => {
-    const slider = useRef();
-    const numberOfThumbnails = 20
-
     const [thumbnails, setThumbnails] = useState([])
+
+    const numberOfThumbnails = 20
+    const slider = useRef()
+    const thumbnailRef = useRef()
+    thumbnailRef.current = thumbnails
 
     useEffect(() => {
         const handleKey = e => {
@@ -32,7 +34,6 @@ const TimestampSelector = ({
         }
         if (slider.current.splide) {
             document.addEventListener('keydown', handleKey)
-            slider.current.splide.refresh();
         }
         return () => {
             document.removeEventListener('keydown', handleKey)
@@ -41,9 +42,17 @@ const TimestampSelector = ({
 
     useEffect(() => {
         if (thumbnails.length === 0 && duration) {
-            fetch(`/api/video/${fileId}/thumbnail?duration=${duration}&mime=${mimetype}&number=${numberOfThumbnails}`)
-            .then(response => response.json())
-            .then(data => setThumbnails(data))
+            const getThumbnails = async () => {
+                const numIters = Math.ceil(numberOfThumbnails / 5)
+                for (let i = 0; i < numIters + 1; i++) {
+                    let response = await fetch(`
+                        /api/video/${fileId}/thumbnail?duration=${duration}&mime=${mimetype}&number=${numberOfThumbnails}&start=${i * 5}&end=${(i * 5) + 4}`
+                    )
+                    response = await response.json()
+                    setThumbnails([...thumbnailRef.current, ...response])
+                }
+            }
+            getThumbnails()
         }
 
         if (!active) return
@@ -78,7 +87,7 @@ const TimestampSelector = ({
                     id={`thumbnail-${i}`}
                     onClick={() => playerRef.current.currentTime(rawTimestamp)}
                 >
-                    <img src={thumbnails && thumbnails.length > 0 ? `data:image/jpeg;base64,${thumbnails[i]}` : 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921' } />
+                    <img src={thumbnails.length > 0 ? `data:image/jpeg;base64,${thumbnails[i]}` : 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921' } />
                     {timestamp}
                 </button>
             </SplideSlide>

@@ -11,9 +11,19 @@ export const GET = verifySession(
         let mime = searchParams.get('mime')
         const fileExt = libFunctions.getFileExtFromMime(mime)
 
+        // If we're given a duration, we get a set of thumbnails from the whole movie, split evenly by number
+        // In an attempt to optimize, we can also optionally pass a range to only generate the thumbnails between some start and end point
         if (searchParams.has('duration')) {
             const number = searchParams.get('number')
-            const filenames = await libFunctions.getThumbnails(fileId, fileExt, searchParams.get('duration'), number)
+            let start = 0
+            let end = 0
+
+            if (searchParams.has('start') && searchParams.has('end')) {
+                start = searchParams.get('start')
+                end = searchParams.get('end')
+            }
+
+            const filenames = await libFunctions.getThumbnails(fileId, fileExt, searchParams.get('duration'), number, start, end)
             let images = []
             for (const filename of filenames) {
                 try {
@@ -26,6 +36,7 @@ export const GET = verifySession(
             }
             return Response.json(images)
 
+        // If we have a timestamp, get one thumbnail at that time
         } else {
             let timestamp = searchParams.get('timestamp')
             const filename = await libFunctions.getThumbnailAtTimestamp(fileId, fileExt, timestamp)

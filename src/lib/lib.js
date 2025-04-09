@@ -55,9 +55,14 @@ const getFileExtFromMime = mimetype => {
     return mimes[mimetype]
 }
 
-const getThumbnails = async (file, mime, duration, number = 20) => {
+const getThumbnails = async (file, mime, duration, number = 20, start = 0, end = 0) => {
+    number = parseInt(number); start = parseInt(start); end = parseInt(end)
+    if (end === 0 || end > number) {
+        end = number
+    }
+
     let filenames = []
-    for (let i = 0; i < number; i++) {
+    for (let i = start; i < end + 1; i++) {
         const timestamp = clientLibFunctions.getTimestampFromDuration((duration / number) * i)
         const filename = await getThumbnailAtTimestamp(file, mime, timestamp)
         filenames.push(filename)
