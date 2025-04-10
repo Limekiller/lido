@@ -43,10 +43,10 @@ const TimestampSelector = ({
     useEffect(() => {
         if (thumbnails.length === 0 && duration) {
             const getThumbnails = async () => {
-                const numIters = Math.ceil(numberOfThumbnails / 5)
+                const numIters = Math.ceil(numberOfThumbnails / 2)
                 for (let i = 0; i < numIters + 1; i++) {
                     let response = await fetch(`
-                        /api/video/${fileId}/thumbnail?duration=${duration}&mime=${mimetype}&number=${numberOfThumbnails}&start=${i * 5}&end=${(i * 5) + 4}`
+                        /api/video/${fileId}/thumbnail?duration=${duration}&mime=${mimetype}&number=${numberOfThumbnails}&start=${i * 2}&end=${(i * 2) + 1}`
                     )
                     response = await response.json()
                     setThumbnails([...thumbnailRef.current, ...response])
