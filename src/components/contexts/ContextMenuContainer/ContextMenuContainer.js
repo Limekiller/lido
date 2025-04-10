@@ -11,9 +11,19 @@ const ContextMenuContainer = ({ children }) => {
     const [contextItems, setContextItems] = useState([])
     const [isDisplaying, setIsDisplaying] = useState(false)
     const [menuPos, setMenuPos] = useState([0, 0])
+    const [lastActiveElem, setLastActiveElem] = useState(null)
 
     const showMenu = (e, items) => {
-        setMenuPos([e.clientX, e.clientY])
+        let x = e.clientX
+        let y = e.clientY
+
+        if (!x && !y) {
+            const rect = e.target.getBoundingClientRect()
+            x = rect.left
+            y = rect.top
+        }
+
+        setMenuPos([x, y])
         setContextItems(items)
         setIsDisplaying(true)
     }
@@ -30,8 +40,11 @@ const ContextMenuContainer = ({ children }) => {
             SpatialNavigation.enable('mainNav')
         }
         if (isDisplaying) {
+            setLastActiveElem(document.activeElement)
             document.querySelector('#contextMenu button').focus()
             SpatialNavigation.disable('mainNav')
+        } else {
+            lastActiveElem?.focus()
         }
     }, [isDisplaying])
 
