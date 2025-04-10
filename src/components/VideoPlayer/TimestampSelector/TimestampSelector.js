@@ -43,10 +43,11 @@ const TimestampSelector = ({
     useEffect(() => {
         if (thumbnails.length === 0 && duration) {
             const getThumbnails = async () => {
-                const numIters = Math.ceil(numberOfThumbnails / 5)
+                const numIters = Math.ceil(numberOfThumbnails / 3)
                 for (let i = 0; i < numIters + 1; i++) {
-                    let response = await fetch(`
-                        /api/video/${fileId}/thumbnail?duration=${duration}&mime=${mimetype}&number=${numberOfThumbnails}&start=${i * 5}&end=${(i * 5) + 4}`
+                    let response = await fetch(
+                        `/api/video/${fileId}/thumbnail?duration=${duration}&mime=${mimetype}&number=${numberOfThumbnails}&start=${i * 3}&end=${(i * 3) + 2}`,
+                        {signal: AbortSignal.timeout(10000)}
                     )
                     response = await response.json()
                     setThumbnails([...thumbnailRef.current, ...response])
@@ -87,7 +88,7 @@ const TimestampSelector = ({
                     id={`thumbnail-${i}`}
                     onClick={() => playerRef.current.currentTime(rawTimestamp)}
                 >
-                    <img src={thumbnails.length > 0 ? `data:image/jpeg;base64,${thumbnails[i]}` : 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921' } />
+                    <img src={thumbnails[i] ? `data:image/jpeg;base64,${thumbnails[i]}` : 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921' } />
                     {timestamp}
                 </button>
             </SplideSlide>

@@ -2,7 +2,8 @@ import fs from 'fs-extra'
 import path from 'path'
 
 import libFunctions from '@/lib/lib'
-import { verifySession } from '@/lib/auth/lib'
+import { getSession } from 'next-auth/react'
+import { prisma } from '@/lib/prisma'
 
 async function* nodeStreamToIterator(stream) {
     for await (const chunk of stream) {
@@ -24,192 +25,74 @@ const iteratorToStream = iterator => {
 }
 
 const streamFile = (path, start, end) => {
-    const nodeStream = fs.createReadStream(path, {start, end})
+    const nodeStream = fs.createReadStream(path, { start, end })
     const data = iteratorToStream(nodeStreamToIterator(nodeStream))
     return data
 }
 
-export const GET = verifySession(
-    async (req, { params }) => {
-        const fileId = (await params).id
-        let range = req.headers.get('range')
+export const GET = async (req, { params }) => {
+    const searchParams = req.nextUrl.searchParams
+    params = await params
 
-        const searchParams = req.nextUrl.searchParams
-        let mime = searchParams.get('mime')
-        let download = searchParams.get('download')
-
-        const fileExt = libFunctions.getFileExtFromMime(mime)
-
-        let filePath = path.join(process.env.STORAGE_PATH, `/video/${fileId}.${fileExt}`);
-        const videoSize = fs.statSync(filePath).size;
-
-        if (download) {
-            const buffer = await fs.readFile(filePath)
-            const headers = new Headers()
-            headers.append("Content-Disposition", `attachment; filename="${fileId}"`)
-            headers.append("Content-Type", mime)
-
-            return new Response(buffer, {
-                headers,
-            })
-        }
-
-        const CHUNK_SIZE = 25 ** 6; // 2.5MB
-        const start = Number(range.replace(/\D/g, ""));
-        const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-        const contentLength = end - start + 1;
-
-        const stream = streamFile(filePath, start, end)
-        return new Response(stream, {
-            status: 206,
-            headers: new Headers({
-                "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-                "Accept-Ranges": "bytes",
-                "Content-Length": contentLength,
-                "Content-Type": mime
-            })
+    let room
+    if (searchParams.has('room')) {
+        room = await prisma.room.findUnique({
+            where: {
+                id: searchParams.get('room')
+            }
         })
     }
-)
 
-// /**
-//  * API for reading/retrieving video files
-//  */
-// export default (req, res) => {
+    // We send a 401 if 
+    // - user is unauthorized AND
+    // - they don't send the secret as Bearer Token AND
+    // - a room parameter exists, but the room does not
+    const session = await getSession()
+    const secret = process.env.NEXTAUTH_SECRET
+    if (!session && req.headers.get('authorization') !== `Bearer ${secret}` && (searchParams.has('room') && !room)) {
+        return Response.json({
+            result: "error",
+            data: {
+                message: "Unauthorized"
+            }
+        }, { status: 401 })       
+    }
 
-//     if (req.query.download == 'true') {
-//         return new Promise(resolve => {
+    const fileId = params.id
+    let range = req.headers.get('range')
 
-//             const fileName = req.query.path.split('/').slice(-1).join()
-//             const filePath = path.join(process.cwd(), '/media/' + req.query.path)
-//             const stat = fs.statSync(filePath);
+    let mime = searchParams.get('mime')
+    let download = searchParams.get('download')
 
-//             const headers = {
-//                 "Content-Disposition": "attachment; filename='" + fileName + "'",
-//                 "Content-Type": "video/mp4",
-//                 'Content-Length': stat.size,
-//             };
-//             res.writeHead(200, headers);
+    const fileExt = libFunctions.getFileExtFromMime(mime)
 
-//             var readStream = fs.createReadStream(filePath);
+    let filePath = path.join(process.env.STORAGE_PATH, `/video/${fileId}.${fileExt}`);
+    const videoSize = fs.statSync(filePath).size;
 
-//             readStream.on('open', function () {
-//                 readStream.pipe(res);
-//             });
-//             readStream.on('error', function (err) {
-//                 res.end(err);
-//             });
-//             readStream.on('end', resolve)
-//             readStream.on('close', () => {
-//                 readStream.destroy()
-//             })
-//         })
+    if (download) {
+        const buffer = await fs.readFile(filePath)
+        const headers = new Headers()
+        headers.append("Content-Disposition", `attachment; filename="${fileId}"`)
+        headers.append("Content-Type", mime)
 
-//     } else if (req.query.stream) {
-//         return new Promise(resolve => {
-//             const engine = torrentStream(req.query.magnet);
-//             engine.on('ready', function () {
-//                 let foundSupportedFile = false
-//                 engine.files.forEach(async (file) => {
-//                     // Only proceed if the file is the right type,
-//                     // and we haven't already found a matching video file
-//                     const extension = file.name.split('.').pop()
-//                     if ((extension != 'mp4' && extension != 'mkv') || foundSupportedFile) {
-//                         return
-//                     }
-//                     foundSupportedFile = true
+        return new Response(buffer, {
+            headers,
+        })
+    }
 
-//                     const videoSize = file.length
-//                     let range = req.headers.range;
-//                     if (!range) {
-//                         res.end()
-//                         return
-//                     }
+    const CHUNK_SIZE = 25 ** 6; // 2.5MB
+    const start = Number(range.replace(/\D/g, ""));
+    const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+    const contentLength = end - start + 1;
 
-//                     // Parse Range
-//                     // Example: "bytes=32324-"
-//                     const CHUNK_SIZE = 20 ** 7; // 20MB
-//                     const start = Number(range.replace(/\D/g, ""));
-//                     const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-
-//                     // Create headers
-//                     const contentLength = end - start + 1;
-//                     const headers = {
-//                         "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-//                         "Accept-Ranges": "bytes",
-//                         "Content-Length": contentLength,
-//                         "Content-Type": "video/mp4",
-//                     };
-
-//                     res.writeHead(206, headers);
-
-//                     const stream = file.createReadStream({ start: start, end: end })
-//                     stream.pipe(res)
-//                     stream.on("end", () => {
-//                         engine.remove(false, () => {
-//                             engine.destroy(() => {
-//                                 stream.destroy()
-//                                 resolve()
-//                             })
-//                         })
-//                     })
-
-//                     stream.on('close', () => {
-//                         engine.remove(false, () => {
-//                             engine.destroy(() => {
-//                                 stream.destroy()
-//                             })
-//                         })
-//                     })
-//                 });
-
-//                 if (!foundSupportedFile) {
-//                     engine.destroy()
-//                     res.statusCode = 415
-//                     res.end();
-//                 }
-//             });
-//         })
-
-//     } else {
-
-//         let range = req.headers.range;
-//         if (!range) {
-//             res.end()
-//             return
-//         }
-
-//         let filePath = path.join(process.cwd(), '/media/' + req.query.path);
-//         const videoSize = fs.statSync(filePath).size;
-
-//         // Parse Range
-//         // Example: "bytes=32324-"
-//         const CHUNK_SIZE = 10 ** 6; // 1MB
-//         const start = Number(range.replace(/\D/g, ""));
-//         const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-
-//         // Create headers
-//         const contentLength = end - start + 1;
-//         const headers = {
-//             "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-//             "Accept-Ranges": "bytes",
-//             "Content-Length": contentLength,
-//             "Content-Type": "video/mp4",
-//         };
-
-//         res.writeHead(206, headers);
-
-//         // create video read stream for this particular chunk
-//         const videoStream = fs.createReadStream(filePath, { start, end });
-
-//         // Stream the video chunk to the client
-//         videoStream.pipe(res);
-
-//         res.on('close', () => {
-//             videoStream.destroy()
-//         })
-
-//         // res.statusCode = 206;
-//         // res.end();
-//     }
-// }
+    const stream = streamFile(filePath, start, end)
+    return new Response(stream, {
+        status: 206,
+        headers: new Headers({
+            "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+            "Accept-Ranges": "bytes",
+            "Content-Length": contentLength,
+            "Content-Type": mime
+        })
+    })
+}

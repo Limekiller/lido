@@ -55,6 +55,7 @@ model File {
     parent     File?      @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
     children   File[]     @relation("ParentChild")
     WatchLog   WatchLog[]
+    Room       Room[]
 }
 
 model WatchLog {
@@ -64,4 +65,10 @@ model WatchLog {
     fileId     String
     File       File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
     created_at DateTime @default(now())
+}
+
+model Room {
+    id     String @id @default(cuid())
+    fileId String
+    file   File   @relation(fields: [fileId], references: [id])
 }
