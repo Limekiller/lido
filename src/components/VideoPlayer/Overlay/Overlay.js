@@ -16,7 +16,8 @@ const Overlay = ({
     fileId,
     name,
     mimetype,
-    setShowOverlay
+    setShowOverlay,
+    partyModeActive = false
 }) => {
     const messageFunctions = useContext(MessageContext)
 
@@ -60,41 +61,50 @@ const Overlay = ({
                 >
                     <span className="material-icons">play_circle</span>
                 </button>
-                <button
-                    className={`secondary ${styles.back}`}
-                    onClick={messageFunctions.popMessage}
-                >
-                    <span className="material-icons">arrow_back</span>
-                </button>
-                <div>
+                {!partyModeActive ? <>
                     <button
-                        className={`unstyled ${styles.option}`}
-                        onClick={() => messageFunctions.addMessage({
-                            title: "Rename file",
-                            body: <RenameFile id={fileId} name={name} />,
-                            onSubmit: () => submitRename(fileId)
-                        })}
+                        className={`secondary ${styles.back}`}
+                        onClick={messageFunctions.popMessage}
                     >
-                        <span className="material-icons">border_color</span>
+                        <span className="material-icons">arrow_back</span>
                     </button>
-                    <button
-                        className={`unstyled ${styles.option}`}
-                        onClick={() => messageFunctions.addMessage({
-                            title: "Are you sure?",
-                            body: "Are you sure you want to delete this movie?",
-                            onSubmit: deleteFile
-                        })}
-                    >
-                        <span className="material-icons">delete</span>
-                    </button>
-                    <button
-                        className={`unstyled ${styles.option}`}
-                    >
-                        <Link href={`/api/video/${fileId}?mime=${mimetype}&download=true`}>
-                            <span className="material-icons">download</span>
-                        </Link>
-                    </button>
-                </div>
+                    <div>
+                        <button
+                            className={`unstyled ${styles.option}`}
+                            onClick={() => messageFunctions.addMessage({
+                                title: "Rename file",
+                                body: <RenameFile id={fileId} name={name} />,
+                                onSubmit: () => submitRename(fileId)
+                            })}
+                        >
+                            <span className="material-icons">border_color</span>
+                        </button>
+                        <button
+                            className={`unstyled ${styles.option}`}
+                            onClick={() => messageFunctions.addMessage({
+                                title: "Are you sure?",
+                                body: "Are you sure you want to delete this movie?",
+                                onSubmit: deleteFile
+                            })}
+                        >
+                            <span className="material-icons">delete</span>
+                        </button>
+                        <button
+                            className={`unstyled ${styles.option}`}
+                        >
+                            <Link href={`/api/video/${fileId}?mime=${mimetype}&download=true`}>
+                                <span className="material-icons">download</span>
+                            </Link>
+                        </button>
+                        <button
+                            className={`unstyled ${styles.option}`}
+                        >
+                            <Link href={`/party/?fileId=${fileId}&mime=${mimetype}`}>
+                                <span className="material-icons">celebration</span>
+                            </Link>
+                        </button>
+                    </div></>
+                : "" }
             </div>
 
         </div>

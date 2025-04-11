@@ -3,9 +3,9 @@
   "version": "3.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start -p 3001",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint",
     "completeDownload": "node src/lib/completeDownload.js"
   },
@@ -27,6 +27,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sass": "^1.85.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "sqlite3": "^5.1.7",
     "video.js": "^8.21.0"
   },

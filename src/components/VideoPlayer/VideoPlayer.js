@@ -17,7 +17,12 @@ const VideoPlayer = ({
     fileId,
     mimetype,
     metadata,
-    name
+    name,
+
+    partyModeActive = false,
+    roomId,
+    partyListeners,
+    lastAction
 }) => {
     const session = useSession()
     const messageFunctions = useContext(MessageContext)
@@ -49,6 +54,7 @@ const VideoPlayer = ({
                 playerRef.current.paused() ? playerRef.current.play() : playerRef.current.pause()
                 document.querySelector(`#playVideo`).focus()
                 break;
+
             case "Enter":
                 const playerClassList = [...document.querySelector('#video').classList]
                 const hasJustStarted = playerClassList.slice(-1)[0] !== 'vjs-has-started'
@@ -60,9 +66,11 @@ const VideoPlayer = ({
                 playerRef.current.pause()
                 document.querySelector(`#playVideo`).focus()
                 break;
+
             case "ArrowUp":
                 setthumbnailsActive(true)
                 break;
+
             case "ArrowDown":
                 if (document.querySelector('.timestampSelector').classList.contains('active')) {
                     setthumbnailsActive(false)
@@ -73,14 +81,17 @@ const VideoPlayer = ({
                     setSubtitles(e)
                 }
                 break;
+
             case "ArrowLeft":
                 if (document.querySelector('.timestampSelector').classList.contains('active')) break;
                 playerRef.current.currentTime(currTime - (playerRef.current.duration() / 50))
                 break;
+
             case "ArrowRight":
                 if (document.querySelector('.timestampSelector').classList.contains('active')) break;
                 playerRef.current.currentTime(currTime + (playerRef.current.duration() / 50))
                 break;
+                
             default:
                 break;
         }
@@ -103,11 +114,16 @@ const VideoPlayer = ({
             const player = playerRef.current = videojs(playerEl, {})
             player.ready(() => {
                 player.play()
+
                 player.on('pause', () => {
                     if (player.seeking()) return
                     setthumbnailsActive(false)
                     setShowOverlay(1)
+                    if (partyListeners) {
+                        partyListeners.pause()
+                    }
                 })
+
                 player.on('play', () => {
                     // EXTREMELY hacky way to detect if this is the "first play" or not
                     // We want to bind the overlay to the play state in every case except for autoplaying at the beginning
@@ -117,7 +133,17 @@ const VideoPlayer = ({
                     if (playerClassList.slice(-1)[0] !== 'vjs-has-started') {
                         setShowOverlay(0)
                     }
+                    if (partyListeners) {
+                        partyListeners.play()
+                    }
                 })
+
+                player.on('seeked', () => {
+                    if (partyListeners) {
+                        partyListeners.seek(player.currentTime())
+                    }
+                })
+
                 const trackEl = player.addRemoteTextTrack({ src: `/api/moviedata/subtitles?id=${fileId}` }, false)
                 // VideoJS is full of fun surprises :) Why doesn't the captions button work right on mobile?
                 // No one knows! Let's duplicate it to remove all event listeners and bind our own function to it, I guess!
@@ -187,6 +213,21 @@ const VideoPlayer = ({
         }
     }, [])
 
+    useEffect(() => {
+        switch (lastAction?.action) {
+            case "play":
+                playerRef.current.play()
+                break;
+            case "pause":
+                playerRef.current.pause()
+                break;
+            case "seek":
+                playerRef.current.currentTime(lastAction.args.seekTime)
+            default:
+                break;
+        }
+    }, [lastAction])
+    
     return <div
         className={`
             ${styles.VideoPlayer} 
@@ -210,6 +251,7 @@ const VideoPlayer = ({
                 metadata={metadata}
                 fileId={fileId}
                 name={name}
+                partyModeActive={partyModeActive}
                 mimetype={mimetype}
                 setShowOverlay={setShowOverlay}
             />
@@ -232,7 +274,7 @@ const VideoPlayer = ({
                 crossOrigin="anonymous"
             >
                 <source
-                    src={`/api/video/${fileId}?mime=${mimetype}`}
+                    src={`/api/video/${fileId}?mime=${mimetype}` + (roomId ? `&room=${roomId}` : "")}
                     // Even though we could set the correct mimetype, it doesn't work?
                     // It only works if we just claim everything is mp4? Um, OKAAAYYY (Tim Robinson voice)
                     type='video/mp4'
