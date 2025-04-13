@@ -71,4 +71,5 @@ model Room {
     id     String @id @default(cuid())
     fileId String
     file   File   @relation(fields: [fileId], references: [id])
+    users  String?
 }

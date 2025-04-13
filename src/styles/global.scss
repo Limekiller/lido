@@ -160,6 +160,10 @@ button {
     display: none;
 }
 
+.partyModeActive video {
+    pointer-events: none;
+}
+
 #video.video-js {
 
     &.vjs-user-inactive {

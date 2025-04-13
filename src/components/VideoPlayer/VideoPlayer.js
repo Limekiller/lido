@@ -22,7 +22,8 @@ const VideoPlayer = ({
     partyModeActive = false,
     roomId,
     partyListeners,
-    lastAction
+    lastAction,
+    chatOpen = false
 }) => {
     const session = useSession()
     const messageFunctions = useContext(MessageContext)
@@ -43,6 +44,7 @@ const VideoPlayer = ({
 
     const keyDownHandler = e => {
         if (document.querySelector('.videoPlayer').classList.contains('showingOverlay') && e.code !== 'Space') return
+        if (document.activeElement.tagName === 'INPUT') return
 
         playerRef.current.reportUserActivity()
         document.querySelector('.vjs-control-bar').classList.add('tv-control')
@@ -91,7 +93,7 @@ const VideoPlayer = ({
                 if (document.querySelector('.timestampSelector').classList.contains('active')) break;
                 playerRef.current.currentTime(currTime + (playerRef.current.duration() / 50))
                 break;
-                
+
             default:
                 break;
         }
@@ -217,20 +219,28 @@ const VideoPlayer = ({
         switch (lastAction?.action) {
             case "play":
                 playerRef.current.play()
+                setShowOverlay(false)
                 break;
             case "pause":
                 playerRef.current.pause()
                 break;
             case "seek":
-                playerRef.current.currentTime(lastAction.args.seekTime)
+                if (lastAction.args?.seekTime) {
+                    playerRef.current.currentTime(lastAction.args.seekTime)
+                } else {
+                    if (!playerRef.current.paused()) partyListeners.play()
+                    partyListeners.seek(playerRef.current.currentTime())
+                }
+
             default:
                 break;
         }
     }, [lastAction])
-    
+
     return <div
         className={`
             ${styles.VideoPlayer} 
+            ${partyModeActive ? 'partyModeActive' : ''}
             ${showOverlay ? 'showingOverlay' : ''}
             ${captionsEnabled ? 'captions' : ''}
             ${captionsAvailable ? 'captionsAvailable' : ''}
@@ -239,7 +249,7 @@ const VideoPlayer = ({
         `}
         onMouseMove={() => document.querySelector('.vjs-control-bar').classList.remove('tv-control')}
     >
-        <div data-vjs-player>
+        <div data-vjs-player style={{ width: chatOpen ? 'calc(100vw - 270px)' : '100vw' }}>
             <NextVideoTimer
                 player={playerRef}
                 nextEpisode={nextEpisode}
@@ -269,7 +279,7 @@ const VideoPlayer = ({
                 preload="auto"
                 id='video'
                 controls
-                autoPlay='autoplay'
+                autoPlay={partyModeActive ? false : true}
                 ref={onVideo}
                 crossOrigin="anonymous"
             >

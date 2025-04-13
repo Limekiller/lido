@@ -5,10 +5,10 @@ import { useSession, signOut } from "next-auth/react"
 import styles from './Navbar.module.scss'
 import Link from 'next/link'
 
-const Navbar = () => {
+const Navbar = ({ hidden = false }) => {
     const session = useSession()
 
-    return <div className={`${styles.Navbar} sidebar`}>
+    return <div className={`${styles.Navbar} sidebar ${hidden ? styles.hidden : ''}`}>
         <div className={styles.topOptions}>
             <Link href='/'><span className="material-icons">cottage</span></Link>
             <div className={styles.divider} />

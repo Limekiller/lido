@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import { useEffect, useState, useRef, useContext } from "react"
 import MessageContext from '@/lib/contexts/MessageContext'
 import VideoPlayer from "../VideoPlayer/VideoPlayer"
+import Chat from './Chat/Chat';
 
 import styles from './PartyController.module.scss'
 
@@ -11,7 +12,11 @@ const PartyController = ({ room, file }) => {
     const messageFunctions = useContext(MessageContext)
     const socketRef = useRef(null)
 
-    const [lastAction, setLastAction] = useState({action: null, args: null})
+    const [lastAction, setLastAction] = useState({ action: null, args: null })
+    const [messages, setMessages] = useState([])
+    const [users, setUsers] = useState([])
+    const [username, setUsername] = useState("Anonymous")
+    const [chatOpen, setchatOpen] = useState(false)
 
     const [seekLock, setSeekLock] = useState(false)
     const seekLockRef = useRef(null)
@@ -30,52 +35,63 @@ const PartyController = ({ room, file }) => {
             setTimeout(() => setSeekLock(false), 2000)
         }
     }
+    const sendMessage = async (message, type = "user") => {
+        if (type == "system") {
+            socketRef.current.emit("sysmessage", message, room.id)
+        } else {
+            socketRef.current.emit("message", username, message, room.id)
+        }
+    }
 
     useEffect(() => {
         messageFunctions.addMessage({
             title: "Create a username",
             body: <div className={styles.mainMenu}>
-                <input type='text' name='username' id='username' />
+                <input type='text' name='username' id='username' /><br /><br />
+                <button
+                    className='button'
+                    onClick={() => {
+                        const username = document.querySelector('#username').value
+                        setUsername(username)
+                        socket.emit("join", username, room.id)
+                        messageFunctions.popMessage()
+                    }}
+                >
+                    Ok
+                </button>
             </div>,
-            hideBoilerplate: true
+            hideButtons: true
         })
 
         const socket = socketRef.current = io()
 
-        socket.on('connect', () => {
-            console.log('Connected to server');
-            socket.emit("join", 'temp', room.id)
-        });
-
         socket.on("pause", () => {
-            setLastAction({action: 'pause', args: null})
+            setLastAction({ action: 'pause', args: null })
         })
         socket.on("play", () => {
-            setLastAction({action: 'play', args: null})
+            setLastAction({ action: 'play', args: null })
         })
         socket.on("seek", time => {
-            setLastAction({action: 'seek', args: {seekTime: time}})
+            setLastAction({ action: 'seek', args: { seekTime: time } })
+        })
+        socket.on("message", (username, message) => {
+            setMessages(messages => [{username, message, type: "user"}, ...messages])
+        })
+        socket.on("sysmessage", (message) => {
+            setMessages(messages => [{username: username, message, type: "system"}, ...messages])
+        })
+        socket.on("setUsers", (users) => {
+            setLastAction({ action: 'seek', args: null })
+            setUsers(users.split(','))
         })
 
         window.history.pushState(null, null, `${window.location.origin}/party?room=${room.id}`)
         return () => {
-            socket.disconnect();
-        };
-    }, []);
-  
+            socket.disconnect()
+        }
+    }, [])
+
     return <div className={styles.PartyController}>
-        <button 
-            className={`
-                secondary
-                ${styles.copyLinkButton}    
-            `}
-            style={{position: 'absolute', zIndex: 9}}
-            onClick={() => {
-                navigator.clipboard.writeText(window.location.href)
-            }}
-        >
-            Copy room link
-        </button>
         <VideoPlayer
             fileId={file.id}
             mimetype={file.mimetype}
@@ -90,6 +106,14 @@ const PartyController = ({ room, file }) => {
                 seek: seek,
             }}
             lastAction={lastAction}
+            chatOpen={chatOpen}
+        />
+        <Chat
+            messageFunction={sendMessage}
+            messages={messages}
+            users={users}
+            username={username}
+            onChatOpen={(chatState) => chatState ? setchatOpen(true) : setchatOpen(false)}
         />
     </div>
 }

@@ -1,8 +1,13 @@
 import { getSession } from "@/lib/auth/auth"
-import Providers from "@/lib/auth/providers"
-import PartyController from '@/components/PartyController/PartyController'
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+
+import Providers from "@/lib/auth/providers"
+import MessageContainer from "@/components/contexts/MessageContainer/MessageContainer"
+
+import PartyController from '@/components/PartyController/PartyController'
+import Navbar from "@/components/ui/Navbar/Navbar"
+
 
 const party = async ({ params, searchParams }) => {
     searchParams = await searchParams
@@ -36,10 +41,15 @@ const party = async ({ params, searchParams }) => {
     })
 
     return <Providers session={session}>
-        <PartyController 
-            room={room}
-            file={file}
-        />
+        <MessageContainer>
+            {session ? <Navbar hidden={true} /> : ''}
+            <div>
+                <PartyController 
+                    room={room}
+                    file={file}
+                />
+            </div>
+        </MessageContainer>
     </Providers>
 
 }
