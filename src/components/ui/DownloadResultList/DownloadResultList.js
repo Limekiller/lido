@@ -14,6 +14,7 @@ const DownloadResultList = ({
     const messageFunctions = useContext(MessageContext)
     const toastFunctions = useContext(ToastContext)
 
+    // Results can be a promise or a list of actual results
     results = typeof results === 'object' && typeof results?.then === 'function' ? use(results) : results
 
     const initiateDownload = async (download, category = null) => {
