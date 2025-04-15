@@ -269,11 +269,12 @@ button {
 }
 
 .splide {
-    width: calc(100% + 2rem);
+    width: calc(100% + 5rem);
+    margin-left: -3rem;
 }
 
 .splide__track {
-    padding-top: 0.5rem;
+    padding: 1rem 0 0 3rem !important;
 }
 
 @media screen and (max-width: 1000px) {

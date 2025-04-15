@@ -68,19 +68,19 @@ export default async function Home() {
 
         {fullRecentArray.length > 0 ?
             <>
-                <h1>Recently viewed</h1>
+                <h1 style={{marginBottom: '0.5rem'}}>Recently viewed</h1>
                 <MovieList movies={fullRecentArray} type='recent' />
             </>
             : ""
         }
 
-        <h1>Recommended for you</h1>
+        <h1 style={{marginBottom: '0.5rem'}}>Recommended for you</h1>
         <MovieList movies={fullRecommendedArray} />
 
-        <h1>Trending movies</h1>
+        <h1 style={{marginBottom: '0.5rem'}}>Trending movies</h1>
         <MovieList movies={movies} />
 
-        <h1>Trending shows</h1>
+        <h1 style={{marginBottom: '0.5rem'}}>Trending shows</h1>
         <MovieList movies={shows} />
     </div>
 }
