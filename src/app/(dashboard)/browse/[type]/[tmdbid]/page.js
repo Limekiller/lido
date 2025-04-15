@@ -3,6 +3,7 @@ import styles from './browse.module.scss'
 
 import searchProviders from '@/lib/searchProviders/searchProviders'
 import DownloadResultList from '@/components/ui/DownloadResultList/DownloadResultList'
+import { Suspense } from 'react'
 
 const getUSRating = data => {
     for (const release of data.release_dates.results) {
@@ -66,7 +67,9 @@ const page = async ({ params }) => {
             </div>
         </div>
 
-        <DownloadResultList results={torrents} />
+        <Suspense fallback={<DownloadResultList results={null} />}>
+            <DownloadResultList results={torrents} />
+        </Suspense>
     </div>
 }
 

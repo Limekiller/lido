@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useContext } from 'react'
+import { useState, useContext, use } from 'react'
 import MessageContext from '@/lib/contexts/MessageContext'
 import ToastContext from '@/lib/contexts/ToastContext'
 
@@ -13,11 +13,8 @@ const DownloadResultList = ({
  }) => {
     const messageFunctions = useContext(MessageContext)
     const toastFunctions = useContext(ToastContext)
-    const [resultState, setResultState] = useState(null)
 
-    Promise.resolve(results).then(async () => {
-        setResultState(results.value || results)
-    })
+    results = typeof results === 'object' && typeof results?.then === 'function' ? use(results) : results
 
     const initiateDownload = async (download, category = null) => {
         category = category == null ? document.querySelector('#activeCat').value : category
@@ -62,7 +59,7 @@ const DownloadResultList = ({
     }
 
     return <div className={styles.DownloadResultList}>
-        {resultState === null ?
+        {results === null ?
 
             new Array(6).fill(0).map((num, index) => {
                 return <div 
@@ -74,9 +71,9 @@ const DownloadResultList = ({
                 >&nbsp;</div>
             }) :
 
-            resultState.length === 0 ? "no results" :
+            results.length === 0 ? "No results" :
 
-                resultState.map(result => {
+                results.map(result => {
                     return <button
                         className={`${styles.download} unstyled`}
                         key={result.link}
