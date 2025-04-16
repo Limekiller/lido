@@ -12,11 +12,10 @@ const search = async ({ searchParams }) => {
     let matchingFiles = await prisma.file.findMany({
         where: {
             AND: [
-                {
-                    name: {
-                        contains: query
-                    }
-                },
+                {OR: [
+                    {name: {contains: query}},
+                    {metadata: {contains: query}},
+                ]},
                 { area: "video" }
             ]
         }
