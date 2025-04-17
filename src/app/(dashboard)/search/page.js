@@ -83,7 +83,7 @@ const search = async ({ searchParams }) => {
             </div>
 
         })}
-        {Object.keys(matchingFiles).length && tmdbResults ? <><br /><h1>Other results</h1></> : ""}
+        {Object.keys(matchingFiles).length && tmdbResults ? <><br /><h2 className={styles.catName}>Downloadable results</h2></> : ""}
         <div className={styles.externalResults}>
             {tmdbResults.map(result => {
                 return <Link key={result.id} href={`/browse/${result.media_type}/${result.id}`}>

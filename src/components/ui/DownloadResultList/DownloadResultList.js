@@ -80,7 +80,7 @@ const DownloadResultList = ({
                         key={result.link}
                         onClick={() => selectDownload(result)}
                     >
-                        <span>{result.name}</span>
+                        <span className={styles.name}>{result.name}</span>
                         <div className={styles.trackerData}>
                             <span className={styles.seeders}>{result.seeders}</span>
                             <span className={styles.leechers}>{result.leechers}</span>

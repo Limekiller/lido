@@ -31,20 +31,44 @@
                 margin-top: -1rem;
             }
 
-            .runtime {
-                border: 2px solid white;
-                border-radius: 99rem;
-                padding: 0.25rem 1rem;
+            .yearGenre {
                 display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
 
-            .rated {
-                padding: 0.25rem 1rem;
-                background-color: white;
-                color: black;
-                border-radius: 0.25rem;
+            .plotDetails {
                 display: flex;
-                align-items: center;
+                justify-content: space-between;
+
+                p {
+                    width: 66%;
+                    flex-shrink: 0;
+                }
+            }
+
+            .runtimeRated {
+                display: flex;
+                gap: 1rem;
+                height: min-content;
+                width: max-content;
+                white-space: nowrap;
+
+                .runtime {
+                    border: 2px solid white;
+                    border-radius: 99rem;
+                    padding: 0.25rem 1rem;
+                    display: flex;
+                }
+    
+                .rated {
+                    padding: 0.25rem 1rem;
+                    background-color: white;
+                    color: black;
+                    border-radius: 0.25rem;
+                    display: flex;
+                    align-items: center;
+                }
             }
 
             p {
@@ -53,4 +77,28 @@
         }
     }
 
+    @media screen and (max-width: 1000px) {
+        .header {
+            height: 25rem;
+
+            .details {
+                img {
+                    display: none;
+                }
+                
+                h1 {
+                    font-size: 2rem;
+                    line-height: 2.25rem;
+                }
+
+                .runtimeRated {
+                    flex-direction: column;
+
+                    .rated {
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+    }
 }

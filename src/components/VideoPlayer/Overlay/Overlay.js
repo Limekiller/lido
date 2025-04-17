@@ -68,7 +68,7 @@ const Overlay = ({
                     >
                         <span className="material-icons">arrow_back</span>
                     </button>
-                    <div>
+                    <div className={styles.actions}>
                         <button
                             className={`unstyled ${styles.option}`}
                             onClick={() => messageFunctions.addMessage({

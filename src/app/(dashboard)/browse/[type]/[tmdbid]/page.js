@@ -45,7 +45,7 @@ const page = async ({ params }) => {
                 <img src={`https://image.tmdb.org/t/p/w300_and_h450_bestv2/${metadata.poster_path}`} />
                 <div style={{ width: '100%' }}>
                     <h1 className={`title ${styles.title}`}>{metadata.name || metadata.title}</h1>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className={styles.yearGenre}>
                         <h2>{metadata.release_date?.slice(0, 4) || metadata.first_air_date?.slice(0, 4)}</h2>
                         <p>
                             {metadata.genres.map((genre, index) => {
@@ -53,10 +53,10 @@ const page = async ({ params }) => {
                             })}
                         </p>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <p style={{ width: '66%' }}>{metadata.overview}</p>
+                    <div className={styles.plotDetails}>
+                        <p>{metadata.overview}</p>
                         {type === 'movie' ?
-                            <div style={{ display: 'flex', gap: '1rem', height: 'min-content' }}>
+                            <div className={styles.runtimeRated}>
                                 <span className={styles.runtime}>{metadata.runtime} min.</span>
                                 <span className={styles.rated}>{getUSRating(metadata)}</span>
                             </div>

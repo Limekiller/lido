@@ -1,16 +1,48 @@
 .Dashboard {
     .topBar {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column-reverse;
+        align-items: start;
         padding: 2rem 0;
+        gap: 1.5rem;
+        margin-bottom: -2rem;
 
         h3 {
             margin: 0;
         }
 
-        img {
-            height: 2rem;
+        .info {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row-reverse;
+            width: 100%;
+
+            .widgets {
+                display: flex;
+                gap: 1rem;
+            }
+
+            img {
+                height: 2rem;
+            }
+        }
+
+    }
+
+    @media screen and (max-width: 750px) {
+        .topBar {
+            flex-direction: column-reverse;
+            align-items: start;
+            gap: 2rem;
+            margin-bottom: -2rem;
+
+            .info {
+                width: 100%;
+                justify-content: space-between;
+                flex-direction: row-reverse;
+            }
         }
     }
 }

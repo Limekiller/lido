@@ -104,4 +104,26 @@
             }
         }
     }
+
+    @media screen and (max-width: 750px) {
+        .details {
+            width: 100%;
+
+            p {
+                max-height: 33vh;
+                overflow-y: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .options {
+                flex-wrap: wrap;
+
+                .actions {
+                    width: 100%;
+                    flex-grow: 1;
+                    display: flex;
+                }
+            }
+        }
+    }
 }

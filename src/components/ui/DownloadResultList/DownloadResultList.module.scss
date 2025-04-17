@@ -13,6 +13,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 1rem;
+
+        .name {
+            word-break: break-all;
+        }
 
         &:not(.loading):hover {
             transform: scale(1.01);

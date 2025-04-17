@@ -59,9 +59,11 @@ export default async function Home() {
     return <div className={styles.Dashboard}>
         <div className={styles.topBar}>
             <h3>Hey, {session?.user.name}!<br />What do you want to watch?</h3>
-            <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
-                <VPN />
-                <Storage />
+            <div className={styles.info}>
+                <div className={styles.widgets}>
+                    <VPN />
+                    <Storage />
+                </div>
                 <img src='/images/logo_white.svg' />
             </div>
         </div>
