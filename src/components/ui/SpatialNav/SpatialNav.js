@@ -12,7 +12,9 @@ const SpatialNav = () => {
      * Helper function to initialize all the spatial nav stuff
      */
     const initSpatialNav = async () => {
-        while (!document.querySelector('script[src="/js/spatialnav.js"]')) { await new Promise(resolve => setTimeout(resolve, 500)); }
+        while (!document.querySelector('script[src="/js/spatialnav.js"]') || typeof SpatialNavigation == "undefined") { 
+            await new Promise(resolve => setTimeout(resolve, 500)); 
+        }
 
         SpatialNavigation.init();
         SpatialNavigation.add(
