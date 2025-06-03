@@ -6,7 +6,7 @@ export const GET = verifySession(
         const searchParams = req.nextUrl.searchParams
         const query = searchParams.get('query')
 
-        const results = await searchProviders._1337x(query)
+        const results = await searchProviders.torrentdownload(query)
 
         return Response.json({
             result: "success",

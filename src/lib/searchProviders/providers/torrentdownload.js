@@ -2,28 +2,27 @@
 
 import jsdom from 'jsdom'
 
-const _1337x = async query => {
-    let response = await fetch(`https://1337x.to/search/${query}/1/`)
+const torrentdownload = async query => {
+    let response = await fetch(`https://www.torrentdownload.info/search?q=${query}`)
     response = await response.text()
-    console.log(response);
 
     const dom = new jsdom.JSDOM(response)
     let finalResults = []
-    const results = [...dom.window.document.querySelectorAll('tbody tr')]
+    const results = [...dom.window.document.querySelectorAll('.table2:nth-of-type(2) tbody tr:not(:nth-of-type(1))')]
 
     for (let [index, result] of results.entries()) {
         if (index > 5) {
             break
         }
 
-        const linkElem = result.querySelector('a:not(.icon)')
+        const linkElem = result.querySelector('a')
         const link = linkElem.href
 
-        let resultPage = await fetch(`https://1337x.to${link}`)
+        let resultPage = await fetch(`https://www.torrentdownload.info${link}`)
         resultPage = await resultPage.text()
         const infoDom = new jsdom.JSDOM(resultPage)
 
-        let category = infoDom.window.document.querySelector('.torrent-detail-page .no-top-radius .clearfix .list li span').innerHTML
+        let category = infoDom.window.document.querySelector('.table3 tr:nth-of-type(4) td:nth-of-type(2)').innerHTML.split(' ')[0] 
         if (!['Movies', 'TV'].includes(category)) {
             continue
         }
@@ -32,9 +31,9 @@ const _1337x = async query => {
         }
 
         const magnetUrl = infoDom.window.document.querySelector('a[href*="magnet"]').href
-        const name = linkElem.innerHTML
-        const seeders = result.querySelector('.seeds').innerHTML
-        const leechers = result.querySelector('.leeches').innerHTML
+        const name = linkElem.innerHTML.replace(/<[^>]*>?/gm, '')
+        const seeders = result.querySelector('.tdseed').innerHTML
+        const leechers = result.querySelector('.tdleech').innerHTML
 
         finalResults.push({
             name: name,
@@ -48,4 +47,4 @@ const _1337x = async query => {
     return finalResults
 }
 
-export default _1337x
+export default torrentdownload

@@ -32,7 +32,7 @@ const page = async ({ params }) => {
 
     const year = (metadata.release_date || metadata.first_air_date).slice(0, 4)
     const searchString = `${metadata.name || metadata.title}+${type === 'movie' ? year : 'complete'}`
-    const torrents = searchProviders._1337x(searchString)
+    const torrents = searchProviders.torrentdownload(searchString)
 
     return <div className={styles.Browse}>
         <div
