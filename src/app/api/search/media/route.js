@@ -6,7 +6,7 @@ export const GET = verifySession(
         const searchParams = req.nextUrl.searchParams
         const query = searchParams.get('query')
 
-        const results = await searchProviders.torrentdownload(query)
+        const results = await searchProviders.cloudtorrents(query)
 
         return Response.json({
             result: "success",

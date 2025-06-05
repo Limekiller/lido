@@ -42,6 +42,8 @@ export const POST = verifySession(
             }, { status: 502 })
         }
 
+        console.log(newTransDownload)
+
         await prisma.download.update({
             where: {
                 id: newDownload.id
