@@ -102,7 +102,6 @@ const getSubsFromPodnapisi = async (id, name, categoryId, downloadId) => {
 }
 
 export const GET = async req => {
-    console.log('gughhhh');
     const searchParams = req.nextUrl.searchParams
     const id = searchParams.get('id')
 

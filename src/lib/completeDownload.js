@@ -102,7 +102,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
                     // If we got something, save it to the database and relate it to the current video file
                     if (fs.existsSync(subtitleFile)) {
                         foundSubs = true
-                        await fetch(`${process.env.NEXTAUTH_URL}/api/file`, {
+                        let newSubFile = await fetch(`${process.env.NEXTAUTH_URL}/api/file`, {
                             method: "POST",
                             headers: {
                                 'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
@@ -116,6 +116,10 @@ const filterFiles = async (downloadPath, mediaPath) => {
                                 parentId: newFile.data.id
                             })
                         })
+
+                        // Rename extracted file with new file ID instead of video ID
+                        newSubFile = await newSubFile.json()
+                        fs.renameSync(subtitleFile, `${mediaPath}/subtitles/${newSubFile.data.id}.vtt`)
                     }
                 } catch (error) {}
                 if (!foundSubs) {

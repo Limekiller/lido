@@ -1,15 +1,11 @@
 "use server"
 
-import jsdom from 'jsdom'
-
 const cloudtorrents = async query => {
     let response = await fetch(`https://api.cloudtorrents.com/search/?query=${query}&ordering=-se`)
     response = await response.json()
 
     let finalResults = []
     for (let result of response.results) {
-        console.log(result)
-
         if (!['Movie', 'Tv'].includes(result.torrent.torrentMetadata.torrentType.name)) {
             continue
         }
