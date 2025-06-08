@@ -108,7 +108,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
                                 'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
                             },
                             body: JSON.stringify({
-                                name: `${newFile.name}.vtt`,
+                                name: `${newFile.data.name}.vtt`,
                                 categoryId: download.destinationCategory,
                                 downloadId: download.id,
                                 mimetype: 'text/vtt',

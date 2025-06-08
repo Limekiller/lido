@@ -2,7 +2,7 @@
 
 import jsdom from 'jsdom'
 
-const _1337x = async query => {
+const cloudtorrents = async query => {
     let response = await fetch(`https://cloudtorrents.com/search?query=${query}&ordering=-se`)
     response = await response.text()
 
@@ -42,4 +42,4 @@ const _1337x = async query => {
     return finalResults
 }
 
-export default _1337x
+export default cloudtorrents
