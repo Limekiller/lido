@@ -5,6 +5,8 @@
     border-radius: 1rem;
     animation: fadeZoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     min-width: 30rem;
+    max-height: 90vh;
+    overflow: auto;
 
     h1 {
         font-size: 1.5rem;
