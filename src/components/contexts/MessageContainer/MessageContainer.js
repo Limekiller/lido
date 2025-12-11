@@ -41,8 +41,10 @@ const MessageContainer = ({ children }) => {
         setMessages(messages.slice(0, -1))
     }
 
-    useEffect(() => {
-        document.body.classList.remove('hasMessages')
+    const initSpatialNav = async () => {
+        while (typeof SpatialNavigation === 'undefined') {
+             await new Promise(resolve => setTimeout(resolve, 100));
+        }
         SpatialNavigation.enable('mainNav')
 
         if (messages.length > 0) {
@@ -60,6 +62,12 @@ const MessageContainer = ({ children }) => {
 
             document.body.classList.add('hasMessages')
         }
+    }
+
+    useEffect(() => {
+        document.body.classList.remove('hasMessages')
+        initSpatialNav()
+
         return () => {
             document.body.classList.remove('hasMessages')
         }

@@ -34,7 +34,21 @@ const ContextMenuContainer = ({ children }) => {
         }
     }
 
+    const initSpatialNav = async () => {
+        while (typeof SpatialNavigation === 'undefined') {
+             await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        SpatialNavigation.add(`contextMenu`, {
+            selector: `#contextMenu button`,
+            defaultElement: `#contextMenu button`
+        })
+    }
+
     useEffect(() => {
+        if (typeof SpatialNavigation === 'undefined') {
+            return
+        }
+
         SpatialNavigation.enable('contextMenu')
         if (!document.body.classList.contains('hasMessages')) {
             SpatialNavigation.enable('mainNav')
@@ -49,10 +63,7 @@ const ContextMenuContainer = ({ children }) => {
     }, [isDisplaying])
 
     useEffect(() => {
-        SpatialNavigation.add(`contextMenu`, {
-            selector: `#contextMenu button`,
-            defaultElement: `#contextMenu button`
-        })
+        initSpatialNav()
 
         document.addEventListener('contextmenu', event => event.preventDefault())
         document.addEventListener("click", handleClickOutside, false)
