@@ -24,11 +24,14 @@ const NextVideoTimer = ({
         }
 
         const timeLeftChecker = e => {
-            if (!nextEpisode || userInput) return
+            if (!nextEpisode || userInput || !player.current.duration()) return
+
             if (player.current.duration() - player.current.currentTime() > 40) return
             setShow(true)
+
             if (player.current.duration() - player.current.currentTime() > 30) return
             clearInterval(nextEpChecker)
+            
             messageFunctions.replaceMessage({
                 title: nextEpisode.name,
                 body: <VideoPlayer
