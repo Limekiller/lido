@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@ctrl/transmission": "^7.2.0",
-    "@prisma/client": "^6.4.1",
+    "@prisma/adapter-better-sqlite3": "^7.1.0",
+    "@prisma/client": "^7.1.0",
     "@splidejs/react-splide": "^0.7.12",
     "adm-zip": "^0.5.16",
     "bcrypt": "^5.1.1",
@@ -23,7 +24,6 @@
     "next": "16.0.10",
     "next-auth": "^4.24.11",
     "nextjs-toploader": "^3.7.15",
-    "prisma": "^6.4.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "sass": "^1.85.1",
@@ -35,7 +35,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "eslint": "^9",
-    "eslint-config-next": "16.0.10"
+    "eslint-config-next": "16.0.10",
+    "prisma": "^7.1.0"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
