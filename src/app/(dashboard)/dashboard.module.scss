@@ -2,7 +2,7 @@
     .topBar {
         display: flex;
         flex-direction: column-reverse;
-        align-items: start;
+        align-items: flex-start;
         padding: 2rem 0;
         gap: 1.5rem;
         margin-bottom: -2rem;
@@ -34,7 +34,7 @@
     @media screen and (max-width: 750px) {
         .topBar {
             flex-direction: column-reverse;
-            align-items: start;
+            align-items: flex-start;
             gap: 2rem;
             margin-bottom: -2rem;
 
