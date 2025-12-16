@@ -27,7 +27,7 @@ Clone this repository and install and update Node and NPM to the latest versions
 - Create a storage location, such as /var/lidostorage
 - Create a .env file in the install directory with the following values:
 ```
-DATABASE_URL="file:./data.db"
+DATABASE_URL="file:./prisma/data.db"
 NEXTAUTH_SECRET={some_madeup_secret_string}
 NEXTAUTH_URL={the_url_of_the_app}
 ADMIN_PASSWORD={a_default_password_for_the_admin_account}
@@ -37,6 +37,8 @@ TMDB_API_KEY={your_tmdb_api_key} (www.themoviedb.org) -- This is required for fe
 - Finish the install
   - `cd /path/to/install`
   - `npm install`
+  - `npx prisma generate`
+  - `npx prisma db seed`
   - `npm run build`
   - `npm run start`
 - Run the Transmission daemon with the desired user: `transmission-daemon -f`
