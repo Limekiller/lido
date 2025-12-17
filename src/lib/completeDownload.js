@@ -67,30 +67,43 @@ const filterFiles = async (downloadPath, mediaPath) => {
     download = await download.json()
     download = download.data
 
-    await Promise.all(allFiles.map(async file => {
+    for (let file of allFiles) {
+    //await Promise.all(allFiles.map(async file => {
+	console.log('Processing file: ', file.split('/').slice(-1)[0])
         const fileData = await fromFile(file);
 
         if (fileData) {
+	    console.log('Got file data')
             const isVideoFile = fileData.mime.includes('video')
             const isLargeEnough = getFileSize(file) > 125 ? true : false
 
             if (isVideoFile && isLargeEnough) {
+		console.log('File is valid')
 
                 /** PROCESS FILE **/
-                let newFile = await fetch(`${process.env.NEXTAUTH_URL}/api/file`, {
-                    method: "POST",
-                    headers: {
-                        'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
-                    },
-                    body: JSON.stringify({
-                        name: file.split('/').slice(-1)[0],
-                        categoryId: download.destinationCategory,
-                        downloadId: download.id,
-                        mimetype: fileData.mime,
-                        area: "video"
-                    })
-                })
-                newFile = await newFile.json()
+		let newFile = null;
+		while (true) {
+		    try {
+                        newFile = await fetch(`${process.env.NEXTAUTH_URL}/api/file`, {
+                            method: "POST",
+                            headers: {
+                                'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
+                            },
+                            body: JSON.stringify({
+                                name: file.split('/').slice(-1)[0],
+                                categoryId: download.destinationCategory,
+                                downloadId: download.id,
+                                mimetype: fileData.mime,
+                                area: "video"
+                            })
+                        })
+                        newFile = await newFile.json()
+			break
+		    } catch (error) {
+			console.log(error.message)
+		        await new Promise(resolve => setTimeout(resolve, 5000))
+		    }
+		}
                 const newFilePath = `${mediaPath}/video/${newFile.data.id}.${file.split('.').slice(-1)[0]}`
 
                 /** PROCESS SUBTITLES **/
@@ -121,24 +134,32 @@ const filterFiles = async (downloadPath, mediaPath) => {
                         newSubFile = await newSubFile.json()
                         fs.renameSync(subtitleFile, `${mediaPath}/subtitles/${newSubFile.data.id}.vtt`)
                     }
-                } catch (error) {}
+                } catch (error) {
+		    console.log("Couldn't get subtitles from file")
+		}
+
                 if (!foundSubs) {
                     // Otherwise, make a network request to the subtitles GET endpoint for this video
                     // What this will do is search podnapisi for subtitles and save them if found
-                    await fetch(`${process.env.NEXTAUTH_URL}/api/moviedata/subtitles?id=${newFile.data.id}`, {
-                        headers: {
-                            'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
-                        }
-                    })
+		    try {
+                        await fetch(`${process.env.NEXTAUTH_URL}/api/moviedata/subtitles?id=${newFile.data.id}`, {
+                            headers: {
+                                'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
+                            }
+                        })
+		    } catch (error) {
+			console.log("Couldn't fetch subtitles:", error.message)
+		    }
                 }
 
                 // use ffmpeg to convert to aac audio so we don't get any mute videos (STOP PACKAGING VIDEOS WITH PROPRIETARY CODECS GRRRRRRR)
-                execSync(`ffmpeg -i "${file}" -acodec aac -vcodec copy "${newFilePath}"`)
-                // fs.renameSync(file, newFilePath) <- Use for instant saving, but a bunch of files won't have audio in the browser
+                //execSync(`ffmpeg -i "${file}" -acodec aac -vcodec copy "${newFilePath}"`)
+                fs.renameSync(file, newFilePath) //<- Use for instant saving, but a bunch of files won't have audio in the browser
             }
 
         }
-    }))
+    //}))
+    }
 }
 
 
@@ -152,6 +173,7 @@ const main = async () => {
 
     await filterFiles(downloadPath, mediaPath)
 
+    console.log("Deleting download location")
     fs.rmSync(downloadPath, {recursive: true, force: true})
 }
 
