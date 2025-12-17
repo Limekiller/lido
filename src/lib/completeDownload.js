@@ -75,7 +75,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
         if (fileData) {
 	    console.log('Got file data')
             const isVideoFile = fileData.mime.includes('video')
-            const isLargeEnough = getFileSize(file) > 125 ? true : false
+            const isLargeEnough = getFileSize(file) > 25 ? true : false
 
             if (isVideoFile && isLargeEnough) {
 		console.log('File is valid')
@@ -101,7 +101,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
 			break
 		    } catch (error) {
 			console.log(error.message)
-		        await new Promise(resolve => setTimeout(resolve, 5000))
+		        await new Promise(resolve => setTimeout(resolve, 1000))
 		    }
 		}
                 const newFilePath = `${mediaPath}/video/${newFile.data.id}.${file.split('.').slice(-1)[0]}`
@@ -153,8 +153,8 @@ const filterFiles = async (downloadPath, mediaPath) => {
                 }
 
                 // use ffmpeg to convert to aac audio so we don't get any mute videos (STOP PACKAGING VIDEOS WITH PROPRIETARY CODECS GRRRRRRR)
-                //execSync(`ffmpeg -i "${file}" -acodec aac -vcodec copy "${newFilePath}"`)
-                fs.renameSync(file, newFilePath) //<- Use for instant saving, but a bunch of files won't have audio in the browser
+                execSync(`ffmpeg -i "${file}" -acodec aac -vcodec copy "${newFilePath}"`)
+                //fs.renameSync(file, newFilePath) //<- Use for instant saving, but a bunch of files won't have audio in the browser
             }
 
         }
