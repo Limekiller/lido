@@ -2,7 +2,9 @@ import { PrismaClient } from "../../prisma/generated/prisma/client"
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 
 const adapter = new PrismaBetterSqlite3({
-    url: process.env.DATABASE_URL
+    url: process.env.DATABASE_URL,
+    connection_limit: 1,
+    socket_timeout: 10
 }) 
 const prismaClientSingleton = () => {
     return new PrismaClient({ adapter })
