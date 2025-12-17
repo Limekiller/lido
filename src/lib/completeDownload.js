@@ -67,23 +67,23 @@ const filterFiles = async (downloadPath, mediaPath) => {
     download = await download.json()
     download = download.data
 
+    let newFiles = [];
     for (let file of allFiles) {
-    //await Promise.all(allFiles.map(async file => {
-	console.log('Processing file: ', file.split('/').slice(-1)[0])
+        console.log('Processing file: ', file.split('/').slice(-1)[0])
         const fileData = await fromFile(file);
 
         if (fileData) {
-	    console.log('Got file data')
+            console.log('Got file data')
             const isVideoFile = fileData.mime.includes('video')
             const isLargeEnough = getFileSize(file) > 25 ? true : false
 
             if (isVideoFile && isLargeEnough) {
-		console.log('File is valid')
+                console.log('File is valid')
 
                 /** PROCESS FILE **/
-		let newFile = null;
-		while (true) {
-		    try {
+                let newFile = null;
+                while (true) {
+                    try {
                         newFile = await fetch(`${process.env.NEXTAUTH_URL}/api/file`, {
                             method: "POST",
                             headers: {
@@ -98,67 +98,76 @@ const filterFiles = async (downloadPath, mediaPath) => {
                             })
                         })
                         newFile = await newFile.json()
-			break
-		    } catch (error) {
-			console.log(error.message)
-		        await new Promise(resolve => setTimeout(resolve, 1000))
-		    }
-		}
-                const newFilePath = `${mediaPath}/video/${newFile.data.id}.${file.split('.').slice(-1)[0]}`
-
-                /** PROCESS SUBTITLES **/
-                // Attempt to extract subtitle track
-                let foundSubs = false
-                try {
-                    const subtitleFile = `${mediaPath}/subtitles/${newFile.data.id}.vtt`
-                    execSync(`ffmpeg -i "${file}" -map 0:s:0 "${subtitleFile}"`)
-                    // If we got something, save it to the database and relate it to the current video file
-                    if (fs.existsSync(subtitleFile)) {
-                        foundSubs = true
-                        let newSubFile = await fetch(`${process.env.NEXTAUTH_URL}/api/file`, {
-                            method: "POST",
-                            headers: {
-                                'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
-                            },
-                            body: JSON.stringify({
-                                name: `${newFile.data.name}.vtt`,
-                                categoryId: download.destinationCategory,
-                                downloadId: download.id,
-                                mimetype: 'text/vtt',
-                                area: "subtitles",
-                                parentId: newFile.data.id
-                            })
-                        })
-
-                        // Rename extracted file with new file ID instead of video ID
-                        newSubFile = await newSubFile.json()
-                        fs.renameSync(subtitleFile, `${mediaPath}/subtitles/${newSubFile.data.id}.vtt`)
+                        break
+                    } catch (error) {
+                        console.log(error.message)
+                        await new Promise(resolve => setTimeout(resolve, 1000))
                     }
-                } catch (error) {
-		    console.log("Couldn't get subtitles from file")
-		}
-
-                if (!foundSubs) {
-                    // Otherwise, make a network request to the subtitles GET endpoint for this video
-                    // What this will do is search podnapisi for subtitles and save them if found
-		    try {
-                        await fetch(`${process.env.NEXTAUTH_URL}/api/moviedata/subtitles?id=${newFile.data.id}`, {
-                            headers: {
-                                'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
-                            }
-                        })
-		    } catch (error) {
-			console.log("Couldn't fetch subtitles:", error.message)
-		    }
                 }
 
-                // use ffmpeg to convert to aac audio so we don't get any mute videos (STOP PACKAGING VIDEOS WITH PROPRIETARY CODECS GRRRRRRR)
-                execSync(`ffmpeg -i "${file}" -acodec aac -vcodec copy "${newFilePath}"`)
-                //fs.renameSync(file, newFilePath) //<- Use for instant saving, but a bunch of files won't have audio in the browser
+                const newPath = `${mediaPath}/video/${newFile.data.id}.${file.split('.').slice(-1)[0]}`
+                newFiles.push({
+                    id: newFile.data.id,
+                    path: file,
+                    newPath: newPath,
+                    name: file.split('.').slice(-1)[0]
+                })
             }
-
         }
-    //}))
+    }
+
+    for (let file of newFiles) {
+        console.log('Converting', file.name)
+
+        /** PROCESS SUBTITLES **/
+        // Attempt to extract subtitle track
+        let foundSubs = false
+        try {
+            const subtitleFile = `${mediaPath}/subtitles/${file.id}.vtt`
+            execSync(`ffmpeg -i "${file.path}" -map 0:s:0 "${subtitleFile}"`)
+            // If we got something, save it to the database and relate it to the current video file
+            if (fs.existsSync(subtitleFile)) {
+                foundSubs = true
+                let newSubFile = await fetch(`${process.env.NEXTAUTH_URL}/api/file`, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
+                    },
+                    body: JSON.stringify({
+                        name: `${file.name}.vtt`,
+                        categoryId: download.destinationCategory,
+                        downloadId: download.id,
+                        mimetype: 'text/vtt',
+                        area: "subtitles",
+                        parentId: file.id
+                    })
+                })
+
+                // Rename extracted file with new file ID instead of video ID
+                newSubFile = await newSubFile.json()
+                fs.renameSync(subtitleFile, `${mediaPath}/subtitles/${newSubFile.data.id}.vtt`)
+            }
+        } catch (error) {
+            console.log("Couldn't get subtitles from file")
+        }
+
+        if (!foundSubs) {
+            // Otherwise, make a network request to the subtitles GET endpoint for this video
+            // What this will do is search podnapisi for subtitles and save them if found
+            try {
+                await fetch(`${process.env.NEXTAUTH_URL}/api/moviedata/subtitles?id=${file.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
+                    }
+                })
+            } catch (error) {
+                console.log("Couldn't fetch subtitles:", error.message)
+            }
+        }
+
+        // use ffmpeg to convert to aac audio so we don't get any mute videos (STOP PACKAGING VIDEOS WITH PROPRIETARY CODECS GRRRRRRR)
+        execSync(`ffmpeg -i "${file.path}" -acodec aac -vcodec copy "${file.newPath}"`)
+        //fs.renameSync(file.path, file.newPath) //<- Use for instant saving, but a bunch of files won't have audio in the browser
     }
 }
 
@@ -174,7 +183,7 @@ const main = async () => {
     await filterFiles(downloadPath, mediaPath)
 
     console.log("Deleting download location")
-    fs.rmSync(downloadPath, {recursive: true, force: true})
+    fs.rmSync(downloadPath, { recursive: true, force: true })
 }
 
 main()
