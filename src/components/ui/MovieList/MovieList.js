@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useContext } from 'react';
+import { useState, useRef, useEffect, useContext, use } from 'react';
 import { useSession } from "next-auth/react"
 import '@splidejs/react-splide/css';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
@@ -9,39 +9,17 @@ import Link from 'next/link';
 import ContextMenuContext from '@/lib/contexts/ContextMenuContext'
 import styles from './MovieList.module.scss'
 
+import { removeFromWatchLog } from '@/lib/actions/user/file';
+
 const MovieList = ({
     movies,
     type = 'popular'
 }) => {
+
     const session = useSession()
     const contextMenuFunctions = useContext(ContextMenuContext)
-    const slider = useRef();
-    const [moviesState, setMoviesState] = useState([])
-
-    const removeRecent = async (element, fileId) => {
-        await fetch(`/api/user/${session.data.user.id}/file/${fileId}`, {
-            method: "DELETE"
-        })
-        element.parentElement.parentElement.remove()
-    }
-
-    useEffect(() => {
-        const filterDuplicateTitles = movies => {
-            return movies.filter((obj, index, self) =>
-                index === self.findIndex(o => (
-                    o.title === obj.title
-                ))
-            )
-        }
-
-        Promise.resolve(movies).then(async () => {
-            if (movies.value) {
-                setMoviesState(filterDuplicateTitles(movies.value))
-            } else {
-                setMoviesState(filterDuplicateTitles(movies))
-            }
-        })
-    }, [])
+    const slider = useRef()
+    const allMovies = typeof movies?.then === "function" ? use(movies) : movies;
 
     useEffect(() => {
         const handleKey = e => {
@@ -77,8 +55,8 @@ const MovieList = ({
             arrows: false,
         }}
     >
-        {moviesState.length > 0 ?
-            moviesState.map(movie => {
+        {allMovies.length > 0 ?
+            allMovies.map(movie => {
                 return <SplideSlide
                     className={styles.movieItem}
                     key={movie.title}
@@ -86,7 +64,7 @@ const MovieList = ({
                         if (type === 'recent') {
                             contextMenuFunctions.showMenu(e, [
                                 {
-                                    icon: "remove_circle", label: "Remove", function: () => removeRecent(e.target, movie.id)
+                                    icon: "remove_circle", label: "Remove", function: () => removeFromWatchLog(session.data.user.id, movie.id)
                                 },
                             ])
                         }

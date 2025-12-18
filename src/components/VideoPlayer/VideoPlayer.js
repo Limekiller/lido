@@ -13,6 +13,8 @@ import Overlay from './Overlay/Overlay'
 import NextVideoTimer from './NextVideoTimer/NextVideoTimer'
 import TimestampSelector from './TimestampSelector/TimestampSelector'
 
+import { addToWatchLog } from '@/lib/actions/user/file'
+
 const VideoPlayer = ({
     fileId,
     mimetype,
@@ -184,14 +186,8 @@ const VideoPlayer = ({
             if (nextFile) setNextEpisode(nextFile)
         }
 
-        const recordToWatchLog = async () => {
-            fetch(`/api/user/${session.data.user.id}/file/${fileId}`, {
-                method: "POST"
-            })
-        }
-
         getNextEpisode()
-        recordToWatchLog()
+        addToWatchLog(session.data.user.id, fileId)
 
         // Add a duplicate to the history so we can close the window when going back in the browser
         // without also going back a page

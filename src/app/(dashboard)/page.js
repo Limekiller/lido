@@ -76,8 +76,13 @@ export default async function Home() {
             : ""
         }
 
-        <h1 style={{marginBottom: '0.5rem'}}>Recommended for you</h1>
-        <MovieList movies={fullRecommendedArray} />
+        {fullRecentArray.length > 0 ?
+            <>
+                <h1 style={{marginBottom: '0.5rem'}}>Recommended for you</h1>
+                <MovieList movies={fullRecommendedArray} />
+            </>
+            : ""
+        }
 
         <h1 style={{marginBottom: '0.5rem'}}>Trending movies</h1>
         <MovieList movies={movies} />
