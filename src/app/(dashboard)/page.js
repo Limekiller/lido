@@ -12,8 +12,15 @@ import VPN from "@/components/ui/VPN/VPN"
 export default async function Home() {
 
     const session = await getSession()
-
     let fullRecentArray, movies, shows, fullRecommendedArray
+
+    const filterDuplicateTitles = movies => {
+        return movies.filter((obj, index, self) =>
+            index === self.findIndex(o => (
+                o.title === obj.title
+            ))
+        )
+    }
 
     if (session) {
         const recent = await prisma.WatchLog.findMany({
@@ -39,6 +46,7 @@ export default async function Home() {
                 type: json.media_type
             })
         }
+        fullRecentArray = filterDuplicateTitles(fullRecentArray)
 
         fullRecommendedArray = []
         const recommendations = await getRecommendations(session.user.id)
