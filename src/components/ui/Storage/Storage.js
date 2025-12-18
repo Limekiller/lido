@@ -3,18 +3,15 @@
 import { useEffect, useState } from 'react'
 import styles from './Storage.module.scss'
 
+import { get } from '@/lib/actions/storage'
+
 const Storage = () => {
 
     const [storageData, setStorageData] = useState([])
 
     useEffect(() => {
-        fetch('/api/storage')
-        .then(response => response.json())
-        .then(data => {
-            if (JSON.stringify(data) != JSON.stringify(storageData)) {
-                setStorageData(data.data)
-            }
-        })
+        get()
+        .then(response => setStorageData(response.data))
     }, [])
 
     if (storageData[4]) {
