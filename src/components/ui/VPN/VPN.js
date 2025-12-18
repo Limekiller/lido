@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react'
 import styles from './VPN.module.scss'
 
+import { get } from '@/lib/actions/vpn'
+
 function VPN() {
 
     const [IPs, setIPs] = useState({})
 
     useEffect(() => {
-        fetch('/api/vpn')
-        .then(response => response.json())
-        .then(data => setIPs(data.data))
+        get()
+        .then(response => setIPs(response.data))
     }, [])
 
     const VPNActive = IPs.ingress == IPs.egress ? false : true;
