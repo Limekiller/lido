@@ -5,10 +5,51 @@ import { prisma } from "@/lib/prisma"
 import { getSession } from "@/lib/auth/auth"
 import { refresh } from 'next/cache'
 
+import libFunctions from '@/lib/lib'
+
 const client = new Transmission({
     baseUrl: 'http://localhost:9091/',
     password: '',
 })
+
+export const get = async () => {
+    let downloads = await prisma.download.findMany({
+        include: {
+            File: true,
+            User: true
+        }
+    })
+
+    for (const download of downloads) {
+        const downloadCategoryTree = await libFunctions.getCategoryTree(download.destinationCategory)
+        download.categoryTree = downloadCategoryTree
+        for (const file of download.File) {
+            const categoryTree = await libFunctions.getCategoryTree(file.categoryId)
+            file.categoryTree = categoryTree
+        }
+    }
+
+    let torrents
+    try {
+        torrents = await client.getAllData()
+    } catch (error) {
+        return {
+            result: "error",
+            data: {
+                message: "The transmission-daemon service is not running.",
+                downloads: {},
+                torrents: {},
+            }
+        }
+    }
+
+    torrents = Object.fromEntries(torrents.torrents.map(obj => [obj.id, obj]))
+
+    return {
+        result: "success",
+        data: { downloads: downloads, torrents: torrents }
+    }
+}
 
 export const create = async (name, category, magnet) => {
     const session = await getSession()

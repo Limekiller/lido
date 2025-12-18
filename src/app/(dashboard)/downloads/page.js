@@ -1,13 +1,11 @@
-import { GET as getDownloads } from '@/app/api/download/route'
-
+import { get } from '@/lib/actions/downloads';
 import DownloadList from '@/components/ui/DownloadList/DownloadList';
 
 const Downloads = async () => {
 
-    let response = await getDownloads()
-    response = await response.json()
-    const torrents = response.data.torrents
-    const downloads = response.data.downloads
+    let downloadData = await get()
+    const torrents = downloadData.data.torrents
+    const downloads = downloadData.data.downloads
 
     return <div>
         <h1 className="title">Downloads</h1>

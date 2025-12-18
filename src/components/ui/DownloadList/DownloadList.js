@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from 'react'
 import MessageContext from '@/lib/contexts/MessageContext'
 import styles from './DownloadList.module.scss'
 
+import { get } from '@/lib/actions/downloads'
+
 const DownloadList = ({ downloads, torrents }) => {
     const messageFunctions = useContext(MessageContext)
 
@@ -14,9 +16,8 @@ const DownloadList = ({ downloads, torrents }) => {
     const [selectedTab, setSelectedTab] = useState("downloading")
 
     const getDownloads = async () => {
-        let downloads = await fetch(`/api/download`)
-        setFetchStatus(downloads.status)
-        downloads = await downloads.json()
+        let downloads = await get()
+        setFetchStatus(downloads.result === "success" ? 200 : 0)
         setCurrentDownloads(downloads.data.downloads)
         setCurrentTorrents(downloads.data.torrents)
     }
