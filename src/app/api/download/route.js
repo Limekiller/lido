@@ -5,6 +5,8 @@ import { verifySession } from '@/lib/auth/lib'
 
 import libFunctions from '@/lib/lib'
 
+import { create } from '@/lib/actions/downloads'
+
 const client = new Transmission({
     baseUrl: 'http://localhost:9091/',
     password: '',
@@ -13,50 +15,8 @@ const client = new Transmission({
 export const POST = verifySession(
     async req => {
         const data = await req.json()
-        const session = await getSession()
-
-        const newDownload = await prisma.download.create({
-            data: {
-                name: data.name,
-                destinationCategory: parseInt(data.category),
-                state: 'downloading',
-                userId: session.user.id === -1 ? null : session.user.id
-            }
-        })
-
-        let newTransDownload
-        try {
-            newTransDownload = await client.addMagnet(data.magnet, { 'download-dir': `${process.env.STORAGE_PATH}/temp/${newDownload.id}` })
-        } catch (error) {
-            await prisma.download.delete({
-                where: {
-                    id: newDownload.id
-                }
-            })
-
-            return Response.json({
-                result: "error",
-                data: {
-                    message: "The transmission-daemon service is not running.",
-                }
-            }, { status: 502 })
-        }
-
-        console.log(newTransDownload)
-
-        await prisma.download.update({
-            where: {
-                id: newDownload.id
-            },
-            data: {
-                transmissionId: newTransDownload.arguments["torrent-added"].hashString
-            }
-        })
-
-        return Response.json({
-            result: "success",
-            data: { download: newDownload, transDownload: newTransDownload }
-        })
+        const newDownloadResult = await create(data.name, data.category, data.magnet)
+        return newDownloadResult
     }
 )
 

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import Category from '@/components/ui/Category/Category';
 import File from '@/components/ui/File/File';
 import styles from './movies.module.scss'
+import CategoryDownloads from '@/components/ui/CategoryDownloads/CategoryDownloads';
 
 const movies = async ({
     title = "Movies",
@@ -25,15 +26,29 @@ const movies = async ({
         }
     })
 
+    const downloads = await prisma.download.findMany({
+        where: {
+            destinationCategory: categoryId,
+            NOT: {
+                state: "complete"
+            }
+        },
+        orderBy: {
+            name: "asc"
+        }
+    })
+
     return <div className={styles.Movies}>
         <h1 className='title'>{title}</h1>
 
-        {categories.length === 0 && files.length === 0 ?
+        {categories.length === 0 && files.length === 0 && downloads.length === 0 ?
             <div className={styles.emptyAlert}>
                 <span className="material-icons">all_out</span>
                 <span>Nothing here!<br />Why not add some movies?</span>
             </div> :
             <>
+                {downloads.length > 0 ? <CategoryDownloads downloads={downloads} /> : ""}
+
                 {categories.length > 0 ?
                     <div className={styles.categories}>
                         {categories.map(category => {

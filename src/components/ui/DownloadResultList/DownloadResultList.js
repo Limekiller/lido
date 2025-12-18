@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useContext, use } from 'react'
+import { useContext, use } from 'react'
 import MessageContext from '@/lib/contexts/MessageContext'
 import ToastContext from '@/lib/contexts/ToastContext'
 
 import MoveFile from '../MoveFile/MoveFile'
 import styles from './DownloadResultList.module.scss'
+import { create } from '@/lib/actions/downloads'
 
 const DownloadResultList = ({ 
     results,
@@ -19,26 +20,13 @@ const DownloadResultList = ({
 
     const initiateDownload = async (download, category = null) => {
         category = category == null ? document.querySelector('#activeCat').value : category
-        const data = {
-            name: download.name,
-            category: category,
-            magnet: download.link
-        }
+        const downloadCreateResult = await create(download.name, category, download.link)
 
-        let response = await fetch(`/api/download`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-        response = await response.json()
-
-        if (response.result === 'success') {
+        if (downloadCreateResult.result === 'success') {
             messageFunctions.popMessage()
             toastFunctions.createToast({message: "Download started!"})
         } else {
-            toastFunctions.createToast({message: response.data.message})
+            toastFunctions.createToast({message: downloadCreateResult.data.message})
         }
     }
 
