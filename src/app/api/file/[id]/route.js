@@ -1,11 +1,9 @@
-import path from 'path'
 import fs from 'fs-extra'
 import { prisma } from "@/lib/prisma"
 
 import libFunctions from '@/lib/lib'
-import { DELETE as deleteDownload } from '../../download/[id]/route'
 import { verifySession } from '@/lib/auth/lib'
-import { getFileInfo } from '../../moviedata/metadata/route'
+import { fileInfo } from '@/lib/actions/moviedata/metadata'
 
 export const deleteFile = async id => {
     const file = await prisma.file.findUnique({
@@ -74,7 +72,7 @@ export const PUT = verifySession(
 
         // If we're updating the name, refetch the metadata
         if (data.name) {
-            let metadata = await getFileInfo(data.name)
+            let metadata = await fileInfo(data.name)
             metadata = JSON.stringify(metadata)
             newData.metadata = metadata
         }

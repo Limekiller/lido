@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { getSession } from "@/lib/auth/auth"
-import { getPopularMovies, getPopularShows } from "../api/moviedata/popular/route"
+import { getPopularMovies, getPopularShows } from "@/lib/actions/moviedata/popular"
 import { getRecommendations } from "../api/user/[id]/recommendations/route"
 import libFunctions from "@/lib/lib"
 

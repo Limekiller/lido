@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import styles from './PosterBg.module.scss'
 
+import { get } from '@/lib/actions/moviedata/poster'
+
 const PosterBg = () => {
     const [numCols, setNumCols] = useState(9)
     const [numRows, setNumRows] = useState(4)
@@ -16,20 +18,19 @@ const PosterBg = () => {
 
       window.setTimeout(() => {
         const numPosters = document.querySelectorAll('.' + styles.poster).length;
-        fetch('/api/moviedata/poster?number=' + numPosters)
-            .then(response => response.json())
-            .then(data => {
-                document.querySelectorAll('.' + styles.poster).forEach((poster, i) => {
-                    // Load the image into a new element so we can use a load listener to know when to make the poster opaque
-                    const src = `/images/posters/${data[i]}`
-                    const img = new Image();
-                    img.addEventListener('load', () => {
-                        poster.style.opacity = 1;
-                        poster.style.backgroundImage = 'url("/images/posters/' + data[i] + '")'
-                    })
-                    img.src = src;
+        get(numPosters)
+        .then(response => {
+            document.querySelectorAll('.' + styles.poster).forEach((poster, i) => {
+                // Load the image into a new element so we can use a load listener to know when to make the poster opaque
+                const src = `/images/posters/${response[i]}`
+                const img = new Image();
+                img.addEventListener('load', () => {
+                    poster.style.opacity = 1;
+                    poster.style.backgroundImage = 'url("/images/posters/' + response[i] + '")'
                 })
+                img.src = src;
             })
+        })
       }, 500)
       return () => {
         second

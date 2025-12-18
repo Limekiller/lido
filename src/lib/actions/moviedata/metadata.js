@@ -1,4 +1,4 @@
-import { verifySession } from "@/lib/auth/lib"
+"use server"
 
 const getFirstResultByYear = (results, year) => {
     for (const result of results) {
@@ -9,7 +9,7 @@ const getFirstResultByYear = (results, year) => {
     }
 }
 
-export const getFileInfo = async fullTitle => {
+export const fileInfo = async fullTitle => {
     // Get filename if path is absolute
     fullTitle = decodeURI(fullTitle).split('/').slice(-1).join()
     // Remove file extension
@@ -73,17 +73,3 @@ export const getFileInfo = async fullTitle => {
 
     return data
 }
-
-export const GET = verifySession(
-    async req => {
-        const searchParams = req.nextUrl.searchParams
-        let fullTitle = searchParams.get('title')
-
-        const data = await getFileInfo(fullTitle)
-
-        return Response.json({
-            result: "success",
-            data: data
-        })
-    }
-)

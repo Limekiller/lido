@@ -7,6 +7,8 @@ import Spinner from '@/components/ui/Spinner/Spinner'
 import styles from './DownloadMedia.module.scss'
 import DownloadResultList from '../../DownloadResultList/DownloadResultList'
 
+import { search } from '@/lib/actions/search'
+
 const DownloadMedia = () => {
     const pathname = usePathname() 
     let category = pathname.split('/').slice(-1)[0]
@@ -21,10 +23,9 @@ const DownloadMedia = () => {
 
     const getResults = async query => {
         setIsSearching(true)
-        let response = await fetch(`/api/search/media?query=${query}`)
-        response = await response.json()
-        if (response.result === 'success') {
-            setResults(response.data)
+        let searchResponse = await search(query)
+        if (searchResponse.result === 'success') {
+            setResults(searchResponse.data)
         }
         setIsSearching(false)
     }

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { verifySession } from '@/lib/auth/lib'
-import { getFileInfo } from "../moviedata/metadata/route"
+import { fileInfo } from "@/lib/actions/moviedata/metadata"
 
 export const POST = verifySession(
     async req => {
@@ -8,7 +8,7 @@ export const POST = verifySession(
 
         // When we add a new video file, attempt to get the metadata for it
         if (data.area === 'video') {
-            let metadata = await getFileInfo(data.name)
+            let metadata = await fileInfo(data.name)
             metadata = JSON.stringify(metadata)
             data.metadata = metadata
         }

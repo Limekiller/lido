@@ -1,4 +1,4 @@
-import { verifySession } from '@/lib/auth/lib'
+"use server"
 
 export const getPopularMovies = async () => {
     let result = await fetch('https://api.themoviedb.org/3/trending/movie/week', {
@@ -39,19 +39,3 @@ export const getPopularShows = async () => {
 
     return finalData
 }
-
-export const GET = verifySession(
-    async req => {
-        
-        const movieResults = await getPopularMovies()
-        const tvResults = await getPopularShows()
-
-        return Response.json({
-            result: 'success',
-            data: {
-                movies: movieResults,
-                tv: tvResults
-            }
-        })
-    }
-)

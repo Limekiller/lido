@@ -1,14 +1,15 @@
+"use server"
+
 import fs from 'fs-extra'
 import path from 'path'
 
-export const GET = async req => {
-    const searchParams = req.nextUrl.searchParams
+export const get = async number => {
     const posters = fs.readdirSync(path.join(process.cwd(), '/public/images/posters'))
 
     let toReturn
-    if (searchParams.get('number')) {
+    if (number) {
         toReturn = []
-        for (let i = 0; i < searchParams.get('number'); i++) {
+        for (let i = 0; i < number; i++) {
             let rand = Math.random();
             rand *= posters.length;
             rand = Math.floor(rand);
@@ -21,5 +22,6 @@ export const GET = async req => {
         toReturn = posters[rand]
     }
 
-    return Response.json(toReturn)
+    return toReturn
 }
+
