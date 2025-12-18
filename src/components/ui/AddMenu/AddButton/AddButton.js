@@ -7,6 +7,8 @@ import MessageContext from '@/lib/contexts/MessageContext'
 import styles from './AddButton.module.scss'
 import DownloadMedia from '../DownloadMedia/DownloadMedia'
 
+import { create } from '@/lib/actions/category'
+
 const AddButton = () => {
     const pathname = usePathname()
 
@@ -22,23 +24,9 @@ const AddButton = () => {
             parentId = parseInt(parentId)
         }
 
-        const newCatData = {
-            name: document.querySelector('#catName').value,
-            parentId: parentId
-        }
-
-        let response = await fetch(`/api/category`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newCatData)
-        })
-        response = await response.json()
-
-        if (response.result === 'success') {
+        let createResponse = await create(document.querySelector('#catName').value, parentId)
+        if (createResponse.result === 'success') {
             messageFunctions.popMessage()
-            window.location.reload()
         }
     }
 

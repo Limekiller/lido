@@ -50,8 +50,6 @@ const category = async ({ params, list = null }) => {
         }
     })
 
-    console.log(downloads)
-
     const createPath = () => {
         let path = `/${params.topCat}/`
         for (let catId of category) {

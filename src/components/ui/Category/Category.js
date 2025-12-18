@@ -9,49 +9,33 @@ import ContextMenuContext from '@/lib/contexts/ContextMenuContext'
 import MoveFile from '../MoveFile/MoveFile'
 import styles from './Category.module.scss'
 
+import { update, delete_ } from '@/lib/actions/category'
+
 const Category = ({ link, name }) => {
     const messageFunctions = useContext(MessageContext)
     const contextMenuFunctions = useContext(ContextMenuContext)
     const id = link.split('/').slice(-1)[0]
 
     const deleteCategory = async () => {
-        let response = await fetch(`/api/category/${id}`, {
-            method: "DELETE"
-        })
-        if (response.status === 200) {
-            window.location.reload()
+        const deleteResponse = await delete_(id);
+        if (deleteResponse.result === 'success') {
+            messageFunctions.popMessage()
         }
     }
 
     const renameCategory = async () => {
         const name = document.querySelector('#catRename').value
-        let response = await fetch(`/api/category/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                name: name
-            })
-        })
-        if (response.status === 200) {
-            window.location.reload()
+        const renameResponse = await update(id, {name: name})
+        if (renameResponse.result === "success") {
+            messageFunctions.popMessage()
         }
     }
 
     const moveCategory = async () => {
         const newId = document.querySelector('#activeCat').value
-        let response = await fetch(`/api/category/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                parentId: parseInt(newId)
-            })
-        })
-        if (response.status === 200) {
-            window.location.reload()
+        const moveResponse = await update(id, {parentId: parseInt(newId)})
+        if (moveResponse.result === "success") {
+            messageFunctions.popMessage()
         }
     }
 

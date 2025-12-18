@@ -5,7 +5,6 @@ import jsdom from 'jsdom'
 const _1337x = async query => {
     let response = await fetch(`https://1337x.to/search/${query}/1/`)
     response = await response.text()
-    console.log(response);
 
     const dom = new jsdom.JSDOM(response)
     let finalResults = []

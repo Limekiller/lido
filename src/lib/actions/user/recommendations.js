@@ -1,5 +1,6 @@
+"use server"
+
 import { prisma } from "@/lib/prisma"
-import { verifySession, verifyUserResource } from '@/lib/auth/lib'
 
 export const getRecommendations = async userId => {
     // get history from db
@@ -56,26 +57,3 @@ export const getRecommendations = async userId => {
 
     return recArray
 }
-
-export const GET = verifySession(
-    async (req, { params }) => {
-        const id = (await params).id
-
-        if (!verifyUserResource(req, id)) {
-            return Response.json({
-                result: "error",
-                data: {
-                    message: "Unauthorized"
-                }
-            }, { status: 401 })
-        }
-
-        const recArray = await getRecommendations(id)
-
-        return Response.json({
-            result: "success",
-            data: recArray
-        })
-    }
-)
-

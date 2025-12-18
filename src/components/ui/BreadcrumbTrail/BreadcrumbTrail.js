@@ -5,14 +5,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import styles from './BreadcrumbTrail.module.scss'
 
+import { fetchCategoryNames } from '@/lib/actions/category'
+
 const BreadcrumbTrail = () => {
     const pathname = usePathname() 
     const [categoryNames, setCategoryNames] = useState({})
 
-    const fetchCategoryNames = async pathname => {
-        const catIds = pathname.slice(1).split('/').join(',')
-        let response = await fetch(`/api/category?id=${catIds}`)
-        response = await response.json()
+    const clientFetchCategoryNames = async pathname => {
+        const catIds = pathname.slice(1).split('/')
+        let response = await fetchCategoryNames(catIds)
 
         let newCatNames = {
             'movies': 'Movies',
@@ -25,7 +26,7 @@ const BreadcrumbTrail = () => {
     }
 
     useEffect(() => {
-        fetchCategoryNames(pathname)
+        clientFetchCategoryNames(pathname)
     }, [pathname]);
 
     return <div className={styles.BreadcrumbTrail}>

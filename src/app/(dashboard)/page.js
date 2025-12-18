@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { getSession } from "@/lib/auth/auth"
 import { getPopularMovies, getPopularShows } from "@/lib/actions/moviedata/popular"
-import { getRecommendations } from "../api/user/[id]/recommendations/route"
+import { getRecommendations } from "@/lib/actions/user/recommendations"
 import libFunctions from "@/lib/lib"
 
 import styles from './dashboard.module.scss'

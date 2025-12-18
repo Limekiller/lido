@@ -6,33 +6,19 @@ import MessageContext from '@/lib/contexts/MessageContext'
 import User from './User/User'
 import styles from './UserEditor.module.scss'
 
+import { create } from '@/lib/actions/user/user'
+
 const UserEditor = ({ users }) => {
     const messageFunctions = useContext(MessageContext)
-    const [currentUsers, setCurrentUsers] = useState(users)
-
-    const reportUserDeleted = id => {
-        setCurrentUsers(currentUsers.filter(user => user.id !== id))
-    }
 
     const createUser = async () => {
-        const newUserData = {
-            name: document.querySelector('#createUserName').value,
-            email: document.querySelector('#createUserEmail').value,
-            password: document.querySelector('#createUserPassword').value,
-            admin: document.querySelector('#createUserAdmin').checked
-        }
+        const name = document.querySelector('#createUserName').value
+        const email = document.querySelector('#createUserEmail').value
+        const password = document.querySelector('#createUserPassword').value
+        const admin = document.querySelector('#createUserAdmin').checked
 
-        let response = await fetch(`/api/user/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newUserData)
-        })
-        response = await response.json()
-
-        if (response.result === 'success') {
-            window.location.reload()
+        const newUserReponse = await create(name, email, admin, password)
+        if (newUserReponse.result === 'success') {
             messageFunctions.popMessage()
         }
     }
@@ -57,18 +43,19 @@ const UserEditor = ({ users }) => {
                     body: addUserMessage,
                     onSubmit: createUser
                 })}
-            >Add user</button>
+            >
+                Add user
+            </button>
         </div>
-        {currentUsers.length > 0 ?
-            currentUsers.map((user, index) => {
+        {users.length > 0 ?
+            users.map((user, index) => {
                 return <User
                     data={user}
                     key={user.id}
                     odd={index % 2 === 0}
-                    reportUserDeleted={reportUserDeleted}
                 />
             })
-            : <span style={{textAlign: 'center', color: "var(--fg-color-light)"}}>No users found. Why not add some?</span>
+            : <span style={{ textAlign: 'center', color: "var(--fg-color-light)" }}>No users found. Why not add some?</span>
         }
     </div>
 }

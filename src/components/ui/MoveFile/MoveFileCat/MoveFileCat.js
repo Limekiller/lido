@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import styles from './MoveFileCat.module.scss'
 
+import { get } from '@/lib/actions/category'
+
 const MoveFileCat = ({
     category,
     activeCat,
@@ -15,10 +17,8 @@ const MoveFileCat = ({
     const [expanded, setExpanded] = useState(false)
 
     const getChildren = async () => {
-        let reponse = await fetch(`/api/category/${category.id}`)
-        reponse = await reponse.json()
-        let children = reponse.data.children
-        setChildren(children)
+        const children = await get(category.id)
+        setChildren(children.data.children)
     }
 
     return <div className={styles.MoveFileCat}>

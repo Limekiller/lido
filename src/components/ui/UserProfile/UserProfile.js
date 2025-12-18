@@ -5,6 +5,8 @@ import { useSession } from 'next-auth/react'
 
 import styles from './UserProfile.module.scss'
 
+import { update } from '@/lib/actions/user/user'
+
 const UserProfile = ({ data }) => {
     const session = useSession()
     const [errors, setErrors] = useState({})
@@ -23,6 +25,9 @@ const UserProfile = ({ data }) => {
         if (!emailVal) {
             errors.profileEmail = "Email is a required field"
         }
+        if (!emailVal.match(/^\S+@\S+\.\S+$/)) {
+            errors.profileEmail = "Not a valid email"
+        }
 
         if (isChangingPw && (pwVal === '********' || pwVal === '' || pwVal !== confirmPwVal)) {
             errors.profilePassword = "Passwords must match"
@@ -37,37 +42,26 @@ const UserProfile = ({ data }) => {
     }
 
     const submit = async () => {
-
         if (!validate()) {
             return
         }
 
-        const newName = document.querySelector('#profileName').value
-        const newEmail = document.querySelector('#profileEmail').value
-        const newProfileImg = document.querySelector('#profileImg').files[0]
+        let updateData = {
+            name: document.querySelector('#profileName').value,
+            email: document.querySelector('#profileEmail').value,
+            profileImg: document.querySelector('#profileImg').files[0],
+        }
         const newPw = document.querySelector('#profilePassword').value
-
-        let newFormData = new FormData()
-        newFormData.append('id', data.id)
-        newFormData.append('name', newName)
-        newFormData.append('email', newEmail)
-        newFormData.append('profileImg', newProfileImg)
-
         if (newPw && newPw !== '********') {
-            newFormData.append('password', newPw)
+            updateData.password = newPw
         }
 
-        let response = await fetch(`/api/user/${data.id}`, {
-            method: "PUT",
-            body: newFormData
-        })
-        response = await response.json()
-
-        if (response.result === 'success') {
+        const result = await update(data.id, updateData)
+        if (result.result === 'success') {
             await session.update({
-                name: newName,
-                email: newEmail,
-                image: response.data.image
+                name: updateData.name,
+                email: updateData.email,
+                image: result.data.image
             })
             window.location.reload()
         }
@@ -79,11 +73,12 @@ const UserProfile = ({ data }) => {
             document.querySelector(`#${field.name}`).value = field.defaultValue
         }
         document.querySelector('#profileImgThumb').src = `/api/file/${data.image}`
+        document.querySelector('#profileConfirmPasswordContainer').style.display = 'none'
     }
 
     useEffect(() => {
         document.querySelector('#profilePassword').addEventListener('keyup', () => {
-            document.querySelector('#profileConfirmPasswordContainer').style.opacity = 1
+            document.querySelector('#profileConfirmPasswordContainer').style.display = 'block'
             setisChangingPw(true)
         })
     }, [])
@@ -125,7 +120,7 @@ const UserProfile = ({ data }) => {
                     return <div 
                         key={field.name} 
                         id={`${field.name}Container`}
-                        style={{opacity: field.name === 'profileConfirmPassword' ? 0 : 1}}
+                        style={{display: field.name === 'profileConfirmPassword' ? 'none' : 'block'}}
                     >
                         <label htmlFor={field.name}>{field.label}</label>
                         {errors[field.name] ? <span className={styles.error}>{errors[field.name]}</span> : ""}<br />
