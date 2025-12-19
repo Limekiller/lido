@@ -48,39 +48,3 @@ export const GET = verifySession(
         })
     }
 )
-    
-//     case 'GET': {
-//       // await client
-//       //   .open()
-//       //   .catch(err => console.log("error", err));
-//       // await client.call('purgeDownloadResult')
-//       // const status = await client.call("tellActive")
-//       // await client
-//       //   .close()
-//       //   .catch(err => console.log("error", err));
-//       const status = await client.getAllData()
-
-//       status.torrents.forEach(torrent => {
-//         const downloadID = torrent.savePath.split('/').slice(-1)[0]
-//         torrent['path'] = Buffer.from(downloadID, 'base64').toString('ascii').slice(0, -4)
-//       })
-
-//       res.statusCode = 200
-//       res.end(JSON.stringify(status.torrents))
-//       break
-//     }
-
-//     case 'DELETE': {
-//       // await client
-//       //   .open()
-//       //   .catch(err => console.log("error", err));
-
-//       // await client.call('remove', req.query.gid)
-//       await client.removeTorrent(req.query.gid, true)
-//       fs.removeSync(req.query.path)
-//       res.statusCode = 200;
-//       res.end()
-//       break
-//     }
-//   }
-// }

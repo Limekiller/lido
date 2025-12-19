@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 import MessageContext from '@/lib/contexts/MessageContext'
 import styles from './DownloadList.module.scss'
 
-import { get } from '@/lib/actions/downloads'
+import { get, update, delete_ } from '@/lib/actions/downloads'
 
 const DownloadList = ({ downloads, torrents }) => {
     const messageFunctions = useContext(MessageContext)
@@ -24,31 +24,17 @@ const DownloadList = ({ downloads, torrents }) => {
 
     const removeDownload = async id => {
         setNonInteractibleDownloads({ ...nonInteractibleDownloads, [id]: "removed" })
-        let response = await fetch(`/api/download/${id}`, {
-            method: "DELETE"
-        })
-        response = await response.json()
+        delete_(id)
     }
 
     const updateDownloadState = async (id, state) => {
         setNonInteractibleDownloads({ ...nonInteractibleDownloads, [id]: state })
-        let response = await fetch(`/api/download/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                state: state
-            })
-        })
-        response = await response.json()
+        update(id, {state: state})
     }
 
     const deleteDownload = async id => {
-        let response = await fetch(`api/download/${id}`, {
-            method: "DELETE"
-        })
-        if (response.status === 200) {
+        const deleteResponse = await delete_(id)
+        if (deleteResponse.result === "success") {
             messageFunctions.popMessage()
         }
     }

@@ -155,7 +155,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
             // Otherwise, make a network request to the subtitles GET endpoint for this video
             // What this will do is search podnapisi for subtitles and save them if found
             try {
-                await fetch(`${process.env.NEXTAUTH_URL}/api/moviedata/subtitles?id=${file.id}`, {
+                await fetch(`${process.env.NEXTAUTH_URL}/api/subtitles?id=${file.id}`, {
                     headers: {
                         'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
                     }

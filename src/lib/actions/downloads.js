@@ -4,6 +4,7 @@ import { Transmission } from '@ctrl/transmission'
 import { prisma } from "@/lib/prisma"
 import { getSession } from "@/lib/auth/auth"
 import { refresh } from 'next/cache'
+import fs from 'fs-extra'
 
 import libFunctions from '@/lib/lib'
 
@@ -44,7 +45,6 @@ export const get = async () => {
     }
 
     torrents = Object.fromEntries(torrents.torrents.map(obj => [obj.id, obj]))
-
     return {
         result: "success",
         data: { downloads: downloads, torrents: torrents }
@@ -91,9 +91,87 @@ export const create = async (name, category, magnet) => {
     })
 
     refresh()
-
     return {
         result: "success",
         data: { download: newDownload, transDownload: newTransDownload }
+    }
+}
+
+export const details = async id => {
+    const download = await prisma.download.findUnique({
+        where: {
+            id: id
+        },
+        include: {
+            file: true
+        }
+    })
+
+    refresh()
+    return {
+        result: "success",
+        data: download
+    }
+}
+
+export const update = async (id, data) => {
+    let download = await prisma.download.update({
+        where: {
+            id: id
+        },
+        data: data
+    })
+
+    if (data.state) {
+        switch (data.state) {
+            case "paused":
+                await client.pauseTorrent(download.transmissionId)
+                break;
+            case "downloading":
+                await client.resumeTorrent(download.transmissionId)
+                break;
+            default:
+                console.log('No state matched')
+        }
+    }
+
+    return {
+        result: "success",
+        data: download
+    }
+}
+
+
+export const delete_ = async id => {
+    // Delete all files related to this download
+    // The records are removed automatically when the parent dl is deleted
+    const files = await prisma.file.findMany({
+        where: {
+            downloadId: id
+        }
+    })
+    for (const file of files) {
+        fs.removeSync(`${process.env.STORAGE_PATH}/${file.area}/${file.id}.${file.name.split('.').slice(-1)[0]}`)
+    }
+
+    // Remove the torrent, if it exists
+    const download = await prisma.download.findUnique({
+        where: {
+            id: id
+        }
+    })
+    await client.removeTorrent(download.transmissionId, true)
+    fs.rmSync(`${process.env.STORAGE_PATH}/temp/${id}`, {recursive: true, force: true})
+
+    // Finally delete the download
+    await prisma.download.delete({
+        where: {
+            id: id
+        }
+    })
+
+    refresh()
+    return {
+        result: "success",
     }
 }

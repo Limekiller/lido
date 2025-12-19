@@ -148,7 +148,7 @@ const VideoPlayer = ({
                     }
                 })
 
-                const trackEl = player.addRemoteTextTrack({ src: `/api/moviedata/subtitles?id=${fileId}` }, false)
+                const trackEl = player.addRemoteTextTrack({ src: `/api/subtitles?id=${fileId}` }, false)
                 // VideoJS is full of fun surprises :) Why doesn't the captions button work right on mobile?
                 // No one knows! Let's duplicate it to remove all event listeners and bind our own function to it, I guess!
                 trackEl.addEventListener('load', () => {
