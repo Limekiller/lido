@@ -8,6 +8,26 @@
     max-height: 90vh;
     overflow: auto;
 
+    &.processing {
+        pointer-events: none;
+
+        .spinnerContainer {
+            display: block;
+        }
+        button {
+            opacity: 0.5;
+        }
+    }
+
+    .spinnerContainer {
+        display: none;
+        position: absolute;
+        right: 1rem;
+        top: 0rem;
+        transform: scale(0.5);
+        transform-origin: top right;
+    }
+
     h1 {
         font-size: 1.5rem;
         margin: 0;
