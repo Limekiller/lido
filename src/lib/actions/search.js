@@ -4,12 +4,26 @@ import searchProviders from "@/lib/searchProviders/searchProviders"
 
 export const search = async (query, source = 0) => {
 
-    let sourceFunc = "cloudtorrents"
-    if (source === 1) {
-        sourceFunc = "limetorrents"
+    let sourceFunc = "limetorrents";
+    switch (source) {
+        case 1:
+            sourceFunc = "torrentdownload";
+            break;
+        case 2:
+            sourceFunc = "cloudtorrents";
+            break;
     }
 
-    const results = await searchProviders[sourceFunc](query)
+    let results = []
+    try {
+        results = await searchProviders[sourceFunc](query)
+    } catch (error) {
+        return {
+            result: "error",
+            data: []
+        }
+    }
+
     return {
         result: "success",
         data: results

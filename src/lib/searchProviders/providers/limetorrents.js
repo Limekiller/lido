@@ -24,7 +24,7 @@ const limetorrents = async query => {
         } else if (category === 'Movies') {
             category = 'Movie'
         }
-        console.log(category)
+
         if (!['Movie', 'TV'].includes(category)) {
             continue
         }
@@ -50,7 +50,6 @@ const limetorrents = async query => {
         })
     }
 
-    console.log(finalResults)
     return finalResults
 }
 

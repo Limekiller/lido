@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { usePathname } from 'next/navigation'
 
+import ToastContext from '@/lib/contexts/ToastContext'
 import Spinner from '@/components/ui/Spinner/Spinner'
 import styles from './DownloadMedia.module.scss'
 import DownloadResultList from '../../DownloadResultList/DownloadResultList'
@@ -10,6 +11,8 @@ import DownloadResultList from '../../DownloadResultList/DownloadResultList'
 import { search } from '@/lib/actions/search'
 
 const DownloadMedia = () => {
+    const toastFunctions = useContext(ToastContext)
+
     const pathname = usePathname()
     let category = pathname.split('/').slice(-1)[0]
     if (category === 'movies') {
@@ -29,6 +32,9 @@ const DownloadMedia = () => {
         if (searchResponse.result === 'success') {
             setHasSearched(true)
             setResults(searchResponse.data)
+        } else {
+            toastFunctions.createToast({message: "Failed to fetch results", type: "alert"})
+            setResults([])
         }
         setIsSearching(false)
     }
