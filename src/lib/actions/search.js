@@ -4,13 +4,13 @@ import searchProviders from "@/lib/searchProviders/searchProviders"
 
 export const search = async (query, source = 0) => {
 
-    let sourceFunc = "limetorrents";
+    let sourceFunc = "piratebay";
     switch (source) {
-        case 1:
-            sourceFunc = "torrentdownload";
+        case 0:
+            sourceFunc = "piratebay";
             break;
-        case 2:
-            sourceFunc = "cloudtorrents";
+        case 1:
+            sourceFunc = "limetorrents";
             break;
     }
 
