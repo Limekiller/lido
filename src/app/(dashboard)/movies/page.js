@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { getSession } from "@/lib/auth/auth"
 
 import Category from '@/components/ui/Category/Category';
 import File from '@/components/ui/File/File';
@@ -10,6 +11,8 @@ const movies = async ({
     categoryId = 0,
     list = null
 }) => {
+    const session = await getSession()
+
     const categories = await prisma.category.findMany({
         where: {
             parentId: categoryId,
@@ -20,6 +23,13 @@ const movies = async ({
         where: {
             categoryId: categoryId,
             area: "video"
+        },
+        include: { 
+            WatchLog: {
+                where: {
+                    userId: session.user.id === -1 ? null : session.user.id
+                }
+            },
         },
         orderBy: {
             'name': 'asc'

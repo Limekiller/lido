@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { getSession } from "@/lib/auth/auth"
 
 import Category from '@/components/ui/Category/Category';
 import File from '@/components/ui/File/File';
@@ -7,6 +8,7 @@ import CategoryDownloads from '@/components/ui/CategoryDownloads/CategoryDownloa
 
 const category = async ({ params, list = null }) => {
     const { category } = await params
+    const session = await getSession()
 
     if (!category) {
         return
@@ -32,6 +34,13 @@ const category = async ({ params, list = null }) => {
         where: {
             categoryId: parseInt(category.slice(-1)[0]),
             area: "video"
+        },
+        include: { 
+            WatchLog: {
+                where: {
+                    userId: session.user.id === -1 ? null : session.user.id
+                }
+            },
         },
         orderBy: {
             name: "asc"

@@ -118,6 +118,12 @@ const File = ({ data, list, link=false }) => {
                     {metadata.episodeData?.season_number ? metadata.episodeData.name : 
                     (metadata.name || metadata.title) || data.name}
                 </span>
+
+                {data.WatchLog.length > 0 ? <label className={styles.watchedLabel}>
+                    <span className="material-icons">check_circle</span>
+                    Watched
+                </label> : ""
+                }
                 
                 {metadata.episodeData?.season_number ? <span
                     className={styles.seriesData}
