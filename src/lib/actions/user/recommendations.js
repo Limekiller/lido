@@ -39,14 +39,16 @@ export const getRecommendations = async userId => {
 
         // The language filter of the API doesn't actually work, so we have to do it manually
         let processed = 0
-        for (const result of response.results) {
-            if (result.original_language != 'en') {
-                continue
-            }
-            recArray.push({ rec: result, because: metadata.title || metadata.name })
-            processed++
-            if (processed >= 5) {
-                break
+        if (response?.results) {
+            for (const result of response.results) {
+                if (result.original_language != 'en') {
+                    continue
+                }
+                recArray.push({ rec: result, because: metadata.title || metadata.name })
+                processed++
+                if (processed >= 5) {
+                    break
+                }
             }
         }
     }

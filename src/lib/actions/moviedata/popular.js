@@ -8,13 +8,15 @@ export const getPopularMovies = async () => {
     })
     result = await result.json()
     let finalData = []
-    for (const movie of result.results) {
-        finalData.push({
-            id: movie.id,
-            title: movie.title || movie.name,
-            type: "movie",
-            poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`,
-        })
+    if (result?.results) {
+        for (const movie of result.results) {
+            finalData.push({
+                id: movie.id,
+                title: movie.title || movie.name,
+                type: "movie",
+                poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`,
+            })
+        }
     }
 
     return finalData
@@ -28,14 +30,17 @@ export const getPopularShows = async () => {
     })
     result = await result.json()
     let finalData = []
-    for (const movie of result.results) {
-        finalData.push({
-            id: movie.id,
-            title: movie.title || movie.name,
-            type: "tv",
-            poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`,
-        })
+    if (result?.results) {
+        for (const movie of result.results) {
+            finalData.push({
+                id: movie.id,
+                title: movie.title || movie.name,
+                type: "tv",
+                poster: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`,
+            })
+        }
     }
+
 
     return finalData
 }
