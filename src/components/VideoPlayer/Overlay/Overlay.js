@@ -42,7 +42,7 @@ const Overlay = ({
             {metadata.episodeData ? 
                 <span className={styles.epData}>{metadata.name} • S{metadata.episodeData.season_number}E{metadata.episodeData.episode_number}</span>
             : ""}
-            <h2>{metadata.release_date?.slice(0, 4) || metadata.episodeData?.air_date.slice(0, 4)}</h2>
+            <h2>{metadata.release_date?.slice(0, 4) || metadata.episodeData?.air_date?.slice(0, 4)}</h2>
             <p>{metadata.episodeData?.overview || metadata.overview}</p>
             <p style={{ fontSize: '0.75rem', lineHeight: '1rem' }}>
                 Film information and subtitles are retrieved based on the filename.<br />
