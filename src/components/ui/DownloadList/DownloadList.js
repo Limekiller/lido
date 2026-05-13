@@ -15,13 +15,6 @@ const DownloadList = ({ downloads, torrents }) => {
     const [nonInteractibleDownloads, setNonInteractibleDownloads] = useState({})
     const [selectedTab, setSelectedTab] = useState("downloading")
 
-    const getDownloads = async () => {
-        let downloads = await get()
-        setFetchStatus(downloads.result === "success" ? 200 : 0)
-        setCurrentDownloads(downloads.data.downloads)
-        setCurrentTorrents(downloads.data.torrents)
-    }
-
     const removeDownload = async id => {
         setNonInteractibleDownloads({ ...nonInteractibleDownloads, [id]: "removed" })
         delete_(id)
@@ -62,8 +55,21 @@ const DownloadList = ({ downloads, torrents }) => {
     }, [currentDownloads])
 
     useEffect(() => {
+        let awaiting = false;
+
+        const getDownloads = async () => {
+            awaiting = true;
+            let downloads = await get()
+            setFetchStatus(downloads.result === "success" ? 200 : 0)
+            setCurrentDownloads(downloads.data.downloads)
+            setCurrentTorrents(downloads.data.torrents)
+            awaiting = false;
+        }
+
         let downloadPoll = setInterval(() => {
-            getDownloads()
+            if (!awaiting) {
+                getDownloads()
+            }
         }, 1000)
 
         return () => {
