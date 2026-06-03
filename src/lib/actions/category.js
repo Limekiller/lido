@@ -21,10 +21,13 @@ const findRecursiveCats = async (catId, cats = []) => {
 }
 
 export const delete_ = async id => {
+    // Get all categories inside this one
     let cats = await findRecursiveCats(id)
     cats = cats.sort((a, b) => {return parseInt(b) - parseInt(a)})
 
+    // In each category,
     for (const cat of cats) {
+        // Remove all files
         const files = await prisma.file.findMany({
             where: {
                 categoryId: parseInt(cat)
@@ -33,6 +36,22 @@ export const delete_ = async id => {
         for (const file of files) {
             await deleteFile(file.id)
         }
+
+        // Set any current in-progress downloads to category 0
+        // there may be a better solution, but this will do for now
+        const inProgressDownloads = await prisma.download.findMany({
+            where: {
+                destinationCategory: parseInt(cat)
+            }
+        })
+        for (const download of inProgressDownloads) {
+            await prisma.download.update({
+                where: {id: download.id},
+                data: {destinationCategory: 0}
+            })
+        }
+
+        // Remove the category
         await prisma.category.delete({
             where: {
                 id: parseInt(cat)
