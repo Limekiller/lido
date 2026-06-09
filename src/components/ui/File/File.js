@@ -119,7 +119,7 @@ const File = ({ data, list, link=false }) => {
                     (metadata.name || metadata.title) || data.name}
                 </span>
 
-                {data.WatchLog.length > 0 ? <label className={styles.watchedLabel}>
+                {data.WatchLog?.length > 0 ? <label className={styles.watchedLabel}>
                     <span className="material-icons">check_circle</span>
                     Watched
                 </label> : ""
