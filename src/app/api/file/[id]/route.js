@@ -12,6 +12,10 @@ export const deleteFile = async id => {
         }
     })
 
+    if (file.status === 'converting') {
+        return {result: "error", "message": "Cannot delete: file is currently being converted."}
+    }
+
     // Check if there are any children of this file, and if so, delete them
     let children = await prisma.file.findMany({
         where: {parentId: id}
@@ -50,17 +54,17 @@ export const deleteFile = async id => {
 
     // Remove file from disk
     fs.removeSync(`${process.env.STORAGE_PATH}/${file.area}/${id}.${file.name.split('.').slice(-1)[0]}`)
+
+    return {result: "success"}
 }
 
 export const DELETE = verifySession(
     async (req, { params }) => {
         const id = (await params).id
 
-        await deleteFile(id)
+        const result = await deleteFile(id)
 
-        return Response.json({
-            result: "success",
-        })
+        return Response.json(result)
     }
 )
 

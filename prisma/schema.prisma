@@ -45,10 +45,11 @@ model Download {
 model File {
     id         String     @id @default(cuid())
     name       String
-    category   Category?  @relation(fields: [categoryId], references: [id])
+    status     String?
     categoryId Int?
-    download   Download?  @relation(fields: [downloadId], references: [id], onDelete: Cascade)
+    category   Category?  @relation(fields: [categoryId], references: [id])
     downloadId String?
+    download   Download?  @relation(fields: [downloadId], references: [id], onDelete: Cascade)
     metadata   String?    @default("{}")
     mimetype   String?
     area       String     @default("video")

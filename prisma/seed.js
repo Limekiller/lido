@@ -1,5 +1,4 @@
-import { PrismaClient } from './generated/prisma/client'
-const prisma = new PrismaClient()
+import { prisma } from "../src/lib/prisma.js";
 
 const main = async () => {
     const defaultMoviesCat = await prisma.category.create({

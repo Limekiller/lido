@@ -11,6 +11,7 @@ import { renameFile as submitRename } from '@/components/ui/RenameFile/RenameFil
 
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer'
 import styles from './File.module.scss'
+import Spinner from '../Spinner/Spinner'
 
 const File = ({ data, list, link=false }) => {
     const contextMenuFunctions = useContext(ContextMenuContext)
@@ -65,12 +66,14 @@ const File = ({ data, list, link=false }) => {
             ${styles.unstyled}
             ${metadata.poster_path ? styles.hasImg : ""}
             ${list || viewStatus.view === 'list' ? styles.list : ""}
+            ${data.status === 'converting' ? styles.converting : ''}
             unstyled
         `}
         style={{
             padding: metadata.poster_path && !(list || viewStatus.view === 'list') ? 0 : '1rem',
             display: listState === null ? 'none' : 'block'
         }}
+        inert={data.status === 'converting'}
         onContextMenu={e => {
             contextMenuFunctions.showMenu(e, [
                 {
@@ -124,6 +127,13 @@ const File = ({ data, list, link=false }) => {
                     Watched
                 </label> : ""
                 }
+
+                {data.status === 'converting' ?
+                    <div className={styles.convertMessage}>
+                        <Spinner width='0.5rem' margin='0' />
+                        Converting...
+                    </div>
+                : ""}
                 
                 {metadata.episodeData?.season_number ? <span
                     className={styles.seriesData}

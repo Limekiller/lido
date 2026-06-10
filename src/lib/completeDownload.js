@@ -94,6 +94,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
                                 categoryId: download.destinationCategory,
                                 downloadId: download.id,
                                 mimetype: fileData.mime,
+                                status: "converting",
                                 area: "video"
                             })
                         })
@@ -167,6 +168,15 @@ const filterFiles = async (downloadPath, mediaPath) => {
 
         // use ffmpeg to convert to aac audio so we don't get any mute videos (STOP PACKAGING VIDEOS WITH PROPRIETARY CODECS GRRRRRRR)
         execSync(`ffmpeg -i "${file.path}" -acodec aac -vcodec copy "${file.newPath}"`)
+        await fetch(`${process.env.NEXTAUTH_URL}/api/file/${file.id}`, {
+            method: "PUT",
+            headers: {
+                'Authorization': `Bearer ${process.env.NEXTAUTH_SECRET}`
+            },
+            body: JSON.stringify({
+                status: null
+            })
+        })
         //fs.renameSync(file.path, file.newPath) //<- Use for instant saving, but a bunch of files won't have audio in the browser
     }
 }
