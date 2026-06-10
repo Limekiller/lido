@@ -17,7 +17,7 @@ export const deleteFile = async id => {
         where: {parentId: id}
     })
     for (const child of children) {
-        deleteFile(child.id)
+        await deleteFile(child.id)
     }
 
     // Check if there are any other files that belong to this download

@@ -216,7 +216,7 @@ const DownloadList = ({ downloads, torrents }) => {
 
             : <div className={styles.emptyAlert}>
                 <span className="material-icons">all_out</span>
-                {fetchStatus === 502 ?
+                {fetchStatus === 0 ?
                     <span>Error: the transmission-daemon service is not running.</span>
                     : <span>Nothing here!<br />Why not start some downloads?</span>
                 }

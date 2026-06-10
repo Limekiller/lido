@@ -69,7 +69,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
 
     let newFiles = [];
     for (let file of allFiles) {
-        console.log('Processing file: ', file.split('/').slice(-1)[0])
+        console.log('Processing file: ', file.slice(0, file.lastIndexOf('.')))
         const fileData = await fromFile(file);
 
         if (fileData) {
@@ -110,7 +110,7 @@ const filterFiles = async (downloadPath, mediaPath) => {
                     id: newFile.data.id,
                     path: file,
                     newPath: newPath,
-                    name: file.split('.').slice(-1)[0]
+                    name: file.slice(0, file.lastIndexOf('.')).split('/').slice(-1)
                 })
             }
         }
