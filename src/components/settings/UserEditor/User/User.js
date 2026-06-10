@@ -46,7 +46,7 @@ const User = ({
     >
         {!isEditing ?
             <div className={styles.userInfo}>
-                <img alt="User profile image" src={`/api/file/${data.image}` || 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
+                <img alt="User profile image" src={data.image ? `/api/file/${data.image}` : '/images/user.jpg'} />
                 <span className='unstyled'>{data.name}</span> •
                 <span className='unstyled'>{data.email}</span>
                 {data.admin ? <> • <span style={{ color: "gold" }}>Admin</span></> : ""}
@@ -66,7 +66,7 @@ const User = ({
                             }
                         }}
                     />
-                    <img alt="User profile image" src={`/api/file/${data.image}` || 'https://www.peacocktv.com/dam/growth/assets/Library/Shrek/shrek-vertical-key-art.jpg'} />
+                    <img alt="User profile image" src={data.image ? `/api/file/${data.image}` : '/images/user.jpg'} />
                 </button>
                 <input type='text' name='name' id='name' defaultValue={data.name} />
                 <input type='text' name='email' id='email' defaultValue={data.email} />
