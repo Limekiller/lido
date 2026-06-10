@@ -12,6 +12,8 @@ const SpatialNav = () => {
      * Helper function to initialize all the spatial nav stuff
      */
     const initSpatialNav = async () => {
+        let keyboard = false;
+
         while (!document.querySelector('script[src="/js/spatialnav.js"]') || typeof SpatialNavigation == "undefined") { 
             await new Promise(resolve => setTimeout(resolve, 500)); 
         }
@@ -44,11 +46,19 @@ const SpatialNav = () => {
                 window.scrollTo({top: 0, behavior: 'smooth'})
                 return
             }
-            if (document.activeElement.closest('.pageContainer')) {
+            if (document.activeElement.closest('.pageContainer') && keyboard) {
                 const position = document.activeElement.getBoundingClientRect()
                 window.scrollTo({ left: position.left, top: position.top + window.scrollY - (window.innerHeight / 1.5), behavior: 'smooth' })
             }
         }, true);
+
+        document.addEventListener('keydown', () => {
+            keyboard = true;
+        })
+        document.addEventListener('mousemove', () => {
+            keyboard = false;
+        })
+
     }
 
     return <div></div>
