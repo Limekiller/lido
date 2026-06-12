@@ -1,58 +1,19 @@
 "use client"
 
-import { useContext, useEffect, useState } from 'react'
-import MessageContext from '@/lib/contexts/MessageContext'
+import { useEffect, useState } from 'react'
 import styles from './DownloadList.module.scss'
 
-import { get, update, delete_ } from '@/lib/actions/downloads'
+import { get } from '@/lib/actions/downloads'
+import InProgressDownloads from './InProgressDownloads/InProgressDownloads'
+import CompletedDownloads from './CompletedDownloads/CompletedDownloads'
+import EmptyAlert from './EmptyAlert/EmptyAlert'
 
 const DownloadList = ({ downloads, torrents }) => {
-    const messageFunctions = useContext(MessageContext)
 
     const [fetchStatus, setFetchStatus] = useState(0)
     const [currentDownloads, setCurrentDownloads] = useState(downloads)
     const [currentTorrents, setCurrentTorrents] = useState(torrents)
-    const [nonInteractibleDownloads, setNonInteractibleDownloads] = useState({})
     const [selectedTab, setSelectedTab] = useState("downloading")
-
-    const removeDownload = async id => {
-        setNonInteractibleDownloads({ ...nonInteractibleDownloads, [id]: "removed" })
-        delete_(id)
-    }
-
-    const updateDownloadState = async (id, state) => {
-        setNonInteractibleDownloads({ ...nonInteractibleDownloads, [id]: state })
-        update(id, {state: state})
-    }
-
-    const deleteDownload = async id => {
-        const deleteResponse = await delete_(id)
-        if (deleteResponse.result === "success") {
-            messageFunctions.popMessage()
-        }
-    }
-
-    useEffect(() => {
-        const reconcileNonInteractibleDownloads = () => {
-            if (fetchStatus !== 200) return;
-    
-            const downloads = currentDownloads.reduce((acc, item) => {
-                acc[item.id] = item
-                return acc;
-            }, {})
-    
-            for (const id of Object.keys(nonInteractibleDownloads)) {
-                // Once the download we have in our canonical state does not match the saved object in the nonInt array,
-                // remove it from the nonInt array; the state has been updated.
-                if (!downloads[id] || downloads[id].state === nonInteractibleDownloads[id]) {
-                    const newNonIntDls = { ...nonInteractibleDownloads }
-                    delete newNonIntDls[id]
-                    setNonInteractibleDownloads(newNonIntDls)
-                }
-            }
-        }
-        reconcileNonInteractibleDownloads()
-    }, [currentDownloads])
 
     useEffect(() => {
         let awaiting = false;
@@ -76,114 +37,6 @@ const DownloadList = ({ downloads, torrents }) => {
             clearInterval(downloadPoll)
         }
     }, [])
-
-    const getInProgressDownloads = () => {
-        const inProgressDownloads = currentDownloads.filter(download => ['downloading', 'paused'].includes(download.state))
-        return inProgressDownloads.length > 0 ?
-            inProgressDownloads.map(download => {
-                return <div
-                    key={download.id}
-                    className={`
-                        ${styles.download}
-                        ${Object.keys(nonInteractibleDownloads).includes(download.id) ?
-                            styles.nonInteractible :
-                            ''
-                        }
-                    `}
-                >
-                    <div className={styles.topLine}>
-                        <span>{download.name}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: "0.5rem" }}>
-
-                            <span>{(currentTorrents[download.transmissionId]?.progress * 100).toFixed(2)}%</span>
-
-                            {download.state === 'downloading' ?
-                                <button
-                                    className={`unstyled ${styles.pauseBtn}`}
-                                    onClick={() => updateDownloadState(download.id, 'paused')}
-                                >
-                                    <span className='material-icons'>pause</span>
-                                </button>
-                                : <button
-                                    className={`unstyled ${styles.resumeBtn}`}
-                                    onClick={() => updateDownloadState(download.id, 'downloading')}
-                                >
-                                    <span className='material-icons'>play_arrow</span>
-                                </button>
-                            }
-
-                            <button
-                                className={`unstyled ${styles.removeBtn}`}
-                                onClick={() => removeDownload(download.id)}
-                            >
-                                <span className='material-icons'>cancel</span>
-                            </button>
-                        </div>
-                    </div>
-                    <span className={styles.destinationCategory}>
-                        {download.categoryTree.map((folder, index) => `${folder.name} ${index < download.categoryTree.length - 1 ? ' / ' : ''}`)}
-                    </span>
-                </div>
-            })
-            : <div className={styles.emptyAlert}>
-                <span className="material-icons">all_out</span>
-                <span>Nothing here!<br />Why not start some downloads?</span>
-            </div>
-    }
-
-    const getCompletedDownloads = () => {
-        const completedDownloads = currentDownloads.filter(download => download.state === 'complete')
-        return completedDownloads.length > 0 ?
-            completedDownloads.map(download => {
-                return <div
-                    className={`
-                        ${styles.completedDownload} 
-                        ${styles.download}
-                    `}
-                    key={download.id}
-                >
-                    <div className={styles.topLine}>
-                        <span>{download.name}</span>
-                        <div style={{display: 'flex', gap: '0.5rem'}}>
-                            <span style={{color: 'var(--fg-color-light', fontSize: '0.75rem'}}>
-                                {download.User ? download.User.name : 'Admin'}
-                            </span>
-                            <button
-                                className='unstyled'
-                                onClick={() => messageFunctions.addMessage({
-                                    title: "Are you sure?",
-                                    body: "Are you sure you want to delete this download? All attached files will be deleted!",
-                                    onSubmit: () => deleteDownload(download.id)
-                                })}
-                            >
-                                <span className='material-icons'>delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <table className={styles.fileList}>
-                        <tbody>
-                            {download.File.map(file => {
-                                return <tr key={file.id}>
-                                    <td>{file.name}</td>
-                                    {file.area === 'video' ?
-                                        <td className={styles.categoryTree}>
-                                            {file.categoryTree.map(treeItem => {
-                                                return <span key={treeItem.id}>{treeItem.name}</span>
-                                            })}
-                                        </td>
-                                        : ""
-                                    }
-                                </tr>
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            })
-            : <div className={styles.emptyAlert}>
-                <span className="material-icons">all_out</span>
-                <span>Nothing here!<br />Why not start some downloads?</span>
-            </div>
-    }
 
     return <div className={styles.DownloadList}>
 
@@ -211,18 +64,21 @@ const DownloadList = ({ downloads, torrents }) => {
         {currentDownloads.length > 0 ?
 
             selectedTab === 'downloading' ?
-                getInProgressDownloads()
-                : getCompletedDownloads()
-
-            : <div className={styles.emptyAlert}>
-                <span className="material-icons">all_out</span>
-                {fetchStatus === 0 ?
-                    <span>Error: the transmission-daemon service is not running.</span>
-                    : <span>Nothing here!<br />Why not start some downloads?</span>
+                <InProgressDownloads 
+                    currentDownloads={currentDownloads.filter(download => ['downloading', 'paused'].includes(download.state))} 
+                    currentTorrents={currentTorrents}
+                />
+            : 
+                <CompletedDownloads completedDownloads={currentDownloads.filter(download => download.state === 'complete')} />
+        : 
+            <EmptyAlert 
+                message={fetchStatus === 0 ? 
+                    "Error: the transmission-daemon service is not running."
+                :
+                    "Nothing here!<br />Why not start some downloads?"
                 }
-            </div>
+            />
         }
-
     </div >
 }
 
