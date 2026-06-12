@@ -45,6 +45,7 @@ const getCategoryTreeLink = async catId => {
 const getFileExtFromMime = mimetype => {
     const mimes = {
         'video/mp4': 'mp4',
+        'video/matroska': 'mkv',
         'video/x-matroska': 'mkv',
         'video/x-msvideo': 'avi',
         'image/png': 'png',
