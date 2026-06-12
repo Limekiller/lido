@@ -185,9 +185,11 @@ const VideoPlayer = ({
 
             if (nextFile) setNextEpisode(nextFile)
         }
-
         getNextEpisode()
-        addToWatchLog(session.data.user.id, fileId)
+
+        const timeout = setTimeout(() => {
+            addToWatchLog(session.data.user.id, fileId)
+        }, 3e4);
 
         // Add a duplicate to the history so we can close the window when going back in the browser
         // without also going back a page
@@ -208,6 +210,7 @@ const VideoPlayer = ({
             window.removeEventListener('popstate', messageFunctions.popMessage)
             SpatialNavigation.enable('add')
             document.body.classList.remove('videoPlaying')
+            clearTimeout(timeout)
         }
     }, [])
 
