@@ -1,0 +1,23 @@
+.PillSelector {
+    position: relative;
+    display: flex;
+    border-radius: 99rem;
+    overflow: hidden;
+    background-color: var(--fg-color-dark);
+    width: fit-content;
+    margin-bottom: 0.5rem;
+
+    button:not(.link):not(.vjs-button):not(.keyboard__key):not(.download-result):not(.unstyled) {
+        background: none;
+        box-shadow: none !important;
+        z-index: 1;
+    }
+
+    .mask {
+        position: absolute;
+        height: 100%;
+        border-radius: 99rem;
+        background: var(--fg-color-light);
+        transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1), width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+}

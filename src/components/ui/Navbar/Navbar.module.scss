@@ -22,10 +22,11 @@
 
 
     .divider {
-        height: 1px;
+        height: 2px;
         width: 100%;
         max-width: 6rem;
-        background-color: var(--fg-color-light);
+        border-radius: 99rem;
+        background-color: var(--bg-color);
     }
 
     .topOptions, .bottomOptions {

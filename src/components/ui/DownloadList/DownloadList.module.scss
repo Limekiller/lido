@@ -4,21 +4,6 @@
     flex-direction: column;
     gap: 1rem;
 
-    .tabSelector {
-        display: flex;
-        gap: 0.5rem;
-
-        button {
-            border-radius: 0.5rem;
-
-            &.selected {
-                background-color: var(--fg-color-dark) !important;
-                transform: scale(0.95);
-                box-shadow: 0px 0px 5px orange !important;
-            }
-        }
-    }
-
     .emptyAlert {
         display: flex;
         flex-direction: column;

@@ -7,6 +7,7 @@ import { get } from '@/lib/actions/downloads'
 import InProgressDownloads from './InProgressDownloads/InProgressDownloads'
 import CompletedDownloads from './CompletedDownloads/CompletedDownloads'
 import EmptyAlert from './EmptyAlert/EmptyAlert'
+import PillSelector from '../PillSelector/PillSelector'
 
 const DownloadList = ({ downloads, torrents }) => {
 
@@ -40,26 +41,10 @@ const DownloadList = ({ downloads, torrents }) => {
 
     return <div className={styles.DownloadList}>
 
-        <div className={styles.tabSelector}>
-            <button
-                className={`
-                    secondary
-                    ${selectedTab === 'downloading' ? styles.selected : ""}
-                `}
-                onClick={() => setSelectedTab('downloading')}
-            >
-                In progress
-            </button>
-            <button
-                className={`
-                    secondary
-                    ${selectedTab === 'complete' ? styles.selected : ""}
-                `}
-                onClick={() => setSelectedTab('complete')}
-            >
-                Completed
-            </button>
-        </div>
+        <PillSelector
+            options={[{label: "In progress", value: 'downloading'}, {label: "Completed", value: 'complete'}]} 
+            parentSetFunction={setSelectedTab}
+        />
 
         {currentDownloads.length > 0 ?
 

@@ -9,6 +9,7 @@ import styles from './DownloadMedia.module.scss'
 import DownloadResultList from '../../DownloadResultList/DownloadResultList'
 
 import { search } from '@/lib/actions/search'
+import PillSelector from '../../PillSelector/PillSelector'
 
 const DownloadMedia = () => {
     const toastFunctions = useContext(ToastContext)
@@ -40,10 +41,10 @@ const DownloadMedia = () => {
     }
 
     return <div className={styles.DownloadMedia}>
-        <div className={styles.sourceSelector}>
-            <button className={`secondary ${source === 0 ? styles.selected : ''}`} onClick={() => setSource(0)}>Source 1</button>
-            <button className={`secondary ${source === 1 ? styles.selected : ''}`} onClick={() => setSource(1)}>Source 2</button>
-        </div>
+        <PillSelector 
+            options={[{label: "Source 1", value: 0}, {label: "Source 2", value: 1}]} 
+            parentSetFunction={setSource}
+        />
         <div style={{ display: 'flex' }}>
             <input
                 type='text'
