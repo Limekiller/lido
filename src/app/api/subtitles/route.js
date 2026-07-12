@@ -52,10 +52,23 @@ const convertSrtCue = (caption) => {
 }
 
 const getSubsFromSubsource = async (id, name, categoryId, downloadId) => {
-    // strip extension from name
+    // strip extension from name, if necessary
     name = name.split('.').slice(0, -1).join('.')
 
-    let searchResults = await fetch(`https://api.subsource.net/api/v1/subtitles?releaseInfo=${name}&language=english`, {
+    // Get movie search results and select the first one
+    let movieResults = await fetch(`https://api.subsource.net/api/v1/movies/search?searchType=text&q=${name}`, {
+        headers: {
+            "X-API-Key": process.env.SUBSOURCE_API_KEY
+        }
+    })
+    movieResults = await movieResults.json()
+    if (movieResults.data.length === 0) {
+        return false
+    }
+    const movieId = movieResults.data[0].movieId
+
+    // Get subtitle search results for the movie ID and select the first one
+    let searchResults = await fetch(`https://api.subsource.net/api/v1/subtitles?movieId=${movieId}&language=english`, {
         headers: {
             "X-API-Key": process.env.SUBSOURCE_API_KEY
         }
@@ -64,7 +77,6 @@ const getSubsFromSubsource = async (id, name, categoryId, downloadId) => {
     if (searchResults.data.length === 0) {
         return false
     }
-
     const subId = searchResults.data[0].subtitleId
 
     // Unfortunately it provides downloads as a .zip containing the subtitle files, so we have to download it,
@@ -130,7 +142,13 @@ export const GET = async req => {
                 id: id
             }
         })
-        const subData = await getSubsFromSubsource(id, movieFile.name, movieFile.categoryId, movieFile.downloadId)
+
+        let title = movieFile.name
+        try {
+            title = JSON.parse(movieFile.metadata).metadata.title
+        } catch (error) {}
+
+        const subData = await getSubsFromSubsource(id, title, movieFile.categoryId, movieFile.downloadId)
         if (subData) {
             return new Response(Buffer.from(subData), {
                 headers: {
