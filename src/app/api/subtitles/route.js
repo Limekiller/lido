@@ -1,6 +1,5 @@
 import { prisma } from '@/lib/prisma'
 import fs from 'fs-extra'
-import jsdom from 'jsdom'
 import Zip from 'adm-zip'
 
 /**
@@ -52,27 +51,32 @@ const convertSrtCue = (caption) => {
     return cue;
 }
 
-const getSubsFromPodnapisi = async (id, name, categoryId, downloadId) => {
-    // podnapisi actually associates subtitle files to download filenames, so we can search for the name of the file
-    let searchResults = await fetch(
-        `https://www.podnapisi.net/nb/subtitles/search/?keywords=${name}&sort=stats.downloads&order=desc
-    `)
-    searchResults = await searchResults.text()
-    const dom = new jsdom.JSDOM(searchResults)
-    const firstResult = dom.window.document.querySelector('.subtitle-entry a')
+const getSubsFromSubsource = async (id, name, categoryId, downloadId) => {
+    // strip extension from name
+    name = name.split('.').slice(0, -1).join('.')
 
-    if (!firstResult) {
+    let searchResults = await fetch(`https://api.subsource.net/api/v1/subtitles?releaseInfo=${name}&language=english`, {
+        headers: {
+            "X-API-Key": process.env.SUBSOURCE_API_KEY
+        }
+    })
+    searchResults = await searchResults.json()
+    if (searchResults.data.length === 0) {
         return false
     }
 
-    const downloadLink = firstResult.href
+    const subId = searchResults.data[0].subtitleId
 
     // Unfortunately it provides downloads as a .zip containing the subtitle files, so we have to download it,
     // write it to disk, extract the first entry (we're not going to bother trying to figure out the best one in the archive)
     // and THEN convert it to vtt for videojs
 
     // Download zip to disk
-    let subtitles = await fetch(`https://www.podnapisi.net${downloadLink}`)
+    let subtitles = await fetch(`https://api.subsource.net/api/v1/subtitles/${subId}/download`, {
+        headers: {
+            "X-API-Key": process.env.SUBSOURCE_API_KEY
+        }
+    })
     subtitles = await subtitles.arrayBuffer()
     const tempPathName = `${process.env.STORAGE_PATH}/temp/subtitles-${id}`
     fs.mkdirSync(tempPathName)
@@ -120,13 +124,13 @@ export const GET = async req => {
             }
         })
     } else {
-        // No subtitles found--let's see if we can find and download some from podnapisi
+        // No subtitles found--let's see if we can find and download some from subsource
         const movieFile = await prisma.file.findUnique({
             where: {
                 id: id
             }
         })
-        const subData = await getSubsFromPodnapisi(id, movieFile.name, movieFile.categoryId, movieFile.downloadId)
+        const subData = await getSubsFromSubsource(id, movieFile.name, movieFile.categoryId, movieFile.downloadId)
         if (subData) {
             return new Response(Buffer.from(subData), {
                 headers: {
