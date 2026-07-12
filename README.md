@@ -33,11 +33,13 @@ NEXTAUTH_URL={the_url_of_the_app}
 ADMIN_PASSWORD={a_default_password_for_the_admin_account}
 STORAGE_PATH=/var/lidostorage
 TMDB_API_KEY={your_tmdb_api_key} (www.themoviedb.org) -- This is required for fetching metadata and recommendations
+SUBSOURCE_API_KEY={your_subsource_api_key} (www.subsource.net) -- This is required for fetching subtitles
 ```
 - Finish the install
   - `cd /path/to/install`
   - `npm install`
   - `npx prisma generate`
+  - `npx prisma migrate deploy`
   - `npx prisma db seed`
   - `npm run build`
   - `npm run start`
