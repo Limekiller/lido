@@ -39,7 +39,7 @@ const Overlay = ({
             <h1 style={{ wordBreak: (metadata.name || metadata.title) ? 'initial' : 'break-all' }}>
                 {(metadata.episodeData?.name || metadata.title) || name}
             </h1>
-            {metadata.episodeData ? 
+            {metadata.episodeData ?
                 <span className={styles.epData}>{metadata.name} • S{metadata.episodeData.season_number}E{metadata.episodeData.episode_number}</span>
             : ""}
             <h2>{metadata.release_date?.slice(0, 4) || metadata.episodeData?.air_date?.slice(0, 4)}</h2>
@@ -54,9 +54,9 @@ const Overlay = ({
                 <button
                     id='playVideo'
                     className={`unstyled ${styles.playVideo}`}
-                    onClick={() => { 
+                    onClick={() => {
                         player.current.play()
-                        setShowOverlay(0) 
+                        setShowOverlay(0)
                     }}
                 >
                     <span className="material-icons">play_circle</span>
@@ -92,9 +92,9 @@ const Overlay = ({
                         <button
                             className={`unstyled ${styles.option}`}
                         >
-                            <Link href={`/api/video/${fileId}?mime=${mimetype}&download=true`}>
+                            <a href={`/api/video/${fileId}?mime=${mimetype}&download=true`}>
                                 <span className="material-icons">download</span>
-                            </Link>
+                            </a>
                         </button>
                         <button
                             className={`unstyled ${styles.option}`}
