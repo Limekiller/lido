@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
+import { Readable } from 'stream'
 
 import libFunctions from '@/lib/lib'
 import { getSession } from 'next-auth/react'
@@ -70,14 +71,15 @@ export const GET = async (req, { params }) => {
     const videoSize = fs.statSync(filePath).size;
 
     if (download) {
-        const buffer = await fs.readFile(filePath)
-        const headers = new Headers()
-        headers.append("Content-Disposition", `attachment; filename="${fileId}"`)
-        headers.append("Content-Type", mime)
+        const buffer = fs.createReadStream(filePath)
+        const webStream = Readable.toWeb(buffer)
 
-        return new Response(buffer, {
-            headers,
-        })
+        const headers = new Headers()
+        headers.append("Content-Disposition", `attachment; filename="${fileId}.${fileExt}"`)
+        headers.append("Content-Type", mime)
+        headers.set('Content-Length', videoSize)
+
+        return new Response(webStream, { headers })
     }
 
     const CHUNK_SIZE = 25 ** 6; // 2.5MB
