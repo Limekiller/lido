@@ -12,7 +12,10 @@ export const deleteFile = async id => {
         }
     })
 
-    if (file.status && file.status === 'converting') {
+    if (!file) {
+        return {result: "error", "message": "File does not exist. Perhaps its parent was already deleted?"}
+    }
+    if (file.status === 'converting') {
         return {result: "error", "message": "Cannot delete: file is currently being converted."}
     }
 

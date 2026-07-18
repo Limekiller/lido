@@ -54,7 +54,7 @@ const DownloadList = ({ downloads, torrents }) => {
                     currentTorrents={currentTorrents}
                 />
             : 
-                <CompletedDownloads completedDownloads={currentDownloads.filter(download => download.state === 'complete')} />
+                <CompletedDownloads completedDownloads={currentDownloads.filter(download => download.state === 'complete').reverse()} />
         : 
             <EmptyAlert 
                 message={fetchStatus === 0 ? 
