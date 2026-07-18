@@ -12,7 +12,7 @@ export const deleteFile = async id => {
         }
     })
 
-    if (file.status === 'converting') {
+    if (file.status && file.status === 'converting') {
         return {result: "error", "message": "Cannot delete: file is currently being converted."}
     }
 
